@@ -39,10 +39,10 @@ public class MemberRegisterService {
     User savedUser = userRepository.save(user);
 
     // 응답 DTO 반환
-    return new RegisterResponseDto(
-        savedUser.getUserId(),
-        savedUser.getEmail(),
-        savedUser.getNickname()
-    );
+    return RegisterResponseDto.builder()
+        .userId(savedUser.getUserId())
+        .email(savedUser.getEmail())
+        .nickname(savedUser.getNickname())
+        .build();
   }
 }
