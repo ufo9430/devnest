@@ -26,20 +26,26 @@ public class SecurityConfig {
             ).permitAll()
 //            .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
-        )
-
-        .formLogin(form -> form
-//            .loginPage("/login")  // get 요청으로 받아와야 함. 일단은 Default 사용
-            .loginProcessingUrl("/member/login")  // 로그인 POST 요청
-            .defaultSuccessUrl("/") // 로그인 성공 후 리다이렉트되는 페이지 >> 홈 화면
-        )
-
-        .logout(logout -> logout
-            .logoutUrl("/member/logout") // 로그아웃 post 요청
-            .logoutSuccessUrl("/")  // 로그아웃 성공 후 리다이렉트되는 페이지 >> 홈 화면
-            .invalidateHttpSession(true)  // HttpSession 객체 완전히 무효화
-            .deleteCookies("JSESSIONID")  // 브라우저에 저장된 JSESSIONID 쿠키 삭제
         );
+
+        // 직접 로그인, 로그아웃 API 만들고 HttpSession 처리를 원하기 때문에 제거 .
+        // email 로그인, 로그아웃 처리의 경우 직접 구현 방식이 더 유연하게 가능.
+//        .formLogin(form -> form
+////            .loginPage("/login")  // get 요청으로 받아와야 함. 일단은 Default 사용
+//            .loginProcessingUrl("/member/login")  // 로그인 POST 요청
+//            .defaultSuccessUrl("/") // 로그인 성공 후 리다이렉트되는 페이지 >> 홈 화면
+//        )        .formLogin(form -> form
+////            .loginPage("/login")  // get 요청으로 받아와야 함. 일단은 Default 사용
+//            .loginProcessingUrl("/member/login")  // 로그인 POST 요청
+//            .defaultSuccessUrl("/") // 로그인 성공 후 리다이렉트되는 페이지 >> 홈 화면
+//        )
+
+//        .logout(logout -> logout
+//            .logoutUrl("/member/logout") // 로그아웃 post 요청
+//            .logoutSuccessUrl("/")  // 로그아웃 성공 후 리다이렉트되는 페이지 >> 홈 화면
+//            .invalidateHttpSession(true)  // HttpSession 객체 완전히 무효화
+//            .deleteCookies("JSESSIONID")  // 브라우저에 저장된 JSESSIONID 쿠키 삭제
+//        );
 
     return http.build();
   }
