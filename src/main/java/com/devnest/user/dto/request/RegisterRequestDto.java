@@ -27,5 +27,5 @@ public class RegisterRequestDto {
     @Size(max = 50, message = "닉네임은 50자 이하로 입력해주세요.")
     private String nickname;
 
-    private String profileImage; // 선택값 (nullable)
+//    private String profileImage; // 선택값 (nullable)
 }
