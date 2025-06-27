@@ -1,6 +1,7 @@
 package com.devnest.user.dto.common;
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class NicknameRequestDto {
 
-    @Notblank(message = "닉네임은 필수입니다.")
+    @NotBlank(message = "닉네임은 필수입니다.")
     //dependency 추가 요망
     private String nickname;
 }
