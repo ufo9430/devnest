@@ -42,4 +42,10 @@ public class AuthController {
     LoginResponseDto responseDto = memberLoginService.login(requestDto, session);
     return ResponseEntity.ok(ApiResponse.success("로그인 성공", responseDto));
   }
+
+  @PostMapping("/logout")
+  public  ResponseEntity<ApiResponse<?>> logout(HttpSession session) {
+    session.invalidate(); // 세션 완전히 무효화
+    return ResponseEntity.ok(ApiResponse.success("로그아웃 되었습니다.", true));
+  }
 }
