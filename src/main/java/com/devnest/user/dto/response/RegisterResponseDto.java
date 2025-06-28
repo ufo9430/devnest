@@ -1,10 +1,11 @@
 package com.devnest.user.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@Builder
 public class RegisterResponseDto {
     private Long userId;
     private String email;

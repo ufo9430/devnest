@@ -12,10 +12,10 @@ import lombok.Setter;
 @Setter
 public class RegisterRequestDto {
 
-//    @NotBlank(message = "이메일은 필수입니다.")
-//    @Email(message = "유효한 이메일 형식이어야 합니다.")
-//    private String email;
-    // 이메일 단독으로 분리하겠습니다 확인 부탁드리겠습니다 ㅠㅠ
+    @NotBlank(message = "이메일은 필수입니다.")
+    @Email(message = "유효한 이메일 형식이어야 합니다.")
+    private String email;
+    // 이메일 단독으로 분리하겠습니다 >> 단독으로 분리한 버전도 있고 회원가입용으로도 그대로 놔두는 게 효율적일 거 같습니다!
 
     @NotBlank(message = "비밀번호는 필수입니다.")
     @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하로 입력해주세요.")
