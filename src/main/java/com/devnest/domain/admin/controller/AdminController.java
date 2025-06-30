@@ -1,10 +1,10 @@
-package com.devnest.user.controller;
+package com.devnest.domain.admin.controller;
 
 import com.devnest.user.dto.common.ApiResponse;
-import com.devnest.user.dto.response.AdminUserListResponseDto;
-import com.devnest.user.dto.response.AdminUserDetailResponseDto;
-import com.devnest.user.dto.response.AdminDashboardStatsResponseDto;
-import com.devnest.user.service.AdminService;
+import com.devnest.domain.admin.dto.response.AdminUserListResponseDto;
+import com.devnest.domain.admin.dto.response.AdminUserDetailResponseDto;
+import com.devnest.domain.admin.dto.response.AdminDashboardStatsResponseDto;
+import com.devnest.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

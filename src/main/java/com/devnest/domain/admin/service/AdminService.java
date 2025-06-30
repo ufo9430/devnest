@@ -1,10 +1,10 @@
-package com.devnest.user.service;
+package com.devnest.domain.admin.service;
 
 import com.devnest.user.domain.Role;
 import com.devnest.user.domain.User;
-import com.devnest.user.dto.response.AdminDashboardStatsResponseDto;
-import com.devnest.user.dto.response.AdminUserDetailResponseDto;
-import com.devnest.user.dto.response.AdminUserListResponseDto;
+import com.devnest.domain.admin.dto.response.AdminDashboardStatsResponseDto;
+import com.devnest.domain.admin.dto.response.AdminUserDetailResponseDto;
+import com.devnest.domain.admin.dto.response.AdminUserListResponseDto;
 import com.devnest.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
