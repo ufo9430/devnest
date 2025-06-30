@@ -1,4 +1,4 @@
-package com.devnest.user.domain;
+package com.devnest.domain.report.entity;
 
 public enum ReportStatus {
     PENDING("대기"), // 처리 대기

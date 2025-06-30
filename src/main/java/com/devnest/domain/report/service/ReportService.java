@@ -1,12 +1,12 @@
-package com.devnest.user.service;
+package com.devnest.domain.report.service;
 
-import com.devnest.user.domain.Report;
-import com.devnest.user.domain.ReportStatus;
+import com.devnest.domain.report.entity.Report;
+import com.devnest.domain.report.entity.ReportStatus;
 import com.devnest.user.domain.User;
-import com.devnest.user.dto.response.ReportDetailResponseDto;
-import com.devnest.user.dto.response.ReportListResponseDto;
-import com.devnest.user.dto.response.ReportStatsResponseDto;
-import com.devnest.user.repository.ReportRepository;
+import com.devnest.domain.report.dto.response.ReportDetailResponseDto;
+import com.devnest.domain.report.dto.response.ReportListResponseDto;
+import com.devnest.domain.report.dto.response.ReportStatsResponseDto;
+import com.devnest.domain.report.repository.ReportRepository;
 import com.devnest.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,7 @@
-package com.devnest.user.dto.response;
+package com.devnest.domain.report.dto.response;
 
-import com.devnest.user.domain.Report;
-import com.devnest.user.domain.ReportStatus;
+import com.devnest.domain.report.entity.Report;
+import com.devnest.domain.report.entity.ReportStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

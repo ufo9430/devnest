@@ -1,7 +1,7 @@
-package com.devnest.user.repository;
+package com.devnest.domain.report.repository;
 
-import com.devnest.user.domain.Report;
-import com.devnest.user.domain.ReportStatus;
+import com.devnest.domain.report.entity.Report;
+import com.devnest.domain.report.entity.ReportStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

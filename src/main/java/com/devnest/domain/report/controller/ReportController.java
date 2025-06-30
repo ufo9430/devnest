@@ -1,10 +1,10 @@
-package com.devnest.user.controller;
+package com.devnest.domain.report.controller;
 
 import com.devnest.user.dto.common.ApiResponse;
-import com.devnest.user.dto.response.ReportDetailResponseDto;
-import com.devnest.user.dto.response.ReportListResponseDto;
-import com.devnest.user.dto.response.ReportStatsResponseDto;
-import com.devnest.user.service.ReportService;
+import com.devnest.domain.report.dto.response.ReportDetailResponseDto;
+import com.devnest.domain.report.dto.response.ReportListResponseDto;
+import com.devnest.domain.report.dto.response.ReportStatsResponseDto;
+import com.devnest.domain.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
