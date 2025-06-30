@@ -1,0 +1,542 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드 - DevNest</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background-color: #FFFFFF; border-right: 1px solid #E9ECEF; padding: 1.5rem 0; position: fixed; height: 100vh; }
+        .main-content { flex: 1; margin-left: 250px; padding: 2rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background-color: #FFFFFF; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+        .stat-card h3 { font-size: 2rem; font-weight: 700; margin: 0; color: #6366F1; }
+        .user-table { background-color: #FFFFFF; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); overflow: hidden; }
+        .status-active { background-color: #DCFCE7; color: #10B981; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-suspended { background-color: #FEE2E2; color: #EF4444; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .action-btn { background: none; border: none; color: #6366F1; font-weight: 500; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; }
+        .nav-link { color: #6B7280; padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+        .nav-link:hover { background-color: #F3F4F6; color: #1F2937; }
+        .nav-link.active { background-color: #EEF2FF; color: #6366F1; border-right: 3px solid #6366F1; }
+        .alert-badge { background-color: #EF4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); }
+        .nav-item { position: relative; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div style="padding: 0 1.5rem 1.5rem; border-bottom: 1px solid #E9ECEF; margin-bottom: 1rem;">
+                <h4 style="font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+                    관리자 대시보드
+                </h4>
+            </div>
+            <nav>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin_dashboard.html">
+                            <i data-lucide="users" style="width: 18px; height: 18px;"></i>
+                            회원 관리
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/report_management.html">
+                            <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                            신고 관리
+                            <span class="alert-badge" id="pendingReportsCount">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="openNotificationModal()">
+                            <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                            알림 관리
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-weight: 600; margin: 0;">회원 관리</h1>
+            </div>
+            
+            <!-- 통계 카드 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalUsers">-</h3>
+                    <p style="margin: 0.5rem 0 0; color: #6B7280; font-weight: 500;">전체 회원 수</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="activeUsers">-</h3>
+                    <p style="margin: 0.5rem 0 0; color: #6B7280; font-weight: 500;">활성 회원 수</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="suspendedUsers">-</h3>
+                    <p style="margin: 0.5rem 0 0; color: #6B7280; font-weight: 500;">정지된 회원 수</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="todayNewUsers">-</h3>
+                    <p style="margin: 0.5rem 0 0; color: #6B7280; font-weight: 500;">오늘 신규 가입자</p>
+                </div>
+            </div>
+            
+            <div class="user-table">
+                <div style="background-color: #F8F9FA; padding: 1rem 1.5rem; border-bottom: 1px solid #E9ECEF; display: flex; justify-content: space-between; align-items: center;">
+                    <h5 style="margin: 0; font-weight: 600;">회원 목록</h5>
+                </div>
+                
+                <!-- 검색 및 필터 -->
+                <div style="padding: 1rem 1.5rem; display: flex; gap: 1rem;">
+                    <input type="text" id="searchInput" placeholder="닉네임 또는 이메일 검색" style="padding: 0.5rem; border: 1px solid #E9ECEF; border-radius: 8px;">
+                    <select id="statusFilter" style="padding: 0.5rem; border: 1px solid #E9ECEF; border-radius: 8px;">
+                        <option value="">전체</option>
+                        <option value="active">활성</option>
+                        <option value="suspended">정지</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadUsers()">검색</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="border-top: none; border-bottom: 1px solid #E9ECEF; font-weight: 600; padding: 1rem 1.5rem;">회원 정보</th>
+                                <th style="border-top: none; border-bottom: 1px solid #E9ECEF; font-weight: 600; padding: 1rem 1.5rem;">가입일</th>
+                                <th style="border-top: none; border-bottom: 1px solid #E9ECEF; font-weight: 600; padding: 1rem 1.5rem;">상태</th>
+                                <th style="border-top: none; border-bottom: 1px solid #E9ECEF; font-weight: 600; padding: 1rem 1.5rem;">권한</th>
+                                <th style="border-top: none; border-bottom: 1px solid #E9ECEF; font-weight: 600; padding: 1rem 1.5rem;">작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <!-- 데이터가 여기에 동적으로 추가됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Management Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">알림 관리</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- 시스템 알림 발송 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">시스템 알림 발송</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">발송 대상</label>
+                                        <select class="form-select" id="notificationTarget">
+                                            <option value="all">전체 회원</option>
+                                            <option value="individual">개별 회원</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3" id="individualUserSection" style="display: none;">
+                                        <label class="form-label">사용자 ID</label>
+                                        <input type="number" class="form-control" id="targetUserId" placeholder="사용자 ID 입력">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">알림 메시지</label>
+                                        <textarea class="form-control" id="notificationMessage" rows="3" placeholder="시스템 알림 메시지를 입력하세요"></textarea>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="sendSystemNotification()">알림 발송</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 알림 정리 -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">알림 정리</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted">30일 이상 된 오래된 알림을 정리합니다.</p>
+                                    <button class="btn btn-warning" onclick="cleanupOldNotifications()">
+                                        <i data-lucide="trash-2" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                        오래된 알림 정리
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 알림 통계 -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0">알림 통계</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-3">
+                                            <h4 id="totalNotifications" class="text-primary">-</h4>
+                                            <small class="text-muted">전체 알림</small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h4 id="unreadNotifications" class="text-warning">-</h4>
+                                            <small class="text-muted">읽지 않음</small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h4 id="systemNotifications" class="text-info">-</h4>
+                                            <small class="text-muted">시스템 알림</small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h4 id="todayNotifications" class="text-success">-</h4>
+                                            <small class="text-muted">오늘 발송</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">회원 관리</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div style="width: 32px; height: 32px; background-color: #6366F1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
+                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <div>
+                            <h6 id="modalUserName" style="margin: 0; font-weight: 600;">-</h6>
+                            <p id="modalUserEmail" style="margin: 0; color: #6B7280; font-size: 0.875rem;">-</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>가입일:</strong> <span id="modalJoinDate">-</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>게시물:</strong> <span id="modalPostCount">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>상태:</strong> 
+                        <span id="modalUserStatus">-</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>권한:</strong> 
+                        <span id="modalUserRole">-</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="suspendBtn" onclick="toggleUserStatus()">계정 정지</button>
+                    <button type="button" class="btn btn-warning" onclick="toggleUserRole()">권한 변경</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+        let currentUserId = null;
+        let currentUserData = null;
+
+        // 알림 관리 관련 함수들
+        function openNotificationModal() {
+            const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+            modal.show();
+            loadNotificationStats();
+        }
+
+        // 발송 대상 변경 처리
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'notificationTarget') {
+                const individualSection = document.getElementById('individualUserSection');
+                if (e.target.value === 'individual') {
+                    individualSection.style.display = 'block';
+                } else {
+                    individualSection.style.display = 'none';
+                }
+            }
+        });
+
+        // 시스템 알림 발송
+        async function sendSystemNotification() {
+            const target = document.getElementById('notificationTarget').value;
+            const message = document.getElementById('notificationMessage').value;
+            const userId = document.getElementById('targetUserId').value;
+
+            if (!message.trim()) {
+                alert('알림 메시지를 입력해주세요.');
+                return;
+            }
+
+            if (target === 'individual' && !userId) {
+                alert('사용자 ID를 입력해주세요.');
+                return;
+            }
+
+            try {
+                let url;
+                if (target === 'all') {
+                    url = `/api/notifications/broadcast?message=${encodeURIComponent(message)}`;
+                    const response = await fetch(url, { method: 'POST' });
+                    const result = await response.json();
+                    
+                    if (result.message.includes("성공")) {
+                        alert(`${result.data}명에게 시스템 알림을 발송했습니다.`);
+                        document.getElementById('notificationMessage').value = '';
+                        loadNotificationStats();
+                    } else {
+                        alert(result.message);
+                    }
+                } else {
+                    url = `/api/notifications/system?userId=${userId}&message=${encodeURIComponent(message)}`;
+                    const response = await fetch(url, { method: 'POST' });
+                    const result = await response.json();
+                    
+                    if (result.message.includes("성공")) {
+                        alert('시스템 알림을 발송했습니다.');
+                        document.getElementById('notificationMessage').value = '';
+                        document.getElementById('targetUserId').value = '';
+                        loadNotificationStats();
+                    } else {
+                        alert(result.message);
+                    }
+                }
+            } catch (error) {
+                console.error('알림 발송 실패:', error);
+                alert('알림 발송에 실패했습니다.');
+            }
+        }
+
+        // 오래된 알림 정리
+        async function cleanupOldNotifications() {
+            if (!confirm('30일 이상 된 오래된 알림을 정리하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/notifications/cleanup', { method: 'DELETE' });
+                const result = await response.json();
+                
+                if (result.message.includes("성공")) {
+                    alert(`${result.data}개의 오래된 알림을 정리했습니다.`);
+                    loadNotificationStats();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('알림 정리 실패:', error);
+                alert('알림 정리에 실패했습니다.');
+            }
+        }
+
+        // 알림 통계 로드 (임시 데이터)
+        async function loadNotificationStats() {
+            // 실제로는 API를 호출해야 하지만 임시로 더미 데이터 사용
+            document.getElementById('totalNotifications').textContent = '1,234';
+            document.getElementById('unreadNotifications').textContent = '89';
+            document.getElementById('systemNotifications').textContent = '45';
+            document.getElementById('todayNotifications').textContent = '12';
+        }
+
+        // 페이지 로드시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadUsers();
+            loadPendingReportsCount();
+        });
+
+        // 대기 중인 신고 개수 로드
+        async function loadPendingReportsCount() {
+            try {
+                const response = await fetch('/admin/reports/pending-count');
+                const result = await response.json();
+                if (result.message.includes("성공")) {
+                    document.getElementById('pendingReportsCount').textContent = result.data;
+                }
+            } catch (error) {
+                console.error('신고 개수 로드 실패:', error);
+            }
+        }
+
+        // 대시보드 통계 로드
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/admin/dashboard/stats');
+                const result = await response.json();
+                if (result.message.includes("성공")) {
+                    const stats = result.data;
+                    document.getElementById('totalUsers').textContent = stats.totalUsers;
+                    document.getElementById('activeUsers').textContent = stats.activeUsers;
+                    document.getElementById('suspendedUsers').textContent = stats.suspendedUsers;
+                    document.getElementById('todayNewUsers').textContent = stats.todayNewUsers;
+                }
+            } catch (error) {
+                console.error('통계 로드 실패:', error);
+            }
+        }
+
+        // 사용자 목록 로드
+        async function loadUsers() {
+            try {
+                const search = document.getElementById('searchInput').value;
+                const status = document.getElementById('statusFilter').value;
+                let url = '/admin/users?';
+                if (search) url += `search=${encodeURIComponent(search)}&`;
+                if (status) url += `status=${status}&`;
+                
+                const response = await fetch(url);
+                const result = await response.json();
+                if (result.message.includes("성공")) {
+                    displayUsers(result.data.content);
+                }
+            } catch (error) {
+                console.error('사용자 목록 로드 실패:', error);
+            }
+        }
+
+        // 사용자 목록 표시
+        function displayUsers(users) {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="border-top: none; border-bottom: 1px solid #F3F4F6; padding: 1rem 1.5rem; vertical-align: middle;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 32px; height: 32px; background-color: #6366F1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
+                                <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                            </div>
+                            <div>
+                                <h6 style="margin: 0; font-weight: 600; font-size: 0.95rem;">${user.nickname}</h6>
+                                <p style="margin: 0; color: #6B7280; font-size: 0.875rem;">${user.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="border-top: none; border-bottom: 1px solid #F3F4F6; padding: 1rem 1.5rem; vertical-align: middle;">${new Date(user.createdAt).toLocaleDateString('ko-KR')}</td>
+                    <td style="border-top: none; border-bottom: 1px solid #F3F4F6; padding: 1rem 1.5rem; vertical-align: middle;">
+                        <span class="${user.isActive ? 'status-active' : 'status-suspended'}">
+                            ${user.isActive ? '활성' : '정지'}
+                        </span>
+                    </td>
+                    <td style="border-top: none; border-bottom: 1px solid #F3F4F6; padding: 1rem 1.5rem; vertical-align: middle;">${user.role === 'ADMIN' ? '관리자' : '일반회원'}</td>
+                    <td style="border-top: none; border-bottom: 1px solid #F3F4F6; padding: 1rem 1.5rem; vertical-align: middle;">
+                        <button class="action-btn" onclick="openUserModal(${user.userId})">관리</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            lucide.createIcons();
+        }
+
+        // 사용자 모달 열기
+        async function openUserModal(userId) {
+            try {
+                const response = await fetch(`/admin/users/${userId}`);
+                const result = await response.json();
+                if (result.message.includes("성공")) {
+                    currentUserId = userId;
+                    currentUserData = result.data;
+                    document.getElementById('modalUserName').textContent = currentUserData.nickname;
+                    document.getElementById('modalUserEmail').textContent = currentUserData.email;
+                    document.getElementById('modalJoinDate').textContent = new Date(currentUserData.createdAt).toLocaleDateString('ko-KR');
+                    document.getElementById('modalPostCount').textContent = currentUserData.postCount;
+                    
+                    const statusElement = document.getElementById('modalUserStatus');
+                    statusElement.textContent = currentUserData.isActive ? '활성' : '정지';
+                    statusElement.className = currentUserData.isActive ? 'status-active' : 'status-suspended';
+                    
+                    document.getElementById('modalUserRole').textContent = currentUserData.role === 'ADMIN' ? '관리자' : '일반회원';
+                    document.getElementById('suspendBtn').textContent = currentUserData.isActive ? '계정 정지' : '계정 활성화';
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('userModal'));
+                    modal.show();
+                }
+            } catch (error) {
+                console.error('사용자 상세 정보 로드 실패:', error);
+            }
+        }
+
+        // 사용자 상태 토글
+        async function toggleUserStatus() {
+            if (!currentUserId || !currentUserData) return;
+            const newStatus = !currentUserData.isActive;
+            const action = newStatus ? '활성화' : '정지';
+            if (confirm(`${currentUserData.nickname} 계정을 ${action}하시겠습니까?`)) {
+                try {
+                    const response = await fetch(`/admin/users/${currentUserId}/status?isActive=${newStatus}`, {
+                        method: 'PATCH'
+                    });
+                    const result = await response.json();
+                    if (result.message.includes("성공")) {
+                        alert(result.message);
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('userModal'));
+                        modal.hide();
+                        loadDashboardStats();
+                        loadUsers();
+                    }
+                } catch (error) {
+                    console.error('상태 변경 실패:', error);
+                    alert('상태 변경에 실패했습니다.');
+                }
+            }
+        }
+
+        // 사용자 권한 토글
+        async function toggleUserRole() {
+            if (!currentUserId || !currentUserData) return;
+            const newRole = currentUserData.role === 'ADMIN' ? 'USER' : 'ADMIN';
+            const roleText = newRole === 'ADMIN' ? '관리자' : '일반회원';
+            if (confirm(`${currentUserData.nickname}의 권한을 ${roleText}로 변경하시겠습니까?`)) {
+                try {
+                    const response = await fetch(`/admin/users/${currentUserId}/role?role=${newRole}`, {
+                        method: 'PATCH'
+                    });
+                    const result = await response.json();
+                    if (result.message.includes("성공")) {
+                        alert(result.message);
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('userModal'));
+                        modal.hide();
+                        loadUsers();
+                    }
+                } catch (error) {
+                    console.error('권한 변경 실패:', error);
+                    alert('권한 변경에 실패했습니다.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
