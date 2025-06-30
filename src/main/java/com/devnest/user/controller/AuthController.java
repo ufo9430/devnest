@@ -12,12 +12,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class AuthController {
@@ -25,27 +28,42 @@ public class AuthController {
   private final MemberRegisterService memberRegisterService;
   private final MemberLoginService memberLoginService;
 
-  @PostMapping("/register")
-  public ResponseEntity<ApiResponse<RegisterResponseDto>> register(
-      @RequestBody @Valid RegisterRequestDto requestDto
-  ) {
-    RegisterResponseDto responseDto = memberRegisterService.register(requestDto);
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ApiResponse.success("회원가입 성공", responseDto));
+  @GetMapping("/signup")
+  public String showSignupForm() {
+    return "signup";
+  }
+
+  @PostMapping("/signup")
+  public String processSignup(@ModelAttribute @Valid RegisterRequestDto requestDto, Model model) {
+    memberRegisterService.register(requestDto);
+    model.addAttribute("message", "회원가입이 완료되었습니다.");
+    return "redirect:/member/login";
+  }
+
+  @GetMapping("/login")
+  public String showLoginForm() {
+    return "login";
   }
 
   @PostMapping("/login")
-  public ResponseEntity<ApiResponse<LoginResponseDto>> login(
-      @RequestBody @Valid LoginRequestDto requestDto,
-      HttpSession session
-  ) {
-    LoginResponseDto responseDto = memberLoginService.login(requestDto, session);
-    return ResponseEntity.ok(ApiResponse.success("로그인 성공", responseDto));
+  public String processLogin(@ModelAttribute @Valid LoginRequestDto requestDto, HttpSession session, Model model) {
+    memberLoginService.login(requestDto, session);
+    return "redirect:/";
   }
 
   @PostMapping("/logout")
-  public  ResponseEntity<ApiResponse<?>> logout(HttpSession session) {
-    session.invalidate(); // 세션 완전히 무효화
-    return ResponseEntity.ok(ApiResponse.success("로그아웃 되었습니다.", true));
+  public String logout(HttpSession session) {
+    session.invalidate();
+    return "redirect:/";
+  }
+
+  @GetMapping("/find-account")
+  public String showFindAccountForm(){
+    return "find_account";
+  }
+
+  @GetMapping("/password-recovery")
+  public String showForgotPasswordForm() {
+    return "forgot_password";
   }
 }

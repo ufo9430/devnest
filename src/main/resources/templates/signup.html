@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입 - DevNest</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+
+    :root {
+      --primary-color: #6366F1;
+      --primary-hover: #5856EB;
+      --background-color: #F8F9FA;
+      --border-color: #E9ECEF;
+      --text-primary: #1F2937;
+      --text-secondary: #6B7280;
+      --card-background: #FFFFFF;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+    }
+
+    .navbar {
+      background-color: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary-color) !important;
+      text-decoration: none;
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary-custom:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+      color: white;
+      text-decoration: none;
+    }
+
+    .search-box {
+      position: relative;
+      max-width: 400px;
+    }
+
+    .search-box input {
+      padding-right: 40px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+
+    .search-box button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+    }
+
+    .notification-dropdown {
+      position: relative;
+    }
+
+    .notification-icon-button {
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 50%;
+      color: var(--text-secondary);
+      position: relative;
+    }
+
+    .notification-icon-button:hover {
+      background-color: #F3F4F6;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: var(--danger-color);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropdown-menu {
+      min-width: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border-color);
+      padding: 0;
+    }
+
+    .dropdown-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #F3F4F6;
+      white-space: normal;
+      cursor: pointer;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: #F8F9FA;
+    }
+
+    .notification-content {
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .dropdown-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .dropdown-footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .dropdown-footer a:hover {
+      text-decoration: underline;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .btn-primary-custom:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    /*.btn-secondary-custom {*/
+    /*  background-color: var(--secondary-button);*/
+    /*  border-color: var(--secondary-button);*/
+    /*  color: white;*/
+    /*  font-weight: 500;*/
+    /*}*/
+
+    /*.btn-secondary-custom:hover {*/
+    /*  background-color: var(--secondary-button-hover);*/
+    /*  border-color: var(--secondary-button-hover);*/
+    /*  color: white;*/
+    /*}*/
+
+    .search-input {
+      border-color: #D1D5DB;
+      padding-left: 2.5rem;
+      height: 42px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000;
+    }
+
+    .signup-container {
+      min-height: calc(100vh - 75px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .signup-card {
+      width: 100%;
+      max-width: 457px;
+      background-color: var(--card-background);
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .signup-header {
+      background-color: var(--background-color);
+      border-bottom: 1px solid #E5E7EB;
+      padding: 1.5rem 2rem;
+    }
+
+    .signup-form {
+      padding: 1.5rem 2rem;
+    }
+
+    .form-control-custom {
+      height: 48px;
+      border-color: #E5E7EB;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-control-custom:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .btn-small {
+      font-size: 0.75rem;
+      padding: 0 1rem;
+    }
+
+    .login-section {
+      border-top: 1px solid #F3F4F6;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    .link-custom {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .link-custom:hover {
+      text-decoration: underline;
+      color: var(--primary-hover);
+    }
+
+    .verification-section {
+      display: none;
+    }
+
+    .verification-section.show {
+      display: block;
+    }
+
+    .success-message {
+      color: #10B981;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .error-message {
+      color: #EF4444;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>    <!--  Navbar  -->
+<nav class="navbar">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center gap-3">
+      <a class="navbar-brand" href="/">DevNest</a>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="search-box">
+        <input type="text" class="form-control" placeholder="질문 검색...">
+        <button type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;"
+               class="lucide lucide-search">
+            <path d="m21 21-4.34-4.34"></path>
+            <circle cx="11" cy="11" r="8"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <a href="/ask_question.html" class="btn-primary-custom">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;"
+             class="lucide lucide-plus">
+          <path d="M5 12h14"></path>
+          <path d="M12 5v14"></path>
+        </svg>
+        질문하기
+      </a>
+
+      <!-- Notification Dropdown -->
+      <div class="notification-dropdown dropdown">
+        <button class="notification-icon-button" type="button" id="notificationDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;"
+               class="lucide lucide-bell">
+            <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+            <path
+                d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+          <li class="dropdown-header">알림</li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="notification-content">새로운 답변이 등록되었습니다: "React Hooks 사용법"</div>
+              <div class="notification-time">5분 전</div>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="notification-content">회원님의 질문에 새로운 댓글이 달렸습니다: "Spring Security 설정"</div>
+              <div class="notification-time">1시간 전</div>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="notification-content">관리자 공지: 시스템 점검 안내</div>
+              <div class="notification-time">어제</div>
+            </a>
+          </li>
+          <li class="dropdown-footer">
+            <a href="/all_notifications.html">모든 알림 보기</a>
+          </li>
+        </ul>
+      </div>
+
+      <a href="/member/login" class="btn-primary-custom">로그인</a>
+      <a href="/member/signup" class="btn-primary-custom">회원가입</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- Signup Form -->
+<div class="signup-container">
+  <div class="signup-card">
+    <!-- Header -->
+    <div class="signup-header">
+      <div class="d-flex align-items-center gap-3">
+        <i data-lucide="layers" style="width: 24px; height: 24px; color: var(--text-primary);"></i>
+        <h1 class="h5 mb-0 fw-semibold">회원가입</h1>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form class="signup-form" th:action="@{/member/signup}" method="post">
+      <!-- Email Field -->
+      <div class="mb-4">
+        <label for="email" class="form-label fw-medium">이메일</label>
+        <div class="d-flex gap-3">
+          <input type="email" class="form-control form-control-custom flex-grow-1" id="email"
+                 name="email"
+                 placeholder="이메일을 입력하세요" required>
+          <button type="button" class="btn btn-primary-custom btn-small"
+                  onclick="sendVerification()">
+            인증 전송
+          </button>
+        </div>
+        <div id="email-message"></div>
+      </div>
+
+      <!-- Email Verification Field -->
+      <div class="mb-4 verification-section" id="verification-section">
+        <label for="verificationCode" class="form-label fw-medium">인증 확인</label>
+        <div class="d-flex gap-3">
+          <input type="text" class="form-control form-control-custom flex-grow-1"
+                 id="verificationCode" name="verificationCode"
+                 placeholder="인증코드를 입력해주세요">
+          <button type="button" class="btn btn-primary-custom btn-small" onclick="verifyCode()">
+            인증 확인
+          </button>
+        </div>
+        <div id="verification-message"></div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="mb-4">
+        <label for="password" class="form-label fw-medium">비밀번호</label>
+        <input type="password" class="form-control form-control-custom" id="password"
+               name="password"
+               placeholder="비밀번호를 입력하세요" required>
+      </div>
+
+      <!-- Password Confirmation Field -->
+      <div class="mb-4">
+        <label for="passwordConfirm" class="form-label fw-medium">비밀번호 확인</label>
+        <input type="password" class="form-control form-control-custom" id="passwordConfirm"
+               name="passwordConfirm"
+               placeholder="비밀번호를 다시 입력하세요" required>
+        <div id="password-message"></div>
+      </div>
+
+      <!-- Nickname Field -->
+      <div class="mb-4">
+        <label for="nickname" class="form-label fw-medium">닉네임</label>
+        <div class="d-flex gap-3">
+          <input type="text" class="form-control form-control-custom flex-grow-1" id="nickname"
+                 name="nickname"
+                 placeholder="닉네임을 입력하세요" required>
+          <button type="button" class="btn btn-primary-custom btn-small" onclick="checkNickname()">
+            중복확인
+          </button>
+        </div>
+        <div id="nickname-message"></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary-custom w-100 fw-medium" style="height: 48px;"
+              id="signup-btn" disabled>
+        회원가입
+      </button>
+    </form>
+
+    <!-- Login Section -->
+    <div class="login-section">
+      <p class="small text-muted mb-3">이미 계정이 있으신가요?</p>
+      <a href="/member/login" th:href="@{/member/login}" class="link-custom small fw-medium">로그인</a>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // Validation states
+  let validationState = {
+    password: false,
+    email: false,
+    emailVerified: false,
+    nickname: false
+  };
+
+  // Check nickname availability
+  function checkNickname() {
+    const nickname = document.getElementById('nickname').value;
+    const messageDiv = document.getElementById('nickname-message');
+
+    if (!nickname) {
+      messageDiv.innerHTML = '<div class="error-message">닉네임을 입력해주세요.</div>';
+      return;
+    }
+
+    // Simulate API call
+    setTimeout(() => {
+      if (nickname.length >= 2) {
+        messageDiv.innerHTML = '<div class="success-message">사용 가능한 닉네임입니다.</div>';
+        validationState.nickname = true;
+      } else {
+        messageDiv.innerHTML = '<div class="error-message">닉네임은 2자 이상이어야 합니다.</div>';
+        validationState.nickname = false;
+      }
+      updateSignupButton();
+    }, 500);
+  }
+
+  // Send email verification
+  function sendVerification() {
+    const email = document.getElementById('email').value;
+    const messageDiv = document.getElementById('email-message');
+    const verificationSection = document.getElementById('verification-section');
+
+    if (!email) {
+      messageDiv.innerHTML = '<div class="error-message">이메일을 입력해주세요.</div>';
+      return;
+    }
+
+    // Simulate sending verification email
+    messageDiv.innerHTML = '<div class="success-message">인증 이메일이 전송되었습니다.</div>';
+    verificationSection.classList.add('show');
+    validationState.email = true;
+    updateSignupButton();
+  }
+
+  // Verify email code
+  function verifyCode() {
+    const code = document.getElementById('verificationCode').value;
+    const messageDiv = document.getElementById('verification-message');
+
+    if (!code) {
+      messageDiv.innerHTML = '<div class="error-message">인증코드를 입력해주세요.</div>';
+      return;
+    }
+
+    // Simulate verification
+    setTimeout(() => {
+      if (code === '123456' || code.length === 6) {
+        messageDiv.innerHTML = '<div class="success-message">이메일 인증이 완료되었습니다.</div>';
+        validationState.emailVerified = true;
+      } else {
+        messageDiv.innerHTML = '<div class="error-message">잘못된 인증코드입니다.</div>';
+        validationState.emailVerified = false;
+      }
+      updateSignupButton();
+    }, 500);
+  }
+
+  // Password validation
+  function validatePassword() {
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+    const messageDiv = document.getElementById('password-message');
+
+    if (password && passwordConfirm) {
+      if (password === passwordConfirm) {
+        if (password.length >= 8) {
+          messageDiv.innerHTML = '<div class="success-message">비밀번호가 일치합니다.</div>';
+          validationState.password = true;
+        } else {
+          messageDiv.innerHTML = '<div class="error-message">비밀번호는 8자 이상이어야 합니다.</div>';
+          validationState.password = false;
+        }
+      } else {
+        messageDiv.innerHTML = '<div class="error-message">비밀번호가 일치하지 않습니다.</div>';
+        validationState.password = false;
+      }
+    } else {
+      messageDiv.innerHTML = '';
+      validationState.password = false;
+    }
+    updateSignupButton();
+  }
+
+  // Update signup button state
+  function updateSignupButton() {
+    const signupBtn = document.getElementById('signup-btn');
+    const allValid = Object.values(validationState).every(state => state === true);
+
+    signupBtn.disabled = !allValid;
+  }
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('password').addEventListener('input', validatePassword);
+    document.getElementById('passwordConfirm').addEventListener('input', validatePassword);
+
+    // Form submission
+    // document.querySelector('form').addEventListener('submit', function (e) {
+    //   e.preventDefault();
+    //
+    //   if (!Object.values(validationState).every(state => state === true)) {
+    //     alert('모든 필드를 올바르게 입력해주세요.');
+    //     return;
+    //   }
+    //
+    //   // In a real application, this would submit to the server
+    //   alert('회원가입이 완료되었습니다!');
+    //   window.location.href = '/member/login';
+    // });
+  });
+</script>
+</body>
+</html>
