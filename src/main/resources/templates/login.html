@@ -379,6 +379,7 @@
     </div>
 
     <!-- Form -->
+    <div th:if="${active_error}" class="alert alert-danger" role="alert" th:text="${active_error}"></div>
     <form class="login-form" th:action="@{/member/login}" method="post">
       <div class="mb-4">
         <label for="email" class="form-label fw-medium">이메일</label>
