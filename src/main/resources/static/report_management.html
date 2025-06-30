@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신고 관리 - DevNest</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E9ECEF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --card-background: #FFFFFF;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-background);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar h4 {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: #F3F4F6;
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background-color: #EEF2FF;
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+        
+        .alert-badge {
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 2rem;
+        }
+        
+        .content-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content-header h1 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .btn-bulk {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        
+        .btn-bulk:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: white;
+        }
+        
+        .report-table {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background-color: #F8F9FA;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .table th {
+            background-color: transparent;
+            border-top: none;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+        }
+        
+        .table td {
+            border-top: none;
+            border-bottom: 1px solid #F3F4F6;
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+        }
+        
+        .checkbox-cell {
+            width: 50px;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-pending {
+            background-color: #FEF3C7;
+            color: var(--warning-color);
+        }
+        
+        .status-approved {
+            background-color: #DCFCE7;
+            color: var(--success-color);
+        }
+        
+        .status-rejected {
+            background-color: #FEE2E2;
+            color: var(--danger-color);
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .action-btn:hover {
+            background-color: #EEF2FF;
+            color: var(--primary-hover);
+        }
+        
+        .nav-item .nav-link {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div>
+                <h4>
+                    <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+                    관리자 대시보드
+                </h4>
+            </div>
+            
+            <nav>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin_dashboard.html">
+                            <i data-lucide="users" style="width: 18px; height: 18px;"></i>
+                            회원 관리
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/report_management.html">
+                            <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                            신고 관리
+                            <span class="alert-badge" id="pendingReportsCount">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1>신고 관리</h1>
+                <div>
+                    <button class="btn btn-bulk" onclick="bulkApprove()">선택 승인</button>
+                </div>
+            </div>
+            
+            <div class="report-table">
+                <div class="table-header">
+                    <h5>신고 목록</h5>
+                </div>
+                
+                <!-- 검색 및 필터 -->
+                <div style="padding: 1rem 1.5rem; display: flex; gap: 1rem; border-bottom: 1px solid var(--border-color);">
+                    <input type="text" id="searchInput" placeholder="신고자 또는 내용 검색" 
+                           class="form-control" style="max-width: 300px;">
+                    <select id="statusFilter" class="form-select" style="max-width: 150px;">
+                        <option value="">전체</option>
+                        <option value="PENDING">대기</option>
+                        <option value="APPROVED">승인</option>
+                        <option value="REJECTED">반려</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadReports()">검색</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-cell">
+                                    <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()">
+                                </th>
+                                <th>신고자</th>
+                                <th>내용</th>
+                                <th>신고일</th>
+                                <th>상태</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <!-- 데이터가 여기에 동적으로 추가됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Management Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">신고 처리</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <strong>신고 내용:</strong>
+                        <p id="modalReportContent"></p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>신고자:</strong> <span id="modalReporter"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>신고일:</strong> <span id="modalReportDate"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>상태:</strong> 
+                        <span id="modalReportStatus"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="approveBtn" onclick="approveReport()">승인</button>
+                    <button type="button" class="btn btn-danger" id="rejectBtn" onclick="rejectReport()">반려</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        let currentReportId = null;
+        let currentPage = 0;
+        const pageSize = 20;
+
+        // 페이지 로드시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingCount();
+            loadReports();
+        });
+
+        // 대기 중인 신고 개수 로드
+        async function loadPendingCount() {
+            try {
+                const response = await fetch('/admin/reports/pending-count');
+                const result = await response.json();
+                if (result.message === "대기 중인 신고 개수 조회 성공") {
+                    document.getElementById('pendingReportsCount').textContent = result.data;
+                }
+            } catch (error) {
+                console.error('대기 중인 신고 개수 로드 실패:', error);
+            }
+        }
+
+        // 신고 목록 로드
+        async function loadReports() {
+            try {
+                const search = document.getElementById('searchInput').value;
+                const status = document.getElementById('statusFilter').value;
+                
+                let url = `/admin/reports?page=${currentPage}&size=${pageSize}`;
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (status) url += `&status=${status}`;
+                
+                const response = await fetch(url);
+                const result = await response.json();
+                if (result.message.includes("성공")) {
+                    displayReports(result.data.content);
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('신고 목록 로드 실패:', error);
+                alert('신고 목록을 불러오는데 실패했습니다.');
+            }
+        }
+
+        // 신고 목록 표시
+        function displayReports(reports) {
+            const tbody = document.getElementById('reportTableBody');
+            tbody.innerHTML = '';
+            
+            if (!reports || reports.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">신고가 없습니다.</td></tr>';
+                return;
+            }
+            
+            reports.forEach(report => {
+                const row = document.createElement('tr');
+                const statusClass = getStatusClass(report.status);
+                const statusText = getStatusText(report.status);
+                
+                row.innerHTML = `
+                    <td class="checkbox-cell">
+                        <input type="checkbox" class="form-check-input report-checkbox" data-report-id="${report.reportId}">
+                    </td>
+                    <td>${report.reporterNickname}</td>
+                    <td>${report.content}</td>
+                    <td>${new Date(report.createdAt).toLocaleDateString('ko-KR')}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </td>
+                    <td>
+                        <button class="action-btn" onclick="openReportModal(${report.reportId})">처리</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 상태별 CSS 클래스 반환
+        function getStatusClass(status) {
+            switch(status) {
+                case 'PENDING': return 'status-pending';
+                case 'APPROVED': return 'status-approved';
+                case 'REJECTED': return 'status-rejected';
+                default: return 'status-pending';
+            }
+        }
+
+        // 상태별 텍스트 반환
+        function getStatusText(status) {
+            switch(status) {
+                case 'PENDING': return '대기';
+                case 'APPROVED': return '승인';
+                case 'REJECTED': return '반려';
+                default: return '대기';
+            }
+        }
+
+        // 전체 선택/해제
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.report-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+        }
+
+        // 일괄 승인
+        async function bulkApprove() {
+            const checkedBoxes = document.querySelectorAll('.report-checkbox:checked');
+            
+            if (checkedBoxes.length === 0) {
+                alert('승인할 신고를 선택해주세요.');
+                return;
+            }
+            
+            const reportIds = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.reportId));
+            
+            if (confirm(`선택된 ${checkedBoxes.length}개의 신고를 승인하시겠습니까?`)) {
+                try {
+                    const response = await fetch('/admin/reports/bulk-approve', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(reportIds)
+                    });
+                    
+                    const result = await response.json();
+                    alert(result.message);
+                    
+                    if (result.message.includes("승인")) {
+                        loadPendingCount();
+                        loadReports();
+                    }
+                } catch (error) {
+                    console.error('일괄 승인 실패:', error);
+                    alert('일괄 승인에 실패했습니다.');
+                }
+            }
+        }
+
+        // 신고 모달 열기
+        async function openReportModal(reportId) {
+            try {
+                const response = await fetch(`/admin/reports/${reportId}`);
+                const result = await response.json();
+                
+                if (result.message.includes("성공")) {
+                    currentReportId = reportId;
+                    const report = result.data;
+                    
+                    document.getElementById('modalReportContent').textContent = report.content;
+                    document.getElementById('modalReporter').textContent = report.reporterNickname;
+                    document.getElementById('modalReportDate').textContent = 
+                        new Date(report.createdAt).toLocaleDateString('ko-KR');
+                    document.getElementById('modalReportStatus').textContent = getStatusText(report.status);
+                    
+                    // 버튼 상태 설정
+                    const approveBtn = document.getElementById('approveBtn');
+                    const rejectBtn = document.getElementById('rejectBtn');
+                    
+                    if (report.status === 'PENDING') {
+                        approveBtn.disabled = false;
+                        rejectBtn.disabled = false;
+                    } else {
+                        approveBtn.disabled = true;
+                        rejectBtn.disabled = true;
+                    }
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('reportModal'));
+                    modal.show();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('신고 상세 정보 로드 실패:', error);
+                alert('신고 상세 정보를 불러오는데 실패했습니다.');
+            }
+        }
+
+        // 신고 승인
+        async function approveReport() {
+            if (!currentReportId) return;
+            
+            if (confirm('이 신고를 승인하시겠습니까?')) {
+                try {
+                    const response = await fetch(`/admin/reports/${currentReportId}/approve`, {
+                        method: 'PATCH'
+                    });
+                    
+                    const result = await response.json();
+                    alert(result.message);
+                    
+                    if (result.message.includes("승인")) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                        modal.hide();
+                        loadPendingCount();
+                        loadReports();
+                    }
+                } catch (error) {
+                    console.error('신고 승인 실패:', error);
+                    alert('신고 승인에 실패했습니다.');
+                }
+            }
+        }
+
+        // 신고 반려
+        async function rejectReport() {
+            if (!currentReportId) return;
+            
+            if (confirm('이 신고를 반려하시겠습니까?')) {
+                try {
+                    const response = await fetch(`/admin/reports/${currentReportId}/reject`, {
+                        method: 'PATCH'
+                    });
+                    
+                    const result = await response.json();
+                    alert(result.message);
+                    
+                    if (result.message.includes("반려")) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                        modal.hide();
+                        loadPendingCount();
+                        loadReports();
+                    }
+                } catch (error) {
+                    console.error('신고 반려 실패:', error);
+                    alert('신고 반려에 실패했습니다.');
+                }
+            }
+        }
+    </script>
+</body>
+</html> 
