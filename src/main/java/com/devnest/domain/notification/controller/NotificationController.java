@@ -1,9 +1,9 @@
-package com.devnest.user.controller;
+package com.devnest.domain.notification.controller;
 
 import com.devnest.user.dto.common.ApiResponse;
-import com.devnest.user.dto.response.NotificationListResponseDto;
-import com.devnest.user.dto.response.NotificationStatsResponseDto;
-import com.devnest.user.service.NotificationService;
+import com.devnest.domain.notification.dto.response.NotificationListResponseDto;
+import com.devnest.domain.notification.dto.response.NotificationStatsResponseDto;
+import com.devnest.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

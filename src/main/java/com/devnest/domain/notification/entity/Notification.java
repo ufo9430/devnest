@@ -1,5 +1,6 @@
-package com.devnest.user.domain;
+package com.devnest.domain.notification.entity;
 
+import com.devnest.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

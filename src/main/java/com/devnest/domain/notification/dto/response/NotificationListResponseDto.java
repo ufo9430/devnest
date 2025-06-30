@@ -1,7 +1,7 @@
-package com.devnest.user.dto.response;
+package com.devnest.domain.notification.dto.response;
 
-import com.devnest.user.domain.Notification;
-import com.devnest.user.domain.NotificationType;
+import com.devnest.domain.notification.entity.Notification;
+import com.devnest.domain.notification.entity.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,11 +1,11 @@
-package com.devnest.user.service;
+package com.devnest.domain.notification.service;
 
-import com.devnest.user.domain.Notification;
-import com.devnest.user.domain.NotificationType;
+import com.devnest.domain.notification.entity.Notification;
+import com.devnest.domain.notification.entity.NotificationType;
 import com.devnest.user.domain.User;
-import com.devnest.user.dto.response.NotificationListResponseDto;
-import com.devnest.user.dto.response.NotificationStatsResponseDto;
-import com.devnest.user.repository.NotificationRepository;
+import com.devnest.domain.notification.dto.response.NotificationListResponseDto;
+import com.devnest.domain.notification.dto.response.NotificationStatsResponseDto;
+import com.devnest.domain.notification.repository.NotificationRepository;
 import com.devnest.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -207,7 +207,7 @@ public class NotificationService {
     }
 
     /**
-     * 최근 알림 목록 조회 (헤더용)
+     * 최근 알림 목록 조회 (헤더 드롭다운용)
      */
     public List<NotificationListResponseDto> getRecentNotifications(Long userId) {
         User user = userRepository.findById(userId)

@@ -1,4 +1,4 @@
-package com.devnest.user.domain;
+package com.devnest.domain.notification.entity;
 
 public enum NotificationType {
     ANSWER("새로운 답변"), // 내 질문에 새 답변이 달렸을 때

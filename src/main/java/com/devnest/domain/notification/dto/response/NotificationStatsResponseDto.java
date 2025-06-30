@@ -1,4 +1,4 @@
-package com.devnest.user.dto.response;
+package com.devnest.domain.notification.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
