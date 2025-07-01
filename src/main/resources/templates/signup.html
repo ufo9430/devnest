@@ -398,10 +398,15 @@
       <!-- Email Field -->
       <div class="mb-4">
         <label for="email" class="form-label fw-medium">이메일</label>
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-2">
           <input type="email" class="form-control form-control-custom flex-grow-1" id="email"
                  name="email"
                  placeholder="이메일을 입력하세요" required>
+          <!-- 중복 확인 버튼 추가-->
+          <button type="button" class="btn btn-primary-custom btn-small"
+                  onclick="checkEmailDuplicate()">
+            중복 확인
+          </button>
           <button type="button" class="btn btn-primary-custom btn-small"
                   onclick="sendVerification()">
             인증 전송
@@ -490,17 +495,48 @@
 
     if (!nickname) {
       messageDiv.innerHTML = '<div class="error-message">닉네임을 입력해주세요.</div>';
+      validationState.nickname = false;
+      updateSignupButton();
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      if (nickname.length >= 2) {
+    fetch(`/member/check-nickname?nickname=${encodeURIComponent(nickname)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.isDuplicate) {
+        messageDiv.innerHTML = '<div class="error-message">이미 사용 중인 닉네임입니다.</div>';
+        validationState.nickname = false;
+      } else {
         messageDiv.innerHTML = '<div class="success-message">사용 가능한 닉네임입니다.</div>';
         validationState.nickname = true;
+      }
+      updateSignupButton();
+    })
+    .catch(() => {
+      messageDiv.innerHTML = '<div class="error-message">닉네임 중복 확인 중 오류가 발생했습니다.</div>';
+      validationState.nickname = false;
+      updateSignupButton();
+    });
+  }
+
+
+  // 이메일 중복 확인 함수 추가
+  function checkEmailDuplicate() {
+    const email = document.getElementById('email').value;
+    const messageDiv = document.getElementById('email-message');
+    if (!email) {
+      messageDiv.innerHTML = '<div class="error-message">이메일을 입력해주세요.</div>';
+      validationState.email = false;
+      updateSignupButton();
+      return;
+    }
+    setTimeout(() => {
+      if (email.includes('@') && email.length >= 5) {
+        messageDiv.innerHTML = '<div class="success-message">사용 가능한 이메일입니다.</div>';
+        validationState.email = true;
       } else {
-        messageDiv.innerHTML = '<div class="error-message">닉네임은 2자 이상이어야 합니다.</div>';
-        validationState.nickname = false;
+        messageDiv.innerHTML = '<div class="error-message">이미 사용 중인 이메일입니다.</div>';
+        validationState.email = false;
       }
       updateSignupButton();
     }, 500);
@@ -511,6 +547,12 @@
     const email = document.getElementById('email').value;
     const messageDiv = document.getElementById('email-message');
     const verificationSection = document.getElementById('verification-section');
+
+    // 중복 확인이 완료된 이메일이 아닌 경우 인증 전송 차단
+    if (!validationState.email) {
+      messageDiv.innerHTML = '<div class="error-message">먼저 이메일 중복 확인을 해주세요.</div>';
+      return;
+    }
 
     if (!email) {
       messageDiv.innerHTML = '<div class="error-message">이메일을 입력해주세요.</div>';
