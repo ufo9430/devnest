@@ -407,8 +407,8 @@
                   onclick="checkEmailDuplicate()">
             중복 확인
           </button>
-          <button type="button" class="btn btn-primary-custom btn-small"
-                  onclick="sendVerification()">
+          <button type="button" class="btn btn-primary-custom btn-small" id="email-verify-btn"
+                  onclick="sendVerification()" disabled>
             인증 전송
           </button>
         </div>
@@ -524,22 +524,36 @@
   function checkEmailDuplicate() {
     const email = document.getElementById('email').value;
     const messageDiv = document.getElementById('email-message');
+    const verifyBtn = document.getElementById('email-verify-btn');
+
     if (!email) {
       messageDiv.innerHTML = '<div class="error-message">이메일을 입력해주세요.</div>';
       validationState.email = false;
+      verifyBtn.disabled = true;  // 비활성화
       updateSignupButton();
       return;
     }
-    setTimeout(() => {
-      if (email.includes('@') && email.length >= 5) {
-        messageDiv.innerHTML = '<div class="success-message">사용 가능한 이메일입니다.</div>';
-        validationState.email = true;
-      } else {
+
+    fetch(`/member/check-email?email=${encodeURIComponent(email)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.isDuplicate) {
         messageDiv.innerHTML = '<div class="error-message">이미 사용 중인 이메일입니다.</div>';
         validationState.email = false;
+        verifyBtn.disabled = true; // 중복 시 이메일 인증 비활성화
+      } else {
+        messageDiv.innerHTML = '<div class="success-message">사용 가능한 이메일입니다.</div>';
+        validationState.email = true;
+        verifyBtn.disabled = false; // 사용 가능 시 이메일 인증 활성화
       }
       updateSignupButton();
-    }, 500);
+    })
+    .catch(() => {
+      messageDiv.innerHTML = '<div class="error-message">이메일 확인 중 오류가 발생했습니다.</div>';
+      validationState.email = false;
+      verifyBtn.disabled = true;
+      updateSignupButton();
+    });
   }
 
   // Send email verification
