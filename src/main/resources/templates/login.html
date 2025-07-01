@@ -286,6 +286,13 @@
       display: inline-block;
       margin: 0 1rem;
     }
+
+    #loginButton {
+      display: flex;
+      align-items: center;      /* 수직 정렬 */
+      justify-content: center;  /* 수평 정렬 */
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -400,8 +407,10 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary-custom w-100 fw-medium" style="height: 48px;">
-        로그인
+      <!-- 초기 버튼: 인증 트리거 용도 -->
+      <button type="button" id="loginButton" class="btn btn-primary-custom w-100 fw-medium"
+              style="height: 48px;" onclick="openVerificationModal()">
+        2차 인증하기
       </button>
     </form>
 
@@ -444,21 +453,132 @@
     lucide.createIcons();
   }
 
-  // Form validation and submission
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form');
+  function openVerificationModal() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-    // form.addEventListener('submit', function (e) {
-    //   e.preventDefault();
-    //
-    //   // In a real application, this would submit to the server
-    //   // For demo purposes, we'll just show an alert and redirect
-    //   alert('로그인 기능은 백엔드 구현이 필요합니다.');
-    //
-    //   // Simulate successful login by redirecting to home
-    //   window.location.href = '/';
-    // });
-  });
+    if (!email || !password) {
+      showCustomAlert("이메일과 비밀번호를 입력해주세요.", "primary");
+      return;
+    }
+
+    // 먼저 모달 띄우기
+    const modal = new bootstrap.Modal(document.getElementById('emailVerificationModal'));
+    modal.show();
+
+    // 서버에 인증 코드 전송 시도 (성공 여부와 무관하게 모달은 계속 표시됨)
+    fetch("/member/verify-user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("로그인 정보가 유효하지 않습니다.");
+      return response.text();
+    })
+    .then(result => {
+      document.getElementById("verification-info").innerText =
+          "이메일로 인증 코드가 전송되었습니다. 도착하지 않았다면 스팸함도 확인해주세요.";
+    })
+    .catch(error => {
+      document.getElementById("verification-info").innerText = "인증 코드 전송 실패: " + error.message;
+    });
+  }
+
+
+  function submitVerificationCode() {
+    const email = document.getElementById('email').value;
+    const code = document.getElementById('verificationCode').value;
+
+    if (!code) {
+      showCustomAlert("인증 코드를 입력해주세요.", "primary");
+      return;
+    }
+
+    fetch("/email/verify-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code })
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        // 인증 성공 메시지
+        const successMsg = document.getElementById("verification-success");
+        successMsg.classList.remove("d-none");
+
+        const loginBtn = document.getElementById("loginButton");
+
+        // 버튼을 로그인용 submit 버튼으로 변경
+        loginBtn.innerText = "로그인";
+        loginBtn.setAttribute("type", "submit");
+        loginBtn.removeAttribute("onclick");
+        loginBtn.disabled = false;
+
+        // 2초 후 자동으로 모달 닫기
+        setTimeout(() => {
+          bootstrap.Modal.getInstance(document.getElementById('emailVerificationModal')).hide();
+        }, 2000);
+      } else {
+        showCustomAlert(result.message || "인증 실패", "warning");
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      showCustomAlert("서버 오류가 발생했습니다.", "warning");
+    });
+  }
+
+  function showCustomAlert(message, type = 'warning') {
+    const alertBox = document.getElementById('custom-alert');
+    const messageBox = document.getElementById('custom-alert-message');
+
+    // alert 스타일 클래스 초기화 후 새로운 클래스 적용
+    alertBox.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3`;
+    messageBox.textContent = message;
+
+    alertBox.classList.remove('d-none');
+
+    // 자동으로 3초 후 사라지도록 설정
+    setTimeout(hideCustomAlert, 3000);
+  }
+
+  function hideCustomAlert() {
+    const alertBox = document.getElementById('custom-alert');
+    alertBox.classList.add('d-none');
+  }
 </script>
+<!-- 이메일 인증 모달 -->
+<div class="modal fade" id="emailVerificationModal" tabindex="-1" aria-labelledby="emailVerificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="emailVerificationModalLabel">이메일 인증</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        <div id="verification-info" class="mb-2 text-muted small">이메일로 전송된 인증 코드를 입력하세요.</div>
+        <input type="text" id="verificationCode" class="form-control" placeholder="인증 코드 (6자리)">
+        <!-- 인증 성공 메시지 영역 (초기에는 숨김) -->
+        <div id="verification-success" class="alert alert-success d-none" role="alert">
+          ✅ 이메일 인증에 성공했습니다!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" onclick="submitVerificationCode()">인증</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
+<!-- Global Toast 알림 -->
+<div id="custom-alert" class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-none"
+     role="alert" style="min-width: 320px; z-index: 1055;">
+  <span id="custom-alert-message"></span>
+  <button type="button" class="btn-close" onclick="hideCustomAlert()"></button>
+</div>
+
 </html>

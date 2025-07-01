@@ -28,10 +28,6 @@ public class MemberLoginService {
     User loginUser = userRepository.findByEmail(requestDto.getEmail())
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
-    if (!passwordEncoder.matches(requestDto.getPassword(), loginUser.getPassword())) {
-      throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
-    }
-
     session.setAttribute("LOGIN_USER", loginUser.getUserId());
 
     UserDetails userDetails = userDetailsService.loadUserByUsername(loginUser.getEmail());  // DB에서 이메일로 사용자 정보 조회, userDetails 객체로 반환.
@@ -64,5 +60,14 @@ public class MemberLoginService {
         .nickname(user.getNickname())
         .role(user.getRole())
         .build();
+  }
+
+  public void verifyUser(LoginRequestDto requestDto) {
+    User user = userRepository.findByEmail(requestDto.getEmail())
+        .orElseThrow(() -> new IllegalArgumentException("이메일이 존재하지 않습니다."));
+
+    if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+      throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+    }
   }
 }
