@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -30,6 +31,12 @@ public class Topic {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @ManyToMany
+    @JoinTable(name = "topic_tag",
+    joinColumns = @JoinColumn(name = "tag_id"),
+    inverseJoinColumns = @JoinColumn(name = "topic_id"))
+    private List<Tag> tags;
 
     private LocalDateTime createdAt;
 
