@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int post_id;
+    private int topicId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -26,12 +26,12 @@ public class Topic {
 
     private String content;
 
-    private int view_count;
+    private int viewCount;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 }

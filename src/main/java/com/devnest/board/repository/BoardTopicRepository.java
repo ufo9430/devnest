@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface BoardTopicRepository extends JpaRepository<Topic, Long> {
     @Query(value = "select * from topic order by created_at desc limit 5", nativeQuery = true)
-    List<Topic> findNewestFiveTopics();
+    List<Topic> findRecentFiveTopics();
 }
