@@ -70,4 +70,32 @@ public class EmailSender {
         }
         return props;
     }
+
+    public void sendTemporaryPassword(String to, String nickname, String tempPassword) {
+        if (session == null) {
+            log.warn("메일 세션 없음 → 전송 생략: to={}, tempPwd={}", to, tempPassword);
+            return;
+        }
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(USER));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject("[DevNest] 임시 비밀번호 안내");
+            message.setText(String.format("""
+            안녕하세요, %s님.
+            요청하신 임시 비밀번호는 아래와 같습니다.
+            
+            임시 비밀번호: %s
+            
+            보안을 위해 로그인 후 반드시 비밀번호를 변경해 주세요.
+            """, nickname, tempPassword));
+            Transport.send(message);
+            log.info("✅ 임시 비밀번호 전송 완료 → {} (비번 = {})", to, tempPassword);
+        } catch (MessagingException e) {
+            log.error("임시 비밀번호 메일 전송 실패", e);
+        }
+    }
+
+
+
 }
