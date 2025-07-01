@@ -289,8 +289,8 @@
 
     #loginButton {
       display: flex;
-      align-items: center;      /* 수직 정렬 */
-      justify-content: center;  /* 수평 정렬 */
+      align-items: center; /* 수직 정렬 */
+      justify-content: center; /* 수평 정렬 */
       text-align: center;
     }
   </style>
@@ -386,7 +386,8 @@
     </div>
 
     <!-- Form -->
-    <div th:if="${active_error}" class="alert alert-danger" role="alert" th:text="${active_error}"></div>
+    <div th:if="${active_error}" class="alert alert-danger" role="alert"
+         th:text="${active_error}"></div>
     <form class="login-form" th:action="@{/member/login}" method="post">
       <div class="mb-4">
         <label for="email" class="form-label fw-medium">이메일</label>
@@ -416,16 +417,19 @@
 
     <!-- Links Section -->
     <div class="login-links">
-      <a href="/member/find-account" th:href="@{/member/find-account}" class="link-custom small">계정 찾기</a>
+      <a href="/member/find-account" th:href="@{/member/find-account}" class="link-custom small">계정
+        찾기</a>
       <span class="divider"></span>
-      <a href="/member/password-recovery" th:href="@{/member/password-recovery}" class="link-custom small">비밀번호
+      <a href="/member/password-recovery" th:href="@{/member/password-recovery}"
+         class="link-custom small">비밀번호
         찾기</a>
     </div>
 
     <!-- Signup Section -->
     <div class="signup-section">
       <p class="small text-muted mb-3">아직 계정이 없으신가요?</p>
-      <a href="/member/signup" th:href="@{/member/signup}" class="link-custom small fw-medium">회원가입</a>
+      <a href="/member/signup" th:href="@{/member/signup}"
+         class="link-custom small fw-medium">회원가입</a>
     </div>
   </div>
 </div>
@@ -462,31 +466,32 @@
       return;
     }
 
-    // 먼저 모달 띄우기
-    const modal = new bootstrap.Modal(document.getElementById('emailVerificationModal'));
-    modal.show();
-
-    // 서버에 인증 코드 전송 시도 (성공 여부와 무관하게 모달은 계속 표시됨)
+    // 서버에 인증 코드 전송 시도
     fetch("/member/verify-user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({email, password})
     })
     .then(response => {
-      if (!response.ok) throw new Error("로그인 정보가 유효하지 않습니다.");
+      if (!response.ok) {
+        throw new Error("로그인 정보가 유효하지 않습니다.");
+      }
       return response.text();
     })
     .then(result => {
+      // 성공 시 모달 표시
+      const modal = new bootstrap.Modal(document.getElementById('emailVerificationModal'));
+      modal.show();
+
       document.getElementById("verification-info").innerText =
           "이메일로 인증 코드가 전송되었습니다. 도착하지 않았다면 스팸함도 확인해주세요.";
     })
     .catch(error => {
-      document.getElementById("verification-info").innerText = "인증 코드 전송 실패: " + error.message;
+      showCustomAlert(error.message, "warning");
     });
   }
-
 
   function submitVerificationCode() {
     const email = document.getElementById('email').value;
@@ -499,8 +504,8 @@
 
     fetch("/email/verify-code", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code })
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, code})
     })
     .then(response => response.json())
     .then(result => {
@@ -551,7 +556,8 @@
   }
 </script>
 <!-- 이메일 인증 모달 -->
-<div class="modal fade" id="emailVerificationModal" tabindex="-1" aria-labelledby="emailVerificationModalLabel" aria-hidden="true">
+<div class="modal fade" id="emailVerificationModal" tabindex="-1"
+     aria-labelledby="emailVerificationModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -575,7 +581,8 @@
 </div>
 </body>
 <!-- Global Toast 알림 -->
-<div id="custom-alert" class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-none"
+<div id="custom-alert"
+     class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-none"
      role="alert" style="min-width: 320px; z-index: 1055;">
   <span id="custom-alert-message"></span>
   <button type="button" class="btn-close" onclick="hideCustomAlert()"></button>
