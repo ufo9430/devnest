@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -20,9 +21,11 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     http
             .csrf(csrf -> csrf.disable()) // api 테스트용 임시 해제!
-
+            .cors(cors -> cors.disable()) // 🔥 Postman 테스트용 CORS 비활성화
+            .securityMatcher("/**") // ✅ 이 라인 추가
             .authorizeHttpRequests(auth -> auth
             .requestMatchers("/member/**", "/email/**","/test/email"// 테스트용 임시!, /email/** <- 비회원도 Api 사용 가능하게 제외해두었습니다!
+                    , "/member/reset-password","/member/check-email","/member/check-nickname"
             ).permitAll()
 //            .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
