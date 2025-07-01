@@ -31,7 +31,10 @@ public class AnswerController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+            currentUserId = 1L;
+            session.setAttribute("userId", currentUserId);
+            // throw new IllegalStateException("로그인이 필요합니다.");
         }
 
         // 세션의 사용자 ID로 설정 (클라이언트에서 보낸 값이 아닌 세션의 값을 사용)
@@ -40,7 +43,7 @@ public class AnswerController {
         return ResponseEntity.ok(answerService.createAnswer(requestDto));
     }
 
-    @PutMapping("/{answerId}")
+    @PatchMapping("/{answerId}")
     public ResponseEntity<AnswerResponseDto> updateAnswer(
             @PathVariable Long answerId,
             @RequestBody @Valid AnswerRequestDto requestDto,
@@ -48,7 +51,10 @@ public class AnswerController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+            currentUserId = 1L;
+            session.setAttribute("userId", currentUserId);
+            // throw new IllegalStateException("로그인이 필요합니다.");
         }
 
         return ResponseEntity.ok(answerService.updateAnswer(answerId, requestDto, currentUserId));
@@ -61,7 +67,10 @@ public class AnswerController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+            currentUserId = 1L;
+            session.setAttribute("userId", currentUserId);
+            // throw new IllegalStateException("로그인이 필요합니다.");
         }
 
         answerService.deleteAnswer(answerId, currentUserId);
@@ -75,7 +84,10 @@ public class AnswerController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+            currentUserId = 1L;
+            session.setAttribute("userId", currentUserId);
+            // throw new IllegalStateException("로그인이 필요합니다.");
         }
 
         // 세션의 사용자 ID로 설정
@@ -91,7 +103,10 @@ public class AnswerController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+            currentUserId = 1L;
+            session.setAttribute("userId", currentUserId);
+            // throw new IllegalStateException("로그인이 필요합니다.");
         }
 
         // 세션의 사용자 ID로 설정

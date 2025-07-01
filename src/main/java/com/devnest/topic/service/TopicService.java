@@ -1,5 +1,6 @@
 package com.devnest.topic.service;
 
+import com.devnest.topic.domain.Answer;
 import com.devnest.topic.domain.Topic;
 import com.devnest.topic.domain.Topic.TopicStatus;
 import com.devnest.topic.dto.TopicRequestDto;
@@ -20,15 +21,20 @@ import java.util.stream.Collectors;
 public class TopicService {
 
     private final TopicRepository topicRepository;
+    private final MarkdownService markdownService;
 
     /**
      * 새로운 질문을 생성합니다.
      */
     @Transactional
     public TopicResponseDto createTopic(TopicRequestDto requestDto, Long userId) {
+
+        // HTML 새니타이징 적용
+        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
+
         Topic topic = Topic.builder()
                 .title(requestDto.getTitle())
-                .content(requestDto.getContent())
+                .content(sanitizedContent) // 새니타이징된 내용 사용
                 .userId(userId)
                 .status(TopicStatus.WAITING)
                 .build();
@@ -79,6 +85,10 @@ public class TopicService {
                 requestDto.getContent(),
                 requestDto.getStatus()
         );
+
+        // HTML 새니타이징 적용
+        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
+        topic.updateContent(sanitizedContent);  // 새니타이징된 내용으로 업데이트
 
         return new TopicResponseDto(topic);
     }

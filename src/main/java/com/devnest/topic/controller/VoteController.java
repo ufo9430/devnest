@@ -28,7 +28,7 @@ public class VoteController {
         }
 
         requestDto.setUserId(currentUserId);
-        return ResponseEntity.ok(voteService.toggleVote(requestDto, VoteType.LIKE));
+        return ResponseEntity.ok(voteService.addVote(requestDto, VoteType.LIKE));
     }
 
     @PostMapping("/dislike")
@@ -42,13 +42,12 @@ public class VoteController {
         }
 
         requestDto.setUserId(currentUserId);
-        return ResponseEntity.ok(voteService.toggleVote(requestDto, VoteType.DISLIKE));
+        return ResponseEntity.ok(voteService.addVote(requestDto, VoteType.DISLIKE));
     }
 
     @GetMapping("/counts")
     public ResponseEntity<VoteResponseDto> getVoteCounts(
             @RequestParam Long targetId) {
-
         return ResponseEntity.ok(voteService.getVoteCounts(targetId));
     }
 }

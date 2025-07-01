@@ -21,6 +21,7 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
     private final TopicRepository topicRepository;
+    private final MarkdownService markdownService;
 
     @Transactional(readOnly = true)
     public List<AnswerResponseDto> getAnswersByTopicId(Long topicId) {
@@ -34,8 +35,11 @@ public class AnswerService {
         Topic topic = topicRepository.findById(requestDto.getTopicId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 질문을 찾을 수 없습니다."));
 
+        // HTML 새니타이징 적용
+        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
+
         Answer answer = Answer.builder()
-                .content(requestDto.getContent())
+                .content(sanitizedContent)  // 새니타이징된 내용 사용
                 .userId(requestDto.getUserId())
                 .topic(topic)
                 .isAccepted(false)
@@ -54,7 +58,10 @@ public class AnswerService {
             throw new IllegalStateException("수정 권한이 없습니다.");
         }
 
-        answer.updateContent(requestDto.getContent());
+        // HTML 새니타이징 적용
+        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
+        answer.updateContent(sanitizedContent);  // 새니타이징된 내용으로 업데이트
+
         return new AnswerResponseDto(answerRepository.save(answer));
     }
 

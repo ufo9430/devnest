@@ -70,8 +70,14 @@ public class Topic {
         this.status = status;
     }
 
+    // 답변 내용 수정 메서드
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
     // 답변과의 양방향 관계를 위한 메서드
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 
 //    Answer와 Topic간의 다대일(Many-to-One) 관계가 설정됨

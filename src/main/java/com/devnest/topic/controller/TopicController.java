@@ -26,6 +26,10 @@ public class TopicController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+//            currentUserId = 1L;
+//            session.setAttribute("userId", currentUserId);
+
             throw new IllegalStateException("로그인이 필요합니다.");
         }
 
@@ -52,6 +56,10 @@ public class TopicController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+//            currentUserId = 1L;
+//            session.setAttribute("userId", currentUserId);
+
             throw new IllegalStateException("로그인이 필요합니다.");
         }
 
@@ -68,6 +76,10 @@ public class TopicController {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
+            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+//            currentUserId = 1L;
+//            session.setAttribute("userId", currentUserId);
+
             throw new IllegalStateException("로그인이 필요합니다.");
         }
 

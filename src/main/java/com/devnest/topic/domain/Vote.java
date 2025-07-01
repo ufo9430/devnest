@@ -6,16 +6,16 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-// @UniqueConstraint를 사용하여 user_id와 target_id의 조합이 고유하도록 설정
+// @UniqueConstraint를 사용하여 user_id, target_id, type의 조합이 고유하도록 설정
+// 한 사용자가 같은 대상에 대해 추천과 비추천을 각각 한 번씩 할 수 있도록 변경
 // VoteType Enum을 사용하여 LIKE/DISLIKE 타입 관리
 // @CreationTimestamp를 사용하여 생성일시 자동 관리
 // @NoArgsConstructor(access = AccessLevel.PROTECTED)로 기본 생성자 제한
-// 추천 타입 변경을 위한 메서드 생성
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "vote", uniqueConstraints = { @UniqueConstraint(name = "unique_vote", columnNames = {"user_id", "target_id"})})
+@Table(name = "vote", uniqueConstraints = {@UniqueConstraint(name = "unique_user_target_type", columnNames = {"user_id", "target_id", "type"})})
 public class Vote {
 
     @Id
@@ -42,11 +42,6 @@ public class Vote {
         this.userId = userId;
         this.targetId = targetId;
         this.type = type;
-    }
-
-    // 추천 타입 변경 메서드
-    public void changeType(VoteType newType) {
-        this.type = newType;
     }
 
     // 추천 타입을 나타내는 Enum

@@ -1,6 +1,7 @@
 package com.devnest.topic.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,6 +28,7 @@ public class Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "target_type", nullable = false, length = 10)
+    @NotNull(message = "targetType은 필수입니다.")
     private TargetType targetType;  // 신고 대상 타입
 
     @Column(name = "target_id", nullable = false)
@@ -38,6 +40,14 @@ public class Report {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;  // 신고일시
+
+    @Builder
+    public Report(Long reporterId, TargetType targetType, Long targetId, String reason) {
+        this.reporterId = reporterId;
+        this.targetType = targetType;
+        this.targetId = targetId;
+        this.reason = reason;
+    }
 
     // 신고 대상 타입을 나타내는 Enum
     public enum TargetType {
