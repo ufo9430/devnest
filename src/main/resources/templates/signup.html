@@ -562,7 +562,6 @@
     const messageDiv = document.getElementById('email-message');
     const verificationSection = document.getElementById('verification-section');
 
-    // 중복 확인이 완료된 이메일이 아닌 경우 인증 전송 차단
     if (!validationState.email) {
       messageDiv.innerHTML = '<div class="error-message">먼저 이메일 중복 확인을 해주세요.</div>';
       return;
@@ -573,15 +572,32 @@
       return;
     }
 
-    // Simulate sending verification email
-    messageDiv.innerHTML = '<div class="success-message">인증 이메일이 전송되었습니다.</div>';
+    // 이메일 인증 입력란 먼저 보여주기
     verificationSection.classList.add('show');
-    validationState.email = true;
-    updateSignupButton();
+
+    // 이메일 인증 보내기
+    fetch('/email/send-verification', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        messageDiv.innerHTML = `<div class="success-message">${data.message}</div>`;
+        verificationSection.classList.add('show');
+      } else {
+        messageDiv.innerHTML = `<div class="error-message">${data.message}</div>`;
+      }
+    })
+    .catch(() => {
+      messageDiv.innerHTML = '<div class="error-message">인증 이메일 전송 실패</div>';
+    });
   }
 
   // Verify email code
   function verifyCode() {
+    const email = document.getElementById('email').value;
     const code = document.getElementById('verificationCode').value;
     const messageDiv = document.getElementById('verification-message');
 
@@ -590,17 +606,27 @@
       return;
     }
 
-    // Simulate verification
-    setTimeout(() => {
-      if (code === '123456' || code.length === 6) {
-        messageDiv.innerHTML = '<div class="success-message">이메일 인증이 완료되었습니다.</div>';
+    fetch('/email/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        messageDiv.innerHTML = `<div class="success-message">${data.message}</div>`;
         validationState.emailVerified = true;
       } else {
-        messageDiv.innerHTML = '<div class="error-message">잘못된 인증코드입니다.</div>';
+        messageDiv.innerHTML = `<div class="error-message">${data.message}</div>`;
         validationState.emailVerified = false;
       }
       updateSignupButton();
-    }, 500);
+    })
+    .catch(() => {
+      messageDiv.innerHTML = '<div class="error-message">인증 코드 확인 실패</div>';
+      validationState.emailVerified = false;
+      updateSignupButton();
+    });
   }
 
   // Password validation
