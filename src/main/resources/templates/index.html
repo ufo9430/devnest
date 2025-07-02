@@ -420,16 +420,17 @@
                         <div class="discussion-item" th:each="topic : ${recent}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <a th:href="@{/post(id=${topic.topicId})}" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
-                                <small class="text-muted">2시간 전</small>
+                                <small class="text-muted" th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</small>
                             </div>
                             <p class="text-muted small mb-2" th:text="${topic.content.length() > 30} ? ${#strings.substring(topic.content, 0, 30)} + '...' : ${topic.content}" >글 내용</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex gap-1">
-                                    <a href="#" class="tag link-offset-2 link-underline link-underline-opacity-0">React</a>
-                                    <a href="#" class="tag link-offset-2 link-underline link-underline-opacity-0">상태관리</a>
+                                <div class="d-flex gap-1" th:each="tag : ${topic.tags}">
+                                    <a th:href="@{/search(tag=${tag.name})}" th:text="${tag.name}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
                                 </div>
+                                <span> </span>
                                 <div class="d-flex align-items-center gap-2">
-                                    <small class="text-muted">답변 5</small>
+                                    <small class="text-muted">답변</small>
+                                    <small class="text-muted" th:text="${#lists.size('topic.answers')}">1</small>
                                     <small class="text-muted">조회</small>
                                     <small class="text-muted" th:text="${topic.viewCount}">100</small>
                                 </div>
@@ -517,8 +518,8 @@
                         <h5 class="card-title mb-0 fw-semibold">태그 목록</h5>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex flex-wrap gap-2" th:each="tag : ${tags}">
-                            <span class="tag">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="tag" th:each="tag : ${tags}">
                                 <a th:href="@{/search(tag=${tag.name})}" class="link-offset-2 link-underline link-underline-opacity-0" th:text="${tag.name}">JavaScript</a>
                             </span>
                         </div>

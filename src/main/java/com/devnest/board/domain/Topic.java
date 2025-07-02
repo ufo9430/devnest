@@ -38,6 +38,10 @@ public class Topic {
     inverseJoinColumns = @JoinColumn(name = "topic_id"))
     private List<Tag> tags;
 
+    @OneToMany
+    @JoinTable(name = "answer_id")
+    private List<Answer> answers;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
