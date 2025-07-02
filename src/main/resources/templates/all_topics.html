@@ -465,14 +465,15 @@
                     <h1 class="topics-title">모든 토론</h1>
                 </div>
                 <div class="check-solved">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="check-solved">
-                        <label class="form-check-label">해결된 문제만 보기</label>
-                    </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="check-solved"
+                        th:checked="${resolved}" onchange="location.href='@{/questions(resolved=${!resolved})}'">
+                    <label class="form-check-label" for="check-solved">해결된 문제만 보기</label>
                 </div>
             </div>
+            </div>
 
-            <span class="topics-count">총 1,247개의 토론</span>
+            <span class="topics-count" th:text="|총 ${#lists.size(topics)}개의 토론|">총 1,247개의 토론</span>
 
             <!-- Topic List -->
             <div class="topic-list">
@@ -497,11 +498,15 @@
                         </div>
                         <div class="topic-meta-item">
                             <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
-                            <span th:text="${topic.viewCount}">234</span>
+                            <span th:text="${#lists.size('topic.answers')}">2</span>
                         </div>
                         <div class="topic-meta-item">
                             <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
                             <span th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</span>
+                        </div>
+                        <div class="topic-meta-item">
+                            <span th:text="${topic.viewCount}">24</span>
+                            <span>조회</span>
                         </div>
                     </div>
                 </div>

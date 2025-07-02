@@ -13,6 +13,7 @@ public class TimeFormatter {
         if (seconds < 60) return seconds + "초 전";
         if (seconds < 3600) return (seconds / 60) + "분 전";
         if (seconds < 86400) return (seconds / 3600) + "시간 전";
-        return (seconds / 86400) + "일 전";
+        if (seconds < 31536000) return (seconds / 86400) + "일 전";
+        return (seconds / 31536000) + "년 전";
     }
 }
