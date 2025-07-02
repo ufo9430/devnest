@@ -1,10 +1,17 @@
 package com.devnest.user.controller;
 
 
+import com.devnest.auth.domain.CustomUserDetails;
+import com.devnest.user.dto.common.NicknameRequestDto;
 import com.devnest.user.service.MemberCheckService;
+import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/member")// 단일책임 원칙으로 AuthController와 별개로 작성했습니다
 public class MemberCheckController {
-
 
 
     private final MemberCheckService memberCheckService;
@@ -32,4 +38,13 @@ public class MemberCheckController {
     }
 
     //닉네임 체크
+
+    // 닉네임 변경
+    @PatchMapping("/update-nickname")
+    public ResponseEntity<?> updateNickname(@RequestBody @Valid NicknameRequestDto dto,
+        Authentication authentication) {
+        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
+        memberCheckService.updateNickname(userId, dto.getNickname());
+        return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
+    }
 }
