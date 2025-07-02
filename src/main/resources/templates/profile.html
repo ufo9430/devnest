@@ -436,19 +436,20 @@
             
             <!-- Profile Form -->
             <form>
-                <div class="form-group">
-                    <label class="form-label">아이디</label>
-                    <input type="text" class="form-control" value="개발자123" readonly>
-                </div>
-                
+                <!-- 수정 불가. readonly로! -->
                 <div class="form-group">
                     <label class="form-label">이메일</label>
-                    <input type="email" class="form-control" value="developer123@example.com">
+                    <input type="email" class="form-control" value="developer123@example.com" readonly style="background-color: #e9ecef;">
                 </div>
-                
+
+                <!-- 수정 가능-->
                 <div class="form-group">
                     <label class="form-label">닉네임</label>
-                    <input type="text" class="form-control" value="개발자123">
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="개발자123">
+                        <button type="button" class="btn-primary-form" id="checkNicknameBtn" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">중복 확인</button>
+                    </div>
+
                 </div>
                 
                 <div class="form-actions">
