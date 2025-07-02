@@ -5,7 +5,7 @@ import com.devnest.user.domain.User;
 import com.devnest.user.dto.common.NicknameRequestDto;
 import com.devnest.user.dto.response.ProfileResponseDto;
 import com.devnest.user.repository.UserRepository;
-import com.devnest.user.service.MemberCheckService;
+import com.devnest.user.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequiredArgsConstructor
 public class ProfileController {
 
-  private final MemberCheckService memberCheckService;
+  private final ProfileService profileService;
   private final UserRepository userRepository;
 
   // Controller
@@ -58,7 +58,7 @@ public class ProfileController {
   public ResponseEntity<?> updateNickname(@RequestBody @Valid NicknameRequestDto dto,
       Authentication authentication) {
     Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
-    memberCheckService.updateNickname(userId, dto.getNickname());
+    profileService.updateNickname(userId, dto.getNickname());
 
     // 최신 사용자 정보 가져오기
     User updatedUser = userRepository.findById(userId)
@@ -78,4 +78,6 @@ public class ProfileController {
 
     return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
   }
+
+  // 프로필 이미지 변경
 }
