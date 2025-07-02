@@ -15,5 +15,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     List<Topic> findByStatus(Status status);
 
+    List<Topic> findAllByOrderByCreatedAtDesc();
+
     long countByStatus(Status status);
 }

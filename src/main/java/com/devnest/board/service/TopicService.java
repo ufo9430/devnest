@@ -23,7 +23,7 @@ public class TopicService {
     }
 
     public List<Topic> getRecentTopics(){
-        return topicRepository.findAll();
+        return topicRepository.findAllByOrderByCreatedAtDesc();
     }
 
     public StatisticsVo getStatistics(){

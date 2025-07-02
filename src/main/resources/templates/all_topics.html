@@ -219,24 +219,12 @@
             font-size: 0.875rem;
         }
         
-        .sort-dropdown {
+        .check-solved {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             color: var(--text-secondary);
             font-size: 0.875rem;
-        }
-        
-        .sort-dropdown select {
-            border: none;
-            background: none;
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            cursor: pointer;
-        }
-        
-        .sort-dropdown select:focus {
-            outline: none;
         }
         
         .topic-item {
@@ -408,7 +396,7 @@
     <nav class="navbar">
         <div class="container-fluid">
             <div class="d-flex align-items-center gap-3">
-                <a class="navbar-brand" href="#">DevNest</a>
+                <a class="navbar-brand" th:href="@{/}">DevNest</a>
             </div>
             
             <div class="d-flex align-items-center gap-3">
@@ -476,123 +464,47 @@
                 <div>
                     <h1 class="topics-title">모든 토론</h1>
                 </div>
-                <div class="sort-dropdown">
-                    <i data-lucide="check" style="width: 16px; height: 16px;"></i>
-                    <select>
-                        <option>해결된 문제만 보기</option>
-                        <option>모든 문제 보기</option>
-                        <option>미해결 문제만 보기</option>
-                    </select>
-                    <span class="topics-count">총 1,247개의 토론</span>
+                <div class="check-solved">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="check-solved">
+                        <label class="form-check-label">해결된 문제만 보기</label>
+                    </div>
                 </div>
             </div>
+
+            <span class="topics-count">총 1,247개의 토론</span>
 
             <!-- Topic List -->
             <div class="topic-list">
-                <!-- Topic Item 1 -->
-                <div class="topic-item">
+                <!-- Waiting Topic Item -->
+                <div class="topic-item" th:each="topic : ${topics}">
                     <div class="topic-tags">
-                        <span class="tag orange">
+                        <span class="tag orange" th:if="${topic.status.name() == 'WAITING'}">
                             대기
                         </span>
-                        <span class="tag gray">React</span>
-                        <span class="tag gray">JavaScript</span>
-                    </div>
-                    <a href="/post_detail.html" class="topic-title">React Hook에서 useEffect 의존성 배열 관련 질문입니다</a>
-                    <div class="topic-meta">
-                        <div class="topic-meta-item">
-                            <i data-lucide="user" style="width: 14px; height: 14px;"></i>
-                            <span>개발자123</span>
-                        </div>
-                        <div class="topic-meta-item">
-                            <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
-                            <span>234</span>
-                        </div>
-                        <div class="topic-meta-item">
-                            <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
-                            <span>2시간 전</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Topic Item 2 -->
-                <div class="topic-item">
-                    <div class="topic-tags">
-                        <span class="tag green">
+                        <span class="tag green" th:if="${topic.status.name() == 'RESOLVED'}">
                             해결
                         </span>
-                        <span class="tag gray">Python</span>
-                        <span class="tag gray">Django</span>
-                    </div>
-                    <a href="/post_detail.html" class="topic-title">Python Django ORM에서 복잡한 쿼리 최적화 방법</a>
-                    <div class="topic-meta">
-                        <div class="topic-meta-item">
-                            <i data-lucide="user" style="width: 14px; height: 14px;"></i>
-                            <span>백엔드마스터</span>
-                        </div>
-                        <div class="topic-meta-item">
-                            <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
-                            <span>567</span>
-                        </div>
-                        <div class="topic-meta-item">
-                            <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
-                            <span>4시간 전</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Topic Item 3 -->
-                <div class="topic-item">
-                    <div class="topic-tags">
-                        <span class="tag orange">
-                            대기
+                        <span class="tag gray" th:each="tag : ${topic.tags}">
+                            <a th:href="@{/search(tag=${tag.name})}" th:text="${tag.name}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
                         </span>
-                        <span class="tag gray">TypeScript</span>
-                        <span class="tag gray">JavaScript</span>
                     </div>
-                    <a href="/post_detail.html" class="topic-title">TypeScript 제네릭 타입 추론이 안되는 문제</a>
+                    <a href="#" class="topic-title" th:text="${topic.title}">글 제목</a>
                     <div class="topic-meta">
                         <div class="topic-meta-item">
                             <i data-lucide="user" style="width: 14px; height: 14px;"></i>
-                            <span>타입러버</span>
+                            <span th:text="${topic.user.nickname}">닉네임</span>
                         </div>
                         <div class="topic-meta-item">
                             <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
-                            <span>189</span>
+                            <span th:text="${topic.viewCount}">234</span>
                         </div>
                         <div class="topic-meta-item">
                             <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
-                            <span>6시간 전</span>
+                            <span th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Topic Item 4 -->
-                <div class="topic-item">
-                    <div class="topic-tags">
-                        <span class="tag green">
-                            해결
-                        </span>
-                        <span class="tag gray">Vue.js</span>
-                        <span class="tag gray">Pinia</span>
-                    </div>
-                    <a href="/post_detail.html" class="topic-title">Vue.js 3 Composition API와 Pinia 상태관리</a>
-                    <div class="topic-meta">
-                        <div class="topic-meta-item">
-                            <i data-lucide="user" style="width: 14px; height: 14px;"></i>
-                            <span>Vue개발자</span>
-                        </div>
-                        <div class="topic-meta-item">
-                            <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>
-                            <span>423</span>
-                        </div>
-                        <div class="topic-meta-item">
-                            <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
-                            <span>8시간 전</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- Search Section -->
             <div class="search-section">
