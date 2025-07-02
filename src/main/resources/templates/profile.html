@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 프로필 - DevNest</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E9ECEF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --card-background: #FFFFFF;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        .navbar {
+            background-color: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+        
+        .search-box input {
+            padding-right: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+        }
+        
+        .notification-icon-button {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            position: relative;
+        }
+        
+        .notification-icon-button:hover {
+            background-color: #F3F4F6;
+        }
+        
+        .profile-icon-button {
+            background: none;
+            border: none;
+            padding: 0.25rem;
+            border-radius: 50%;
+            color: var(--text-secondary);
+        }
+        
+        .profile-icon-button img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+        
+        .main-content {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .profile-section {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-photo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-photo-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--border-color);
+        }
+        
+        .edit-photo-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .edit-photo-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .username {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .user-bio {
+            color: var(--primary-color);
+            font-size: 0.875rem;
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            width: 100%;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn-outline-custom {
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            background-color: transparent;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: var(--text-secondary);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-primary-form {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary-form:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+        
+        .security-section {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        .security-info {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+        }
+        
+        .photo-upload-area {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .photo-upload-area img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--border-color);
+        }
+        
+        .upload-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .upload-info li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-label {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .file-input-label:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0 0.5rem;
+            }
+            
+            .profile-section {
+                padding: 1.5rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions .btn-outline-custom,
+            .form-actions .btn-primary-form {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center gap-3">
+                <a class="navbar-brand" href="/index.html">DevNest</a>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="search-box">
+                    <input type="text" class="form-control" placeholder="질문 검색...">
+                    <button type="button">
+                        <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+                
+                <a href="/ask_question.html" class="btn-primary-custom">질문하기</a>
+                
+                <button class="notification-icon-button" type="button">
+                    <i data-lucide="bell" style="width: 24px; height: 24px;"></i>
+                </button>
+                
+                <button class="profile-icon-button" type="button">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxMiIgcj0iNCIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBkPSJNOCAyNGMwLTQuNCAzLjYtOCA4LThzOCAzLjYgOCA4IiBmaWxsPSIjNkI3MjgwIi8+Cjwvc3ZnPgo=" alt="프로필">
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>나의 프로필</h1>
+        </div>
+
+        <!-- Profile Information Section -->
+        <div class="profile-section">
+            <div class="section-title">기본 정보</div>
+            
+            <!-- Profile Photo -->
+            <div class="profile-photo-section">
+                <div class="profile-photo-container">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNjAiIHI9IjYwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjYwIiBjeT0iNDUiIHI9IjE1IiBmaWxsPSIjNkI3MjgwIi8+CjxwYXRoIGQ9Ik0zMCA5MGMwLTE2LjUgMTMuNS0zMCAzMC0zMHMzMCAxMy41IDMwIDMwIiBmaWxsPSIjNkI3MjgwIi8+Cjwvc3ZnPgo=" alt="프로필 사진" class="profile-photo" id="profilePhoto">
+                    <button class="edit-photo-btn" type="button" data-bs-toggle="modal" data-bs-target="#photoModal">
+                        <i data-lucide="edit-2" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+                <div class="username">개발자123</div>
+                <div class="user-bio">아이디의 아바타로 수정이 불가능합니다.</div>
+            </div>
+            
+            <!-- Profile Form -->
+            <form>
+                <div class="form-group">
+                    <label class="form-label">아이디</label>
+                    <input type="text" class="form-control" value="개발자123" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">이메일</label>
+                    <input type="email" class="form-control" value="developer123@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">닉네임</label>
+                    <input type="text" class="form-control" value="개발자123">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn-outline-custom">등록 취소</button>
+                    <button type="submit" class="btn-primary-form">저장</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Security Section -->
+        <div class="security-section">
+            <div class="section-title">보안</div>
+            <div class="security-info">
+                비밀번호를 변경하여 계정을 안전하게 보호하세요.
+            </div>
+            <a href="/change_password.html" class="btn-primary-custom">비밀번호 변경</a>
+        </div>
+    </div>
+
+    <!-- Profile Photo Change Modal -->
+    <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="photoModalLabel">프로필 사진 변경</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="photo-upload-area">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjUwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzciIHI9IjEyIiBmaWxsPSIjNkI3MjgwIi8+CjxwYXRoIGQ9Ik0yNSA3NWMwLTEzLjggMTEuMi0yNSAyNS0yNXMyNSAxMS4yIDI1IDI1IiBmaWxsPSIjNkI3MjgwIi8+Cjwvc3ZnPgo=" alt="현재 프로필 사진" id="modalProfilePhoto">
+                        
+                        <div class="upload-info">
+                            <div style="margin-bottom: 0.5rem; font-weight: 500;">이미지 업로드</div>
+                            <ul>
+                                <li>• JPG, PNG 형식만 지원됩니다</li>
+                                <li>• 최대 5MB까지 업로드 가능합니다</li>
+                                <li>• 정사각형 이미지를 권장합니다</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="file-input-wrapper">
+                            <input type="file" class="file-input" id="photoUpload" accept="image/jpeg,image/png">
+                            <label for="photoUpload" class="file-input-label">업로드</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn-primary-form" id="savePhoto">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+        
+        // Profile photo upload functionality
+        document.getElementById('photoUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('modalProfilePhoto').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Save photo functionality
+        document.getElementById('savePhoto').addEventListener('click', function() {
+            const modalPhoto = document.getElementById('modalProfilePhoto').src;
+            document.getElementById('profilePhoto').src = modalPhoto;
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('photoModal'));
+            modal.hide();
+            
+            // Show success message (you can implement this)
+            alert('프로필 사진이 변경되었습니다.');
+        });
+    </script>
+</body>
+</html>
+

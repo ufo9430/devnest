@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 - DevNest</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <style>
+    :root {
+      --primary-color: #6366F1;
+      --primary-hover: #5856EB;
+      --background-color: #F8F9FA;
+      --border-color: #E9ECEF;
+      --text-primary: #1F2937;
+      --text-secondary: #6B7280;
+      --card-background: #FFFFFF;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+    }
+
+    .navbar {
+      background-color: var(--card-background);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary-color) !important;
+      text-decoration: none;
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary-custom:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+      color: white;
+      text-decoration: none;
+    }
+
+    .search-box {
+      position: relative;
+      max-width: 400px;
+    }
+
+    .search-box input {
+      padding-right: 40px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+
+    .search-box button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+    }
+
+    .notification-dropdown {
+      position: relative;
+    }
+
+    .notification-icon-button {
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 50%;
+      color: var(--text-secondary);
+      position: relative;
+    }
+
+    .notification-icon-button:hover {
+      background-color: #F3F4F6;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: var(--danger-color);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropdown-menu {
+      min-width: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border-color);
+      padding: 0;
+    }
+
+    .dropdown-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #F3F4F6;
+      white-space: normal;
+      cursor: pointer;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover {
+      background-color: #F8F9FA;
+    }
+
+    .notification-content {
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .dropdown-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .dropdown-footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .dropdown-footer a:hover {
+      text-decoration: underline;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .btn-primary-custom:hover {
+      background-color: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .search-input {
+      border-color: #D1D5DB;
+      padding-left: 2.5rem;
+      height: 42px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000;
+    }
+
+    .login-container {
+      min-height: calc(100vh - 75px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background-color: var(--card-background);
+      border: 1px solid #E5E7EB;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-header {
+      background-color: var(--background-color);
+      border-bottom: 1px solid #E5E7EB;
+      padding: 1.5rem 2rem;
+    }
+
+    .login-form {
+      padding: 1.5rem 2rem;
+    }
+
+    .form-control-custom {
+      height: 48px;
+      border-color: #E5E7EB;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-control-custom:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .login-links {
+      border-top: 1px solid #F3F4F6;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    .signup-section {
+      border-top: 1px solid #F3F4F6;
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    .link-custom {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .link-custom:hover {
+      text-decoration: underline;
+      color: var(--primary-hover);
+    }
+
+    .divider {
+      width: 1px;
+      height: 1rem;
+      background-color: #E5E7EB;
+      display: inline-block;
+      margin: 0 1rem;
+    }
+
+    #loginButton {
+      display: flex;
+      align-items: center; /* 수직 정렬 */
+      justify-content: center; /* 수평 정렬 */
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<!--  Navbar  -->
+<nav class="navbar">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center gap-3">
+      <a class="navbar-brand" href="/">DevNest</a>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="search-box">
+        <input type="text" class="form-control" placeholder="질문 검색...">
+        <button type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;"
+               class="lucide lucide-search">
+            <path d="m21 21-4.34-4.34"></path>
+            <circle cx="11" cy="11" r="8"></circle>
+          </svg>
+        </button>
+      </div>
+
+      <a href="/ask_question.html" class="btn-primary-custom">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;"
+             class="lucide lucide-plus">
+          <path d="M5 12h14"></path>
+          <path d="M12 5v14"></path>
+        </svg>
+        질문하기
+      </a>
+
+      <!-- Notification Dropdown -->
+      <div class="notification-dropdown dropdown">
+        <button class="notification-icon-button" type="button" id="notificationDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+               stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;"
+               class="lucide lucide-bell">
+            <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+            <path
+                d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
+          </svg>
+          <span class="notification-badge">3</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+          <li class="dropdown-header">알림</li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="notification-content">새로운 답변이 등록되었습니다: "React Hooks 사용법"</div>
+              <div class="notification-time">5분 전</div>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="notification-content">회원님의 질문에 새로운 댓글이 달렸습니다: "Spring Security 설정"</div>
+              <div class="notification-time">1시간 전</div>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#">
+              <div class="notification-content">관리자 공지: 시스템 점검 안내</div>
+              <div class="notification-time">어제</div>
+            </a>
+          </li>
+          <li class="dropdown-footer">
+            <a href="/all_notifications.html">모든 알림 보기</a>
+          </li>
+        </ul>
+      </div>
+
+      <a href="/member/login" class="btn-primary-custom">로그인</a>
+      <a href="/member/signup" class="btn-primary-custom">회원가입</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Login Form -->
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="d-flex align-items-center gap-3">
+        <i data-lucide="layers" style="width: 24px; height: 24px; color: var(--text-primary);"></i>
+        <h1 class="h5 mb-0 fw-semibold">로그인</h1>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div th:if="${active_error}" class="alert alert-danger" role="alert"
+         th:text="${active_error}"></div>
+    <form class="login-form" th:action="@{/member/login}" method="post">
+      <div class="mb-4">
+        <label for="email" class="form-label fw-medium">이메일</label>
+        <input type="email" class="form-control form-control-custom" id="email" name="email"
+               placeholder="이메일을 입력하세요" required>
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="form-label fw-medium">비밀번호</label>
+        <div class="position-relative">
+          <input type="password" class="form-control form-control-custom" id="password"
+                 name="password"
+                 placeholder="비밀번호를 입력하세요" required>
+          <button type="button" class="password-toggle" onclick="togglePassword()">
+            <i data-lucide="eye" id="password-icon"
+               style="width: 16px; height: 16px; color: #000;"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 초기 버튼: 인증 트리거 용도 -->
+      <button type="button" id="loginButton" class="btn btn-primary-custom w-100 fw-medium"
+              style="height: 48px;" onclick="openVerificationModal()">
+        2차 인증하기
+      </button>
+    </form>
+
+    <!-- Links Section -->
+    <div class="login-links">
+      <a href="/member/find-account" th:href="@{/member/find-account}" class="link-custom small">계정
+        찾기</a>
+      <span class="divider"></span>
+      <a href="/member/password-recovery" th:href="@{/member/password-recovery}"
+         class="link-custom small">비밀번호
+        찾기</a>
+    </div>
+
+    <!-- Signup Section -->
+    <div class="signup-section">
+      <p class="small text-muted mb-3">아직 계정이 없으신가요?</p>
+      <a href="/member/signup" th:href="@{/member/signup}"
+         class="link-custom small fw-medium">회원가입</a>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // Password toggle functionality
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const passwordIcon = document.getElementById('password-icon');
+
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      passwordIcon.setAttribute('data-lucide', 'eye-off');
+    } else {
+      passwordInput.type = 'password';
+      passwordIcon.setAttribute('data-lucide', 'eye');
+    }
+
+    // Re-initialize the icon
+    lucide.createIcons();
+  }
+
+  function openVerificationModal() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+      showCustomAlert("이메일과 비밀번호를 입력해주세요.", "primary");
+      return;
+    }
+
+    // 서버에 인증 코드 전송 시도
+    fetch("/member/verify-user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({email, password})
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("로그인 정보가 유효하지 않습니다.");
+      }
+      return response.text();
+    })
+    .then(result => {
+      // 성공 시 모달 표시
+      const modal = new bootstrap.Modal(document.getElementById('emailVerificationModal'));
+      modal.show();
+
+      document.getElementById("verification-info").innerText =
+          "이메일로 인증 코드가 전송되었습니다. 도착하지 않았다면 스팸함도 확인해주세요.";
+    })
+    .catch(error => {
+      showCustomAlert(error.message, "warning");
+    });
+  }
+
+  function submitVerificationCode() {
+    const email = document.getElementById('email').value;
+    const code = document.getElementById('verificationCode').value;
+
+    if (!code) {
+      showCustomAlert("인증 코드를 입력해주세요.", "primary");
+      return;
+    }
+
+    fetch("/email/verify-code", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, code})
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        // 인증 성공 메시지
+        const successMsg = document.getElementById("verification-success");
+        successMsg.classList.remove("d-none");
+
+        const loginBtn = document.getElementById("loginButton");
+
+        // 버튼을 로그인용 submit 버튼으로 변경
+        loginBtn.innerText = "로그인";
+        loginBtn.setAttribute("type", "submit");
+        loginBtn.removeAttribute("onclick");
+        loginBtn.disabled = false;
+
+        // 2초 후 자동으로 모달 닫기
+        setTimeout(() => {
+          bootstrap.Modal.getInstance(document.getElementById('emailVerificationModal')).hide();
+        }, 2000);
+      } else {
+        showCustomAlert(result.message || "인증 실패", "warning");
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      showCustomAlert("서버 오류가 발생했습니다.", "warning");
+    });
+  }
+
+  function showCustomAlert(message, type = 'warning') {
+    const alertBox = document.getElementById('custom-alert');
+    const messageBox = document.getElementById('custom-alert-message');
+
+    // alert 스타일 클래스 초기화 후 새로운 클래스 적용
+    alertBox.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3`;
+    messageBox.textContent = message;
+
+    alertBox.classList.remove('d-none');
+
+    // 자동으로 3초 후 사라지도록 설정
+    setTimeout(hideCustomAlert, 3000);
+  }
+
+  function hideCustomAlert() {
+    const alertBox = document.getElementById('custom-alert');
+    alertBox.classList.add('d-none');
+  }
+</script>
+<!-- 이메일 인증 모달 -->
+<div class="modal fade" id="emailVerificationModal" tabindex="-1"
+     aria-labelledby="emailVerificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="emailVerificationModalLabel">이메일 인증</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        <div id="verification-info" class="mb-2 text-muted small">이메일로 전송된 인증 코드를 입력하세요.</div>
+        <input type="text" id="verificationCode" class="form-control" placeholder="인증 코드 (6자리)">
+        <!-- 인증 성공 메시지 영역 (초기에는 숨김) -->
+        <div id="verification-success" class="alert alert-success d-none" role="alert">
+          ✅ 이메일 인증에 성공했습니다!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" onclick="submitVerificationCode()">인증</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<!-- Global Toast 알림 -->
+<div id="custom-alert"
+     class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-none"
+     role="alert" style="min-width: 320px; z-index: 1055;">
+  <span id="custom-alert-message"></span>
+  <button type="button" class="btn-close" onclick="hideCustomAlert()"></button>
+</div>
+
+</html>
