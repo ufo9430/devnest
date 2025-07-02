@@ -5,6 +5,9 @@ import com.devnest.board.domain.Topic;
 import com.devnest.board.repository.TopicRepository;
 import com.devnest.board.vo.StatisticsVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +25,14 @@ public class TopicService {
         return topicRepository.findRecentFiveTopics();
     }
 
-    public List<Topic> getRecentTopics(){
-        return topicRepository.findAllByOrderByCreatedAtDesc();
+    public Page<Topic> getRecentTopics(int page){
+        Pageable pageable = PageRequest.of(page, 3);
+        return topicRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
-    public List<Topic> getSolvedTopics() {
-        return topicRepository.findByStatus(Status.RESOLVED);
+    public Page<Topic> getSolvedTopics(int page) {
+        Pageable pageable = PageRequest.of(page, 3);
+        return topicRepository.findByStatus(Status.RESOLVED, pageable);
     }
 
     public StatisticsVo getStatistics(){
