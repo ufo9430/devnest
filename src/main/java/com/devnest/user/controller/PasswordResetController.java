@@ -40,7 +40,6 @@ public class PasswordResetController {
 
     @PostMapping("/reset-password")
     public String resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
-        System.out.println("✅ 컨트롤러 진입: " + request.getEmail());
         return passwordResetService.verifyAndResetPassword(request.getEmail(), request.getCode());
     }
 
