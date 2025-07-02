@@ -450,59 +450,23 @@
                         <h5 class="card-title mb-0 fw-semibold">인기 주제</h5>
                     </div>
                     <div class="card-body p-0">
-                        <!-- Topic Item 1 -->
-                        <div class="discussion-item">
+                        <!-- Topic Item -->
+                        <div class="discussion-item" th:each="currentHot : ${hot}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="mb-1 fw-semibold">JavaScript ES2024 새로운 기능들</h6>
-                                <small class="text-muted">인기</small>
+                                <a th:href="@{/post(id=${currentHot.topic.topicId})}" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${currentHot.topic.title}">글 제목 </h6></a>
+                                <small class="text-muted" th:text="${@timeAgoUtil.format(currentHot.topic.createdAt)}">2시간 전</small>
                             </div>
-                            <p class="text-muted small mb-2">ES2024에서 추가된 새로운 기능들을 살펴보고 실무에서 활용하는 방법을 논의해봅시다.</p>
+                            <p class="text-muted small mb-2" th:text="${currentHot.topic.content.length() > 30} ? ${#strings.substring(currentHot.topic.content, 0, 30)} + '...' : ${currentHot.topic.content}" >글 내용</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex gap-1">
-                                    <span class="tag">JavaScript</span>
-                                    <span class="tag">ES2024</span>
+                                <div class="d-flex gap-1" th:each="tag : ${currentHot.topic.tags}">
+                                    <a th:href="@{/search(tag=${tag.name})}" th:text="${tag.name}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
                                 </div>
+                                <span> </span>
                                 <div class="d-flex align-items-center gap-2">
-                                    <small class="text-muted">답변 12</small>
-                                    <small class="text-muted">조회 89</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Topic Item 2 -->
-                        <div class="discussion-item">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="mb-1 fw-semibold">AI 개발자 도구 활용법</h6>
-                                <small class="text-muted">트렌딩</small>
-                            </div>
-                            <p class="text-muted small mb-2">GitHub Copilot, ChatGPT 등 AI 도구를 개발에 효과적으로 활용하는 방법</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex gap-1">
-                                    <span class="tag">AI</span>
-                                    <span class="tag">도구</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <small class="text-muted">답변 15</small>
-                                    <small class="text-muted">조회 67</small>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Topic Item 3 -->
-                        <div class="discussion-item">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="mb-1 fw-semibold">마이크로서비스 아키텍처 설계</h6>
-                                <small class="text-muted">주목</small>
-                            </div>
-                            <p class="text-muted small mb-2">대규모 시스템을 위한 마이크로서비스 아키텍처 설계 원칙과 실제 구현 사례</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex gap-1">
-                                    <span class="tag">아키텍처</span>
-                                    <span class="tag">마이크로서비스</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <small class="text-muted">답변 9</small>
-                                    <small class="text-muted">조회 54</small>
+                                    <small class="text-muted">답변</small>
+                                    <small class="text-muted" th:text="${#lists.size('currentHot.topic.answers')}">1</small>
+                                    <small class="text-muted">조회</small>
+                                    <small class="text-muted" th:text="${currentHot.topic.viewCount}">100</small>
                                 </div>
                             </div>
                         </div>

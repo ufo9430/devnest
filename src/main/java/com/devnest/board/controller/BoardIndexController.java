@@ -1,9 +1,11 @@
 package com.devnest.board.controller;
 
+import com.devnest.board.domain.HotTopic;
 import com.devnest.board.domain.Tag;
 import com.devnest.board.domain.Topic;
 import com.devnest.board.service.BoardIndexService;
 import com.devnest.board.service.BoardTagService;
+import com.devnest.board.service.HotTopicService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,8 @@ import java.util.List;
 public class BoardIndexController {
     @Autowired
     private BoardIndexService boardIndexService;
-
+    @Autowired
+    private HotTopicService hotTopicService;
     @Autowired
     private BoardTagService boardTagService;
 
@@ -26,6 +29,9 @@ public class BoardIndexController {
 
         List<Topic> recentTopics = boardIndexService.getRecentFiveTopics();
         model.addAttribute("recent",recentTopics);
+
+        List<HotTopic> recentHotTopics = hotTopicService.getRecentFiveHotTopics();
+        model.addAttribute("hot",recentHotTopics);
 
         List<Tag> allTags = boardTagService.findAll();
         model.addAttribute("tags",allTags);
