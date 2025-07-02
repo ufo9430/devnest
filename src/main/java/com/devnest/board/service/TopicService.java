@@ -26,6 +26,10 @@ public class TopicService {
         return topicRepository.findAllByOrderByCreatedAtDesc();
     }
 
+    public List<Topic> getSolvedTopics() {
+        return topicRepository.findByStatus(Status.RESOLVED);
+    }
+
     public StatisticsVo getStatistics(){
         long allCount = topicRepository.count();
         long waitingCount = topicRepository.countByStatus(Status.WAITING);
