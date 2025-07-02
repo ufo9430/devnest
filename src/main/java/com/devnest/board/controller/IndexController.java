@@ -6,6 +6,7 @@ import com.devnest.board.domain.Topic;
 import com.devnest.board.service.TopicService;
 import com.devnest.board.service.TagService;
 import com.devnest.board.service.HotTopicService;
+import com.devnest.board.vo.StatisticsVo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,9 @@ public class IndexController {
 
         List<Tag> allTags = tagService.findAll();
         model.addAttribute("tags",allTags);
+
+        StatisticsVo statistics = topicService.getStatistics();
+        model.addAttribute("statistics",statistics);
 
         //임시 세션 부여
         session.setAttribute("LOGIN_USER",1L);

@@ -14,4 +14,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     List<Topic> findRecentFiveTopics();
 
     List<Topic> findByStatus(Status status);
+
+    long countByStatus(Status status);
 }
