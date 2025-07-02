@@ -506,7 +506,7 @@
                             해결
                         </span>
                         <span class="tag gray" th:each="tag : ${topic.tags}">
-                            <a th:href="@{/search(tag=${tag.name})}" th:text="${tag.name}"
+                            <a th:href="@{/search(tag=${tag})}" th:text="${tag}"
                                 class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
                         </span>
                     </div>
@@ -514,7 +514,7 @@
                     <div class="topic-meta">
                         <div class="topic-meta-item">
                             <i data-lucide="user" style="width: 14px; height: 14px;"></i>
-                            <span th:text="${topic.user.nickname}">닉네임</span>
+                            <span th:text="${topic.nickname}">닉네임</span>
                         </div>
                         <div class="topic-meta-item">
                             <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i>

@@ -17,7 +17,7 @@ import java.util.List;
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int topicId;
+    private Long topicId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -27,7 +27,7 @@ public class Topic {
 
     private String content;
 
-    private int viewCount;
+    private Integer viewCount;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -39,7 +39,7 @@ public class Topic {
     private List<Tag> tags;
 
     @OneToMany
-    @JoinTable(name = "answer_id")
+    @JoinColumn(name = "answer_id")
     private List<Answer> answers;
 
     private LocalDateTime createdAt;

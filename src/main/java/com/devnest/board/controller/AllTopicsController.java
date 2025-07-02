@@ -1,6 +1,6 @@
 package com.devnest.board.controller;
 
-import com.devnest.board.domain.Topic;
+import com.devnest.board.dto.TopicResponseDTO;
 import com.devnest.board.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ public class AllTopicsController {
     public String allTopics(@RequestParam(required = false, defaultValue = "false") boolean resolved,
                             @RequestParam(required = false, defaultValue="0") int page,
                             Model model){
-        Page<Topic> topics = resolved ? topicService.getSolvedTopics(page) : topicService.getRecentTopics(page);
+        Page<TopicResponseDTO> topics = resolved ? topicService.getSolvedTopics(page) : topicService.getRecentTopics(page);
 
         model.addAttribute("resolved",resolved);
         model.addAttribute("topics",topics);
