@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>나의 프로필 - DevNest</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
+
     <style>
         :root {
             --primary-color: #6366F1;
@@ -25,26 +25,26 @@
             --warning-color: #F59E0B;
             --danger-color: #EF4444;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background-color);
             color: var(--text-primary);
         }
-        
+
         .navbar {
             background-color: var(--card-background);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
         }
-        
+
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
             color: var(--primary-color) !important;
             text-decoration: none;
         }
-        
+
         .btn-primary-custom {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -57,25 +57,25 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .btn-primary-custom:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
             color: white;
             text-decoration: none;
         }
-        
+
         .search-box {
             position: relative;
             max-width: 400px;
         }
-        
+
         .search-box input {
             padding-right: 40px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
         }
-        
+
         .search-box button {
             position: absolute;
             right: 8px;
@@ -85,7 +85,7 @@
             border: none;
             color: var(--text-secondary);
         }
-        
+
         .notification-icon-button {
             background: none;
             border: none;
@@ -94,11 +94,11 @@
             color: var(--text-secondary);
             position: relative;
         }
-        
+
         .notification-icon-button:hover {
             background-color: #F3F4F6;
         }
-        
+
         .profile-icon-button {
             background: none;
             border: none;
@@ -106,30 +106,30 @@
             border-radius: 50%;
             color: var(--text-secondary);
         }
-        
+
         .profile-icon-button img {
             width: 32px;
             height: 32px;
             border-radius: 50%;
         }
-        
+
         .main-content {
             max-width: 1000px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
-        
+
         .page-header {
             margin-bottom: 2rem;
         }
-        
+
         .page-header h1 {
             font-size: 2rem;
             font-weight: 700;
             color: var(--text-primary);
             margin: 0;
         }
-        
+
         .profile-section {
             background-color: var(--card-background);
             border-radius: 12px;
@@ -138,26 +138,26 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
         }
-        
+
         .section-title {
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 1.5rem;
         }
-        
+
         .profile-photo-section {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 2rem;
         }
-        
+
         .profile-photo-container {
             position: relative;
             margin-bottom: 1rem;
         }
-        
+
         .profile-photo {
             width: 120px;
             height: 120px;
@@ -165,7 +165,7 @@
             object-fit: cover;
             border: 4px solid var(--border-color);
         }
-        
+
         .edit-photo-btn {
             position: absolute;
             bottom: 5px;
@@ -182,36 +182,36 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .edit-photo-btn:hover {
             background-color: var(--primary-hover);
         }
-        
+
         .username {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
-        
+
         .user-bio {
             color: var(--primary-color);
             font-size: 0.875rem;
             text-align: center;
             margin-bottom: 0.25rem;
         }
-        
+
         .form-group {
             margin-bottom: 1.5rem;
         }
-        
+
         .form-label {
             font-weight: 500;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
             display: block;
         }
-        
+
         .form-control {
             border: 1px solid var(--border-color);
             border-radius: 6px;
@@ -219,19 +219,19 @@
             font-size: 0.875rem;
             width: 100%;
         }
-        
+
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
             outline: none;
         }
-        
+
         .form-actions {
             display: flex;
             gap: 1rem;
             justify-content: flex-end;
         }
-        
+
         .btn-outline-custom {
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
@@ -241,13 +241,13 @@
             border-radius: 6px;
             text-decoration: none;
         }
-        
+
         .btn-outline-custom:hover {
             background-color: var(--text-secondary);
             color: white;
             text-decoration: none;
         }
-        
+
         .btn-primary-form {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -258,12 +258,12 @@
             border: none;
             cursor: pointer;
         }
-        
+
         .btn-primary-form:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
         }
-        
+
         .security-section {
             background-color: var(--card-background);
             border-radius: 12px;
@@ -271,44 +271,44 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
         }
-        
+
         .security-info {
             color: var(--text-secondary);
             font-size: 0.875rem;
             margin-bottom: 1.5rem;
         }
-        
+
         /* Modal Styles */
         .modal-content {
             border-radius: 12px;
             border: none;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
-        
+
         .modal-header {
             border-bottom: 1px solid var(--border-color);
             padding: 1.5rem;
         }
-        
+
         .modal-title {
             font-weight: 600;
             color: var(--text-primary);
         }
-        
+
         .modal-body {
             padding: 1.5rem;
         }
-        
+
         .modal-footer {
             border-top: 1px solid var(--border-color);
             padding: 1rem 1.5rem;
         }
-        
+
         .photo-upload-area {
             text-align: center;
             margin-bottom: 1.5rem;
         }
-        
+
         .photo-upload-area img {
             width: 100px;
             height: 100px;
@@ -317,29 +317,29 @@
             margin-bottom: 1rem;
             border: 3px solid var(--border-color);
         }
-        
+
         .upload-info {
             font-size: 0.875rem;
             color: var(--text-secondary);
             margin-bottom: 1rem;
         }
-        
+
         .upload-info ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        
+
         .upload-info li {
             margin-bottom: 0.25rem;
         }
-        
+
         .file-input-wrapper {
             position: relative;
             display: inline-block;
             margin-bottom: 1rem;
         }
-        
+
         .file-input {
             position: absolute;
             opacity: 0;
@@ -347,7 +347,7 @@
             height: 100%;
             cursor: pointer;
         }
-        
+
         .file-input-label {
             background-color: var(--primary-color);
             color: white;
@@ -357,24 +357,24 @@
             font-weight: 500;
             display: inline-block;
         }
-        
+
         .file-input-label:hover {
             background-color: var(--primary-hover);
         }
-        
+
         @media (max-width: 768px) {
             .main-content {
                 padding: 0 0.5rem;
             }
-            
+
             .profile-section {
                 padding: 1.5rem;
             }
-            
+
             .form-actions {
                 flex-direction: column;
             }
-            
+
             .form-actions .btn-outline-custom,
             .form-actions .btn-primary-form {
                 width: 100%;
@@ -389,7 +389,7 @@
             <div class="d-flex align-items-center gap-3">
                 <a class="navbar-brand" href="/index.html">DevNest</a>
             </div>
-            
+
             <div class="d-flex align-items-center gap-3">
                 <div class="search-box">
                     <input type="text" class="form-control" placeholder="질문 검색...">
@@ -397,13 +397,13 @@
                         <i data-lucide="search" style="width: 16px; height: 16px;"></i>
                     </button>
                 </div>
-                
+
                 <a href="/ask_question.html" class="btn-primary-custom">질문하기</a>
-                
+
                 <button class="notification-icon-button" type="button">
                     <i data-lucide="bell" style="width: 24px; height: 24px;"></i>
                 </button>
-                
+
                 <button class="profile-icon-button" type="button">
                     <img src="/images/default.jpg" id="navProfilePhoto" alt="프로필">
                 </button>
@@ -421,7 +421,7 @@
         <!-- Profile Information Section -->
         <div class="profile-section">
             <div class="section-title">기본 정보</div>
-            
+
             <!-- Profile Photo -->
             <div class="profile-photo-section">
                 <div class="profile-photo-container">
@@ -431,9 +431,9 @@
                     </button>
                 </div>
                 <div class="username" id="usernameDisplay">개발자123</div>
-                <div class="user-bio">아이디의 아바타로 수정이 불가능합니다.</div>
+                <div class="user-bio">프로필 사진은 언제든지 변경할 수 있습니다.</div>
             </div>
-            
+
             <!-- Profile Form -->
             <form>
                 <!-- 수정 불가. readonly로! -->
@@ -451,7 +451,7 @@
                     </div>
 
                 </div>
-                
+
                 <div class="form-actions">
                     <button type="button" class="btn-outline-custom">등록 취소</button>
                     <button type="submit" class="btn-primary-form" id="saveButton" disabled>저장</button>
@@ -480,7 +480,7 @@
                 <div class="modal-body">
                     <div class="photo-upload-area">
                         <img src="/images/default.jpg" alt="현재 프로필 사진" id="modalProfilePhoto">
-                        
+
                         <div class="upload-info">
                             <div style="margin-bottom: 0.5rem; font-weight: 500;">이미지 업로드</div>
                             <ul>
@@ -489,7 +489,7 @@
                                 <li>• 정사각형 이미지를 권장합니다</li>
                             </ul>
                         </div>
-                        
+
                         <div class="file-input-wrapper">
                             <input type="file" class="file-input" id="photoUpload" accept="image/jpeg,image/png">
                             <label for="photoUpload" class="file-input-label">업로드</label>
@@ -530,7 +530,7 @@
             })
             .catch(error => {
                 console.error(error);
-                alert("사용자 정보 로딩에 실패했습니다.");
+                showCustomAlert("사용자 정보 로딩에 실패했습니다.", "danger");
             });
         });
 
@@ -542,16 +542,16 @@
             .then(response => response.json())
             .then(result => {
                 if (!result.isDuplicate) {
-                    alert("사용 가능한 닉네임입니다.");
+                    showCustomAlert("사용 가능한 닉네임입니다.", "success");
                     document.getElementById("saveButton").disabled = false;
                 } else {
-                    alert("이미 사용 중인 닉네임입니다.");
+                    showCustomAlert("이미 사용 중인 닉네임입니다.", "warning");
                     document.getElementById("saveButton").disabled = true;
                 }
             })
             .catch(error => {
                 console.error("중복 확인 실패:", error);
-                alert("닉네임 중복 확인 중 오류가 발생했습니다.");
+                showCustomAlert("닉네임 중복 확인 중 오류가 발생했습니다.", "danger");
             });
         });
 
@@ -575,7 +575,7 @@
                 return response.text();
             })
             .then(message => {
-                alert(message); // 닉네임이 성공적으로 변경되었습니다.
+                showCustomAlert(message, "success"); // 닉네임이 성공적으로 변경되었습니다.
 
                 // 변경된 사용자 정보 다시 불러오기
                 return fetch('/member/profile-info');
@@ -600,7 +600,7 @@
             })
             .catch(error => {
                 console.error("닉네임 저장 후 사용자 정보 갱신 오류:", error);
-                alert("사용자 정보 갱신 중 오류가 발생했습니다.");
+                showCustomAlert("사용자 정보 갱신 중 오류가 발생했습니다.", "danger");
             });
         });
 
@@ -608,8 +608,8 @@
         document.querySelector(".btn-outline-custom").addEventListener("click", function () {
             window.location.href = "/";
         });
-        
-        // Profile photo upload functionality
+
+        // // Profile photo upload functionality
         document.getElementById('photoUpload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -620,20 +620,94 @@
                 reader.readAsDataURL(file);
             }
         });
-        
+
         // Save photo functionality
-        document.getElementById('savePhoto').addEventListener('click', function() {
-            const modalPhoto = document.getElementById('modalProfilePhoto').src;
-            document.getElementById('profilePhoto').src = modalPhoto;
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('photoModal'));
-            modal.hide();
-            
-            // Show success message (you can implement this)
-            alert('프로필 사진이 변경되었습니다.');
+        document.getElementById('savePhoto').addEventListener('click', function () {
+            const fileInput = document.getElementById('photoUpload');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showCustomAlert("업로드할 파일을 선택해주세요.", "warning");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            // 1단계: 파일 업로드 (POST)
+            fetch("/member/upload-profile-image", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("파일 업로드 실패");
+                }
+                return response.text(); // 이미지 경로 반환됨
+            })
+            .then(imagePath => {
+                // 2단계: 이미지 경로 업데이트 (PATCH)
+                return fetch("/member/update-profile-image", {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ profileImage: imagePath })
+                });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("프로필 이미지 변경 실패");
+                }
+
+                // 3단계: 변경된 정보 다시 불러와 UI 반영
+                return fetch('/member/profile-info');
+            })
+            .then(response => response.json())
+            .then(data => {
+                const newImage = data.profileImage;
+
+                document.getElementById("profilePhoto").src = newImage;
+                document.getElementById("modalProfilePhoto").src = newImage;
+                document.getElementById("navProfilePhoto").src = newImage;
+
+                showCustomAlert("프로필 이미지가 성공적으로 변경되었습니다.", "success");
+
+                // 모달 닫기
+                const modal = bootstrap.Modal.getInstance(document.getElementById('photoModal'));
+                modal.hide();
+            })
+            .catch(error => {
+                console.error("프로필 이미지 변경 중 오류:", error);
+                showCustomAlert("프로필 이미지 변경 중 오류가 발생했습니다.", "danger");
+            });
         });
+
+        function showCustomAlert(message, type = "warning") {
+            const alertBox = document.getElementById("custom-alert");
+            const alertMessage = document.getElementById("custom-alert-message");
+
+            alertBox.classList.remove("d-none", "alert-warning", "alert-success", "alert-danger");
+            alertBox.classList.add(`alert-${type}`);
+            alertMessage.textContent = message;
+
+            setTimeout(() => {
+                hideCustomAlert();
+            }, 3000);
+        }
+
+        function hideCustomAlert() {
+            const alertBox = document.getElementById("custom-alert");
+            alertBox.classList.add("d-none");
+        }
     </script>
 </body>
+<!-- Global Toast 알림 -->
+<div id="custom-alert"
+     class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-none"
+     role="alert" style="min-width: 320px; z-index: 1055;">
+    <span id="custom-alert-message"></span>
+    <button type="button" class="btn-close" onclick="hideCustomAlert()"></button>
+</div>
 </html>
 
