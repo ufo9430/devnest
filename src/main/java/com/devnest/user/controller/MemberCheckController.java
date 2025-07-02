@@ -2,13 +2,17 @@ package com.devnest.user.controller;
 
 
 import com.devnest.auth.domain.CustomUserDetails;
+import com.devnest.user.domain.User;
 import com.devnest.user.dto.common.NicknameRequestDto;
+import com.devnest.user.repository.UserRepository;
 import com.devnest.user.service.MemberCheckService;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +27,7 @@ public class MemberCheckController {
 
 
     private final MemberCheckService memberCheckService;
+    private final UserRepository userRepository;
 
     @GetMapping("/check-email")
     public Map<String, Boolean> checkEmailDuplicate(@RequestParam String email) {
@@ -39,12 +44,4 @@ public class MemberCheckController {
 
     //닉네임 체크
 
-    // 닉네임 변경
-    @PatchMapping("/update-nickname")
-    public ResponseEntity<?> updateNickname(@RequestBody @Valid NicknameRequestDto dto,
-        Authentication authentication) {
-        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getUserId();
-        memberCheckService.updateNickname(userId, dto.getNickname());
-        return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
-    }
 }
