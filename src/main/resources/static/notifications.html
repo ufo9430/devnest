@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체 알림 - DevNest</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E5E7EB;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --card-background: #FFFFFF;
+            --unread-dot-color: #6366F1;
+            --read-dot-color: #D1D5DB;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        .navbar-custom {
+            background-color: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand-custom {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .notification-card {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        
+        .notification-header {
+            border-bottom: 1px solid #F3F4F6;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-item {
+            border-bottom: 1px solid #F3F4F6;
+            padding: 1.5rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background-color: #F9FAFB;
+        }
+        
+        .notification-item.unread {
+            background-color: #F8F9FA;
+        }
+        
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-dot.unread {
+            background-color: var(--unread-dot-color);
+        }
+        
+        .notification-dot.read {
+            background-color: var(--read-dot-color);
+        }
+        
+        .load-more-section {
+            border-top: 1px solid #F3F4F6;
+            background-color: #F8F9FA;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .btn-link-custom {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .btn-link-custom:hover {
+            color: var(--primary-hover);
+        }
+        
+        .notification-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand navbar-brand-custom" href="/index.html">DevNest</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item d-flex align-items-center ms-lg-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="질문 검색...">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i data-lucide="search"></i>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-2">질문하기</button>
+                    <button class="btn btn-outline-primary me-2">로그인</button>
+                    <button class="btn btn-outline-secondary">회원가입</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 1152px; padding-top: 2rem; padding-bottom: 2rem;">
+        <div class="notification-card">
+            <!-- Header -->
+            <div class="notification-header">
+                <h1 class="h4 mb-0 fw-semibold">전체 알림</h1>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleUnreadOnly()">
+                        <span id="filterButtonText">읽지 않은 알림만</span>
+                    </button>
+                    <button type="button" class="btn btn-link-custom" onclick="markAllAsRead()">
+                        모두 읽음
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">로딩 중...</span>
+                </div>
+                <p class="mt-2">알림을 불러오는 중...</p>
+            </div>
+
+            <!-- Notifications List -->
+            <div id="notifications-list">
+                <!-- Notifications will be rendered here by JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state d-none" id="emptyState">
+                <i data-lucide="bell-off" style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+                <h5>알림이 없습니다</h5>
+                <p>새로운 알림이 오면 여기에 표시됩니다.</p>
+            </div>
+
+            <!-- Load More -->
+            <div class="load-more-section d-none" id="loadMoreSection">
+                <button type="button" class="btn btn-link-custom fs-5 fw-semibold" onclick="loadMoreNotifications()">
+                    더 보기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // 전역 변수
+        let currentPage = 0;
+        const pageSize = 20;
+        let isLoading = false;
+        let hasMoreData = true;
+        let unreadOnly = false;
+        let currentUserId = 2; // 임시 사용자 ID (실제로는 로그인 정보에서 가져와야 함)
+
+        // 페이지 로드시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadNotifications(true);
+        });
+
+        // 알림 목록 로드
+        async function loadNotifications(reset = false) {
+            if (isLoading) return;
+            
+            if (reset) {
+                currentPage = 0;
+                hasMoreData = true;
+                document.getElementById('notifications-list').innerHTML = '';
+            }
+
+            if (!hasMoreData) return;
+
+            isLoading = true;
+            showLoading(true);
+
+            try {
+                let url = `/api/notifications?userId=${currentUserId}&page=${currentPage}&size=${pageSize}`;
+                if (unreadOnly) {
+                    url += '&unreadOnly=true';
+                }
+
+                const response = await fetch(url);
+                const result = await response.json();
+
+                if (result.message.includes("성공")) {
+                    const notifications = result.data.content;
+                    displayNotifications(notifications, reset);
+                    
+                    hasMoreData = !result.data.last;
+                    currentPage++;
+                    
+                    updateLoadMoreButton();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                console.error('알림 로드 실패:', error);
+                showError('알림을 불러오는데 실패했습니다.');
+            } finally {
+                isLoading = false;
+                showLoading(false);
+            }
+        }
+
+        // 알림 목록 표시
+        function displayNotifications(notifications, reset = false) {
+            const notificationsList = document.getElementById("notifications-list");
+            
+            if (reset) {
+                notificationsList.innerHTML = "";
+            }
+
+            if (notifications.length === 0 && reset) {
+                document.getElementById('emptyState').classList.remove('d-none');
+                return;
+            } else {
+                document.getElementById('emptyState').classList.add('d-none');
+            }
+
+            notifications.forEach(notification => {
+                const notificationItem = document.createElement("div");
+                notificationItem.className = `notification-item d-flex align-items-start gap-3 ${notification.isRead ? "" : "unread"}`;
+                notificationItem.onclick = () => handleNotificationClick(notification);
+                
+                notificationItem.innerHTML = `
+                    <div class="notification-dot ${notification.isRead ? "read" : "unread"}"></div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-start gap-1 mb-2">
+                            <i data-lucide="${getTypeIcon(notification.type)}" class="notification-icon"></i>
+                            ${notification.senderNickname ? 
+                                `<span class="small fw-semibold">${notification.senderNickname}</span>` : ``}
+                            <span class="small">${notification.message}</span>
+                        </div>
+                        ${notification.title ? `
+                        <div class="mb-2">
+                            <span class="small text-muted">글 제목: </span>
+                            <span class="small fw-medium">${notification.title}</span>
+                        </div>
+                        ` : ``}
+                    </div>
+                    <div class="small text-muted">${notification.timeAgo}</div>
+                `;
+                notificationsList.appendChild(notificationItem);
+            });
+            
+            lucide.createIcons();
+        }
+
+        // 알림 타입별 아이콘 반환
+        function getTypeIcon(type) {
+            switch(type) {
+                case 'answer': return 'message-circle';
+                case 'accept': return 'check-circle';
+                case 'recommend': return 'thumbs-up';
+                case 'comment': return 'message-square';
+                case 'mention': return 'at-sign';
+                case 'follow': return 'user-plus';
+                case 'system': return 'bell';
+                default: return 'bell';
+            }
+        }
+
+        // 알림 클릭 처리
+        async function handleNotificationClick(notification) {
+            // 읽지 않은 알림이면 읽음 처리
+            if (!notification.isRead) {
+                await markAsRead(notification.notificationId);
+            }
+            
+            // 관련 페이지로 이동 (실제 구현에서는 targetType과 targetId를 이용)
+            if (notification.targetType === 'QUESTION' && notification.targetId) {
+                // 질문 페이지로 이동
+                window.location.href = `/question/${notification.targetId}`;
+            } else if (notification.targetType === 'ANSWER' && notification.targetId) {
+                // 답변 페이지로 이동
+                window.location.href = `/answer/${notification.targetId}`;
+            }
+        }
+
+        // 특정 알림 읽음 처리
+        async function markAsRead(notificationId) {
+            try {
+                const response = await fetch(`/api/notifications/${notificationId}/read?userId=${currentUserId}`, {
+                    method: 'PATCH'
+                });
+                const result = await response.json();
+                
+                if (result.message.includes("성공")) {
+                    // UI 업데이트
+                    updateNotificationAsRead(notificationId);
+                }
+            } catch (error) {
+                console.error('알림 읽음 처리 실패:', error);
+            }
+        }
+
+        // UI에서 알림을 읽음으로 표시
+        function updateNotificationAsRead(notificationId) {
+            const notificationItems = document.querySelectorAll('.notification-item');
+            notificationItems.forEach(item => {
+                if (item.dataset.notificationId === notificationId.toString()) {
+                    item.classList.remove('unread');
+                    const dot = item.querySelector('.notification-dot');
+                    if (dot) {
+                        dot.classList.remove('unread');
+                        dot.classList.add('read');
+                    }
+                }
+            });
+        }
+
+        // 모든 알림 읽음 처리
+        async function markAllAsRead() {
+            if (!confirm('모든 알림을 읽음으로 표시하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/notifications/read-all?userId=${currentUserId}`, {
+                    method: 'PATCH'
+                });
+                const result = await response.json();
+                
+                if (result.message.includes("성공")) {
+                    alert(result.message);
+                    loadNotifications(true); // 목록 새로고침
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('전체 읽음 처리 실패:', error);
+                alert('전체 읽음 처리에 실패했습니다.');
+            }
+        }
+
+        // 읽지 않은 알림만 보기 토글
+        function toggleUnreadOnly() {
+            unreadOnly = !unreadOnly;
+            const filterButton = document.getElementById('filterButtonText');
+            filterButton.textContent = unreadOnly ? '전체 알림' : '읽지 않은 알림만';
+            loadNotifications(true);
+        }
+
+        // 더 보기
+        function loadMoreNotifications() {
+            loadNotifications(false);
+        }
+
+        // 더보기 버튼 업데이트
+        function updateLoadMoreButton() {
+            const loadMoreSection = document.getElementById('loadMoreSection');
+            if (hasMoreData) {
+                loadMoreSection.classList.remove('d-none');
+            } else {
+                loadMoreSection.classList.add('d-none');
+            }
+        }
+
+        // 로딩 상태 표시
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (show) {
+                spinner.style.display = 'block';
+            } else {
+                spinner.style.display = 'none';
+            }
+        }
+
+        // 에러 표시
+        function showError(message) {
+            alert(message);
+        }
+    </script>
+</body>
+</html> 
