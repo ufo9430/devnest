@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "tag")
 public class BoardTag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

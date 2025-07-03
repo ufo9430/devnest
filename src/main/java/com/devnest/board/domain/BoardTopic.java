@@ -12,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "topic")
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardTopic {
