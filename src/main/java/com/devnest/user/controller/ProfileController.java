@@ -115,4 +115,10 @@ public class ProfileController {
 
     return ResponseEntity.ok("프로필 이미지가 성공적으로 변경되었습니다.");
   }
+
+  @GetMapping("/member/change_password")
+  public String getChangePassword() {
+
+    return "profile-change_password";
+  }
 }
