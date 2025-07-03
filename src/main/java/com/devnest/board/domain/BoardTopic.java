@@ -12,12 +12,13 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "topic")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic {
+public class BoardTopic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int topicId;
+    private Long topicId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -27,7 +28,7 @@ public class Topic {
 
     private String content;
 
-    private int viewCount;
+    private Integer viewCount;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -36,11 +37,11 @@ public class Topic {
     @JoinTable(name = "topic_tag",
     joinColumns = @JoinColumn(name = "tag_id"),
     inverseJoinColumns = @JoinColumn(name = "topic_id"))
-    private List<Tag> tags;
+    private List<BoardTag> tags;
 
     @OneToMany
-    @JoinTable(name = "answer_id")
-    private List<Answer> answers;
+    @JoinColumn(name = "answer_id")
+    private List<BoardAnswer> answers;
 
     private LocalDateTime createdAt;
 

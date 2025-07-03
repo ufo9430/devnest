@@ -360,6 +360,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                     질문하기
                 </a>
+
+              <div th:if="${profile != null}">
+                <form method="post" action="/member/logout">
+                  <button type="submit" class="btn-primary-custom">로그아웃</button>
+                </form>
+              </div>
                 
                 <!-- Notification Dropdown -->
                 <div th:if="${profile != null}" class="notification-dropdown dropdown">
@@ -392,19 +398,16 @@
                         </li>
                     </ul>
                 </div>
-                <a th:if="${profile != null}" href="#" >
+                <a th:if="${profile != null}" href="/member/profile">
                     <img class="profile-badge" th:src="${profile.profile_image}" alt="프로필 링크">
                 </a>
 
-
-
-                <a th:if="${profile == null}" href="/login.html" class="btn-primary-custom">로그인</a>
-                <a th:if="${profile == null}" href="/signup.html" class="btn-primary-custom">회원가입</a>
+                <a th:if="${profile == null}" href="/member/login" class="btn-primary-custom">로그인</a>
+                <a th:if="${profile == null}" href="/member/signup" class="btn-primary-custom">회원가입</a>
             </div>
         </div>
     </nav>
 
-    
 
     <!-- Main Content -->
     <div class="main-container">
@@ -425,12 +428,12 @@
                             <p class="text-muted small mb-2" th:text="${topic.content.length() > 30} ? ${#strings.substring(topic.content, 0, 30)} + '...' : ${topic.content}" >글 내용</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="d-flex gap-1" th:each="tag : ${topic.tags}">
-                                    <a th:href="@{/search(tag=${tag.name})}" th:text="${tag.name}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
+                                    <a th:href="@{/search(tag=${tag})}" th:text="${tag}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
                                 </div>
                                 <span> </span>
                                 <div class="d-flex align-items-center gap-2">
                                     <small class="text-muted">답변</small>
-                                    <small class="text-muted" th:text="${#lists.size('topic.answers')}">1</small>
+                                    <small class="text-muted" th:text="${topic.answerCount}">1</small>
                                     <small class="text-muted">조회</small>
                                     <small class="text-muted" th:text="${topic.viewCount}">100</small>
                                 </div>
@@ -451,22 +454,22 @@
                     </div>
                     <div class="card-body p-0">
                         <!-- Topic Item -->
-                        <div class="discussion-item" th:each="currentHot : ${hot}">
+                        <div class="discussion-item" th:each="topic : ${hot}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <a th:href="@{/post(id=${currentHot.topic.topicId})}" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${currentHot.topic.title}">글 제목 </h6></a>
-                                <small class="text-muted" th:text="${@timeAgoUtil.format(currentHot.topic.createdAt)}">2시간 전</small>
+                                <a th:href="@{/post(id=${topic.topicId})}" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
+                                <small class="text-muted" th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</small>
                             </div>
-                            <p class="text-muted small mb-2" th:text="${currentHot.topic.content.length() > 30} ? ${#strings.substring(currentHot.topic.content, 0, 30)} + '...' : ${currentHot.topic.content}" >글 내용</p>
+                            <p class="text-muted small mb-2" th:text="${topic.content.length() > 30} ? ${#strings.substring(topic.content, 0, 30)} + '...' : ${topic.content}" >글 내용</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex gap-1" th:each="tag : ${currentHot.topic.tags}">
-                                    <a th:href="@{/search(tag=${tag.name})}" th:text="${tag.name}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
+                                <div class="d-flex gap-1" th:each="tag : ${topic.tags}">
+                                    <a th:href="@{/search(tag=${tag})}" th:text="${tag}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
                                 </div>
                                 <span> </span>
                                 <div class="d-flex align-items-center gap-2">
                                     <small class="text-muted">답변</small>
-                                    <small class="text-muted" th:text="${#lists.size('currentHot.topic.answers')}">1</small>
+                                    <small class="text-muted" th:text="${topic.answerCount}">1</small>
                                     <small class="text-muted">조회</small>
-                                    <small class="text-muted" th:text="${currentHot.topic.viewCount}">100</small>
+                                    <small class="text-muted" th:text="${topic.viewCount}">100</small>
                                 </div>
                             </div>
                         </div>

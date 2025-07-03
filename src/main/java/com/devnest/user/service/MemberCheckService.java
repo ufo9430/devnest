@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberCheckService {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    public boolean isEmailDuplicate(String email) {
-        return userRepository.existsByEmail(email);
-    }
+  public boolean isEmailDuplicate(String email) {
+    return userRepository.existsByEmail(email);
+  }
 
-    public boolean isNicknameDuplicate(String nickname) {
-        return userRepository.existsByNickname(nickname);
-    }
+  public boolean isNicknameDuplicate(String nickname) {
+    return userRepository.existsByNickname(nickname);
+  }
 
 }
 
