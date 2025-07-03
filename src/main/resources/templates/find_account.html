@@ -425,13 +425,13 @@
             const submitBtn = document.getElementById('submitBtn');
 
             if (!email) {
-                alert("이메일을 입력해주세요.");
+                showCustomAlert("이메일을 입력해주세요.", "warning");
                 return;
             }
 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                alert("올바른 이메일 형식을 입력해주세요.");
+                showCustomAlert("올바른 이메일 형식을 입력해주세요.", "warning");
                 return;
             }
 
@@ -454,13 +454,55 @@
                 alert(`계정을 찾았습니다!\n닉네임: ${result.nickname}\n가입일: ${formattedDate}\n\n비밀번호를 재설정하려면 계속 진행해주세요.`);
                 window.location.href = "/member/password-recovery";
             } catch (error) {
-                alert("입력하신 이메일로 등록된 계정을 찾을 수 없습니다.");
+                showCustomAlert("입력하신 이메일로 등록된 계정을 찾을 수 없습니다.", "warning");
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '계정 확인';
             }
         });
+
+        function showCustomAlert(message, type = "warning") {
+            const alertBox = document.getElementById("custom-alert");
+            const alertMessage = document.getElementById("custom-alert-message");
+
+            alertBox.classList.remove("d-none", "alert-warning", "alert-success", "alert-danger");
+            alertBox.classList.add(`alert-${type}`);
+            alertMessage.textContent = message;
+
+            setTimeout(() => {
+                hideCustomAlert();
+            }, 3000);
+        }
+
+        function hideCustomAlert() {
+            const alertBox = document.getElementById("custom-alert");
+            alertBox.classList.add("d-none");
+        }
     </script>
+    <!-- 계정 찾기 성공 시 보여줄 모달 -->
+    <div class="modal fade" id="accountFoundModal" tabindex="-1" aria-labelledby="accountFoundModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accountFoundModalLabel">계정 확인됨</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body" id="accountFoundModalBody">
+                    <!-- 여기에 JS로 메시지 삽입 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+<!-- Global Toast 알림 -->
+<div id="custom-alert"
+     class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-none"
+     role="alert" style="min-width: 320px; z-index: 1055;">
+    <span id="custom-alert-message"></span>
+    <button type="button" class="btn-close" onclick="hideCustomAlert()"></button>
+</div>
 </html>
 
