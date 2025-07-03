@@ -45,6 +45,10 @@ public class IndexController {
             System.out.println(" - Email: " + email);
             System.out.println(" - Nickname: " + nickname);
 
+            if (userDetails.isAdmin()) {
+                return "redirect:/admin";
+            }
+
             model.addAttribute("profile", userDetails);
         } else {
             System.out.println("인증되지 않은 사용자입니다.");
