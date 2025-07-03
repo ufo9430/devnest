@@ -1,11 +1,13 @@
 package com.devnest.user.controller;
 
+import com.devnest.auth.domain.CustomUserDetails;
 import com.devnest.user.dto.request.PasswordChangeRequestDto;
 import com.devnest.user.service.PasswordChangeService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +22,14 @@ public class PasswordChangeController {
 
     // 현재 비밀번호 확인
     @PostMapping("/verify-current-password")
-    public ResponseEntity<String> verifyCurrentPassword(@RequestBody PasswordChangeRequestDto requestDto, HttpSession session) {
-        Long userId = (Long) session.getAttribute("LOGIN_USER");
-        if (userId == null) {
+    public ResponseEntity<String> verifyCurrentPassword(@RequestBody PasswordChangeRequestDto requestDto, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()
+            || authentication.getPrincipal() instanceof String) {
             return ResponseEntity.status(403).body("로그인이 필요합니다.");
         }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
 
         boolean valid = passwordChangeService.verifyCurrentPassword(userId, requestDto.getCurrentPassword());
 
@@ -37,11 +42,14 @@ public class PasswordChangeController {
 
     // 새 비밀번호 설정
     @PostMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody @Valid PasswordChangeRequestDto requestDto, HttpSession session) {
-        Long userId = (Long) session.getAttribute("LOGIN_USER");
-        if (userId == null) {
+    public ResponseEntity<String> changePassword(@RequestBody @Valid PasswordChangeRequestDto requestDto, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()
+            || authentication.getPrincipal() instanceof String) {
             return ResponseEntity.status(403).body("로그인이 필요합니다.");
         }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
 
         if (!requestDto.getNewPassword().equals(requestDto.getConfirmPassword())) {
             return ResponseEntity.badRequest().body("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
