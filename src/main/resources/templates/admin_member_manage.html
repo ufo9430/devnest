@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자 대시보드 - DevNest</title>
+    <title>관리자 회원관리 - DevNest</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
+
     <style>
         :root {
             --primary-color: #6366F1;
@@ -28,109 +28,112 @@
             --sidebar-border: #E9ECEF;
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background-color);
             color: var(--text-primary);
+            line-height: 1.6;
         }
 
-        .admin-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--sidebar-border);
-            padding: 1.5rem 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-        
-        .sidebar-header {
-            padding: 0 1.5rem 1.5rem;
+        /* 헤더 */
+        .navbar {
+            background-color: var(--card-background) !important;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1rem;
+            padding: 1rem 0;
         }
-        
-        .sidebar-header h4 {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
+
+        .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-        }
-
-        .sidebar-nav {
-            padding: 0;
-        }
-
-        .nav-item {
-            margin-bottom: 0.25rem;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 0;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            color: var(--text-primary) !important;
         }
 
-        .nav-link:hover {
-            background-color: #F3F4F6;
-            color: var(--text-primary);
-        }
-
-        .nav-link.active {
-            background-color: #EEF2FF;
-            color: var(--primary-color);
-            border-right: 3px solid var(--primary-color);
-        }
-
-        .nav-link.alert-item {
-            position: relative;
-        }
-
-        .alert-badge {
-            background-color: var(--danger-color);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 0.75rem;
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            margin-right: 12px;
         }
 
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* 사이드바 */
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            height: calc(100vh - 80px);
+            position: fixed;
+            width: 280px;
+            padding: 2rem 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .sidebar-item:hover,
+        .sidebar-item.active {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+        }
+
+        .sidebar-item i {
+            margin-right: 12px;
+            width: 20px;
+        }
+
+        /* 메인 콘텐츠 */
         .main-content {
-            flex: 1;
-            margin-left: 250px;
+            margin-left: 280px;
             padding: 2rem;
+            min-height: calc(100vh - 80px);
         }
 
         .content-header {
             margin-bottom: 2rem;
         }
 
-        .content-header h1 {
-            font-weight: 600;
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
             color: var(--text-primary);
-            margin: 0;
+            margin-bottom: 0.5rem;
         }
 
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* 통계 카드 */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -139,48 +142,118 @@
         }
 
         .stat-card {
-            background-color: var(--card-background);
+            background: var(--card-background);
             border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
         }
 
-        .stat-card h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
 
-        .stat-card p {
-            color: var(--text-secondary);
-            margin: 0;
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 14px;
             font-weight: 500;
+            color: var(--text-secondary);
         }
 
-        .stat-card.primary h3 { color: var(--primary-color); }
-        .stat-card.success h3 { color: var(--success-color); }
-        .stat-card.warning h3 { color: var(--warning-color); }
-        .stat-card.danger h3 { color: var(--danger-color); }
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
 
-        .user-table {
-            background-color: var(--card-background);
+        .stat-icon.users { background: linear-gradient(135deg, #6366F1, #8B5CF6); }
+        .stat-icon.active { background: linear-gradient(135deg, #10B981, #059669); }
+        .stat-icon.inactive { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        .stat-icon.admin { background: linear-gradient(135deg, #EF4444, #DC2626); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* 검색 및 필터 */
+        .search-section {
+            background: var(--card-background);
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .search-group {
+            flex: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-search {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-search:hover {
+            background: var(--primary-hover);
+        }
+
+        /* 사용자 테이블 */
+        .table-container {
+            background: var(--card-background);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             overflow: hidden;
         }
 
         .table-header {
-            background-color: #F8F9FA;
-            padding: 1rem 1.5rem;
+            padding: 1.5rem;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .table-header h5 {
-            margin: 0;
+        .table-title {
+            font-size: 18px;
             font-weight: 600;
             color: var(--text-primary);
         }
@@ -190,18 +263,19 @@
         }
 
         .table th {
-            background-color: transparent;
-            border-top: none;
+            background-color: #F8FAFC;
             border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
             font-weight: 600;
-            color: var(--text-primary);
-            padding: 1rem 1.5rem;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1rem;
         }
 
         .table td {
-            border-top: none;
-            border-bottom: 1px solid #F3F4F6;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
+            border-bottom: 1px solid #F1F5F9;
             vertical-align: middle;
         }
 
@@ -212,212 +286,229 @@
         }
 
         .user-avatar {
-            width: 32px;
-            height: 32px;
-            background-color: var(--primary-color);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.875rem;
         }
 
         .user-details h6 {
             margin: 0;
             font-weight: 600;
             color: var(--text-primary);
-            font-size: 0.95rem;
         }
 
-        .user-details p {
-            margin: 0;
+        .user-details small {
             color: var(--text-secondary);
-            font-size: 0.875rem;
         }
 
-        .status-badge {
+        .badge {
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: 500;
         }
 
-        .status-badge.active {
-            background-color: #D1FAE5;
-            color: var(--success-color);
+        .badge.bg-success {
+            background-color: #D1FAE5 !important;
+            color: #065F46;
         }
 
-        .status-badge.inactive {
-            background-color: #FEE2E2;
-            color: var(--danger-color);
+        .badge.bg-warning {
+            background-color: #FEF3C7 !important;
+            color: #92400E;
         }
 
-        .role-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .badge.bg-danger {
+            background-color: #FEE2E2 !important;
+            color: #991B1B;
         }
 
-        .role-badge.admin {
-            background-color: #EEF2FF;
-            color: var(--primary-color);
-        }
-
-        .role-badge.user {
-            background-color: #F3F4F6;
-            color: var(--text-secondary);
-        }
-
-        .btn-action {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: white;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-action:hover {
-            background-color: #F8F9FA;
-            color: var(--text-primary);
-        }
-
-        .table-pagination {
-            padding: 1rem 1.5rem;
+        /* 페이지네이션 */
+        .pagination-container {
+            padding: 1.5rem;
             border-top: 1px solid var(--border-color);
-            background-color: #F8F9FA;
             display: flex;
             justify-content: between;
             align-items: center;
         }
 
+        .pagination-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .pagination {
+            margin: 0;
+        }
+
+        .page-link {
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 0.75rem;
+        }
+
+        .page-link:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        /* 반응형 */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                z-index: 1000;
             }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
+            
             .main-content {
                 margin-left: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-form {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <div class="admin-layout">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h4>
-                    <i data-lucide="shield-check"></i>
-                    관리자 대시보드
-                </h4>
-            </div>
+    <!-- 헤더 -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <a class="logo" href="/">
+                <div class="logo-icon">D</div>
+                <span class="logo-text">DevNest</span>
+            </a>
+        </div>
+    </nav>
 
-            <nav class="sidebar-nav">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/admin/member-manage">
-                            <i data-lucide="users"></i>
-                            회원 관리
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link alert-item" href="/admin/report-manage">
-                            <i data-lucide="flag"></i>
-                            신고 관리
-                            <span class="alert-badge">3</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <nav>
+            <a href="/admin" class="sidebar-item active">
+                <i data-lucide="users"></i>
+                회원 관리
+            </a>
+            <a href="/admin/report-manage" class="sidebar-item">
+                <i data-lucide="flag"></i>
+                신고 관리
+            </a>
+            <a href="/notifications" class="sidebar-item">
+                <i data-lucide="bell"></i>
+                알림 관리
+            </a>
+        </nav>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="main-content">
+        <!-- 페이지 헤더 -->
+        <div class="content-header">
+            <h1 class="page-title">회원 관리</h1>
+            <p class="page-subtitle">플랫폼 사용자들의 정보를 확인하고 관리할 수 있습니다.</p>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="content-header">
-                <h1>회원 관리</h1>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card primary">
-                    <h3 id="totalUsers">-</h3>
-                    <p>전체 회원</p>
-                </div>
-                <div class="stat-card success">
-                    <h3 id="activeUsers">-</h3>
-                    <p>활성 회원</p>
-                </div>
-                <div class="stat-card warning">
-                    <h3 id="suspendedUsers">-</h3>
-                    <p>정지 회원</p>
-                </div>
-                <div class="stat-card danger">
-                    <h3 id="adminUsers">-</h3>
-                    <p>관리자</p>
-                </div>
-            </div>
-
-            <!-- User Table -->
-            <div class="user-table">
-                <div class="table-header">
-                    <h5>회원 목록</h5>
-                    <div class="d-flex gap-2">
-                        <input type="text" class="form-control" placeholder="회원 검색..." style="width: 200px;">
-                        <button class="btn btn-outline-secondary">
-                            <i data-lucide="search"></i>
-                        </button>
+        <!-- 통계 카드 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">전체 사용자</div>
+                    <div class="stat-icon users">
+                        <i data-lucide="users"></i>
                     </div>
                 </div>
+                <div class="stat-value" id="totalUsers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">활성 사용자</div>
+                    <div class="stat-icon active">
+                        <i data-lucide="user-check"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="activeUsers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">비활성 사용자</div>
+                    <div class="stat-icon inactive">
+                        <i data-lucide="user-x"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="inactiveUsers">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">관리자</div>
+                    <div class="stat-icon admin">
+                        <i data-lucide="shield"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="adminUsers">-</div>
+            </div>
+        </div>
+
+        <!-- 검색 섹션 -->
+        <div class="search-section">
+            <form class="search-form" onsubmit="searchUsers(event)">
+                <div class="search-group">
+                    <label for="searchInput" class="form-label">사용자 검색</label>
+                    <input type="text" class="search-input" id="searchInput" 
+                           placeholder="이메일 또는 닉네임으로 검색...">
+                </div>
+                <button type="submit" class="btn-search">
+                    <i data-lucide="search"></i>
+                    검색
+                </button>
+            </form>
+        </div>
+
+        <!-- 사용자 테이블 -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3 class="table-title">사용자 목록</h3>
+            </div>
+            
+            <div class="table-responsive">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>회원 정보</th>
-                            <th>가입일</th>
-                            <th>상태</th>
+                            <th>사용자</th>
                             <th>역할</th>
-                            <th>작업</th>
+                            <th>상태</th>
+                            <th>가입일</th>
                         </tr>
                     </thead>
                     <tbody id="userTableBody">
-                        <!-- 회원 데이터가 JavaScript로 로드됩니다 -->
+                        <!-- JavaScript로 동적 생성 -->
                     </tbody>
                 </table>
-                <div class="table-pagination">
-                    <div>
-                        <span id="pageInfo">1-10 of 25 회원</span>
-                    </div>
-                    <nav>
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#">이전</a>
-                            </li>
-                            <li class="page-item active">
-                                <a class="page-link" href="#">1</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">3</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">다음</a>
-                            </li>
-                        </ul>
-                    </nav>
+            </div>
+
+            <div class="pagination-container">
+                <div class="pagination-info" id="paginationInfo">
+                    <!-- JavaScript로 동적 생성 -->
                 </div>
+                <nav>
+                    <ul class="pagination" id="paginationNav">
+                        <!-- JavaScript로 동적 생성 -->
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -426,106 +517,135 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Initialize Lucide icons
+        // 아이콘 초기화
         lucide.createIcons();
 
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.querySelector('.sidebar');
+        // 전역 변수
+        let currentPage = 0;
+        let currentSearch = '';
+        const pageSize = 10;
 
-        if (menuToggle) {
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('show');
-            });
-        }
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserStats();
+            loadUsers();
+        });
 
-        // Load statistics
-        async function loadStats() {
+        // 사용자 통계 로드
+        async function loadUserStats() {
             try {
                 const response = await fetch('/admin/api/users/stats');
-                const stats = await response.json();
+                const result = await response.json();
                 
-                document.getElementById('totalUsers').textContent = stats.totalUsers || 0;
-                document.getElementById('activeUsers').textContent = stats.activeUsers || 0;
-                document.getElementById('suspendedUsers').textContent = stats.suspendedUsers || 0;
-                document.getElementById('adminUsers').textContent = stats.adminUsers || 0;
+                if (response.ok && result.data) {
+                    document.getElementById('totalUsers').textContent = result.data.totalUsers;
+                    document.getElementById('activeUsers').textContent = result.data.activeUsers;
+                    document.getElementById('inactiveUsers').textContent = result.data.inactiveUsers;
+                    document.getElementById('adminUsers').textContent = result.data.adminUsers;
+                }
             } catch (error) {
                 console.error('통계 로드 실패:', error);
             }
         }
 
-        // Load users table
-        async function loadUsers(page = 0, size = 10, search = '') {
+        // 사용자 목록 로드
+        async function loadUsers(page = 0, search = '') {
             try {
-                const response = await fetch(`/admin/api/users?page=${page}&size=${size}&search=${search}`);
-                const data = await response.json();
+                const url = `/admin/api/users?page=${page}&size=${pageSize}&search=${encodeURIComponent(search)}`;
+                const response = await fetch(url);
+                const result = await response.json();
                 
-                const tbody = document.getElementById('userTableBody');
-                tbody.innerHTML = '';
-                
-                data.content.forEach(user => {
-                    const row = createUserRow(user);
-                    tbody.appendChild(row);
-                });
-                
-                // 페이지 정보 업데이트
-                const startIndex = (data.number * data.size) + 1;
-                const endIndex = Math.min(startIndex + data.size - 1, data.totalElements);
-                document.getElementById('pageInfo').textContent = 
-                    `${startIndex}-${endIndex} of ${data.totalElements} 회원`;
-                    
+                if (response.ok && result.data) {
+                    renderUserTable(result.data);
+                    renderPagination(result.data);
+                    currentPage = page;
+                    currentSearch = search;
+                }
             } catch (error) {
-                console.error('회원 목록 로드 실패:', error);
+                console.error('사용자 목록 로드 실패:', error);
             }
         }
 
-        // Create user table row
-        function createUserRow(user) {
-            const row = document.createElement('tr');
-            
-            const avatar = user.nickname.charAt(0).toUpperCase();
-            const statusClass = user.isActive ? 'active' : 'inactive';
-            const statusText = user.isActive ? '활성' : '정지';
-            const roleClass = user.role === 'ADMIN' ? 'admin' : 'user';
-            const roleText = user.role === 'ADMIN' ? '관리자' : '일반';
-            
-            row.innerHTML = `
-                <td>
-                    <div class="user-info">
-                        <div class="user-avatar">${avatar}</div>
-                        <div class="user-details">
-                            <h6>${user.nickname}</h6>
-                            <p>${user.email}</p>
+        // 사용자 테이블 렌더링
+        function renderUserTable(pageData) {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+
+            pageData.content.forEach(user => {
+                const row = document.createElement('tr');
+                
+                const avatar = user.nickname ? user.nickname.charAt(0).toUpperCase() : 'U';
+                const statusBadge = user.isActive ? 
+                    '<span class="badge bg-success">활성</span>' : 
+                    '<span class="badge bg-warning">비활성</span>';
+                const roleBadge = user.role === 'ADMIN' ? 
+                    '<span class="badge bg-danger">관리자</span>' : 
+                    '<span class="badge bg-primary">사용자</span>';
+                
+                const createdDate = new Date(user.createdAt).toLocaleDateString('ko-KR');
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">${avatar}</div>
+                            <div class="user-details">
+                                <h6>${user.nickname}</h6>
+                                <small>${user.email}</small>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td>${user.createdAt}</td>
-                <td>
-                    <span class="status-badge ${statusClass}">${statusText}</span>
-                </td>
-                <td>
-                    <span class="role-badge ${roleClass}">${roleText}</span>
-                </td>
-                <td>
-                    <button class="btn-action" onclick="manageUser(${user.userId})">
-                        관리
-                    </button>
-                </td>
-            `;
+                    </td>
+                    <td>${roleBadge}</td>
+                    <td>${statusBadge}</td>
+                    <td>${createdDate}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // 페이지네이션 렌더링
+        function renderPagination(pageData) {
+            const info = document.getElementById('paginationInfo');
+            const nav = document.getElementById('paginationNav');
             
-            return row;
+            // 페이지 정보
+            const start = pageData.number * pageData.size + 1;
+            const end = Math.min((pageData.number + 1) * pageData.size, pageData.totalElements);
+            info.textContent = `${start}-${end} / 총 ${pageData.totalElements}명`;
+            
+            // 페이지네이션 버튼
+            nav.innerHTML = '';
+            
+            // 이전 버튼
+            const prevItem = document.createElement('li');
+            prevItem.className = `page-item ${pageData.first ? 'disabled' : ''}`;
+            prevItem.innerHTML = `<a class="page-link" href="#" onclick="loadUsers(${pageData.number - 1}, '${currentSearch}')">이전</a>`;
+            nav.appendChild(prevItem);
+            
+            // 페이지 번호들
+            const startPage = Math.max(0, pageData.number - 2);
+            const endPage = Math.min(pageData.totalPages - 1, pageData.number + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.className = `page-item ${i === pageData.number ? 'active' : ''}`;
+                pageItem.innerHTML = `<a class="page-link" href="#" onclick="loadUsers(${i}, '${currentSearch}')">${i + 1}</a>`;
+                nav.appendChild(pageItem);
+            }
+            
+            // 다음 버튼
+            const nextItem = document.createElement('li');
+            nextItem.className = `page-item ${pageData.last ? 'disabled' : ''}`;
+            nextItem.innerHTML = `<a class="page-link" href="#" onclick="loadUsers(${pageData.number + 1}, '${currentSearch}')">다음</a>`;
+            nav.appendChild(nextItem);
         }
 
-        // Manage user modal (to be implemented)
-        function manageUser(userId) {
-            alert(`회원 ID: ${userId} 관리 모달 구현 예정`);
+        // 검색 함수
+        function searchUsers(event) {
+            event.preventDefault();
+            const searchValue = document.getElementById('searchInput').value.trim();
+            loadUsers(0, searchValue);
         }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
-            loadStats();
-            loadUsers();
-        });
     </script>
 </body>
 </html> 
