@@ -492,7 +492,7 @@
                 </div>
             </div>
 
-            <span class="topics-count" th:text="|총 ${#lists.size(topics)}개의 토론|">총 1,247개의 토론</span>
+            <span class="topics-count" th:text="|총 ${topics.getTotalElements()}개의 토론|">총 1,247개의 토론</span>
 
             <!-- Topic List -->
             <div class="topic-list">

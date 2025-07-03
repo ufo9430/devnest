@@ -37,7 +37,7 @@ public class TopicService {
     }
 
     public Page<TopicResponseDTO> getRecentTopics(int page){
-        Pageable pageable = PageRequest.of(page, 3);
+        Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> dtoList = new ArrayList<>();
 
         Page<Topic> topicPage = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
@@ -50,7 +50,7 @@ public class TopicService {
     }
 
     public Page<TopicResponseDTO> getSolvedTopics(int page) {
-        Pageable pageable = PageRequest.of(page, 3);
+        Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> dtoList = new ArrayList<>();
 
         Page<Topic> topicPage = topicRepository.findByStatus(Status.RESOLVED, pageable);
