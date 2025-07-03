@@ -1,12 +1,18 @@
 package com.devnest.board.service;
 
 import com.devnest.board.domain.Status;
-import com.devnest.board.domain.Topic;
+import com.devnest.board.domain.BoardTopic;
+import com.devnest.board.dto.TopicResponseDTO;
 import com.devnest.board.repository.TopicRepository;
 import com.devnest.board.vo.StatisticsVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,12 +24,42 @@ public class TopicService {
         this.topicRepository = topicRepository;
     }
 
-    public List<Topic> getRecentFiveTopics(){
-        return topicRepository.findRecentFiveTopics();
+    public List<TopicResponseDTO> getRecentFiveTopics(){
+        List<TopicResponseDTO> responseDTOList = new ArrayList<>();
+
+        List<BoardTopic> topics = topicRepository.findRecentFiveTopics();
+
+        for (BoardTopic topic : topics) {
+            responseDTOList.add(new TopicResponseDTO(topic));
+        }
+
+        return responseDTOList;
     }
 
-    public List<Topic> getRecentTopics(){
-        return topicRepository.findAllByOrderByCreatedAtDesc();
+    public Page<TopicResponseDTO> getRecentTopics(int page){
+        Pageable pageable = PageRequest.of(page, 7);
+        List<TopicResponseDTO> dtoList = new ArrayList<>();
+
+        Page<BoardTopic> topicPage = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        for (BoardTopic topic : topicPage) {
+            dtoList.add(new TopicResponseDTO(topic));
+        }
+
+        return new PageImpl<>(dtoList, pageable, topicPage.getTotalElements());
+    }
+
+    public Page<TopicResponseDTO> getSolvedTopics(int page) {
+        Pageable pageable = PageRequest.of(page, 7);
+        List<TopicResponseDTO> dtoList = new ArrayList<>();
+
+        Page<BoardTopic> topicPage = topicRepository.findByStatus(Status.RESOLVED, pageable);
+
+        for (BoardTopic topic : topicPage) {
+            dtoList.add(new TopicResponseDTO(topic));
+        }
+
+        return new PageImpl<>(dtoList, pageable, topicPage.getTotalElements());
     }
 
     public StatisticsVo getStatistics(){

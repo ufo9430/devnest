@@ -1,8 +1,7 @@
 package com.devnest.board.controller;
 
-import com.devnest.board.domain.HotTopic;
-import com.devnest.board.domain.Tag;
-import com.devnest.board.domain.Topic;
+import com.devnest.board.domain.BoardTag;
+import com.devnest.board.dto.TopicResponseDTO;
 import com.devnest.board.service.TopicService;
 import com.devnest.board.service.TagService;
 import com.devnest.board.service.HotTopicService;
@@ -28,13 +27,13 @@ public class IndexController {
     @RequestMapping("/")
     public String index(Model model, HttpSession session){
 
-        List<Topic> recentTopics = topicService.getRecentFiveTopics();
+        List<TopicResponseDTO> recentTopics = topicService.getRecentFiveTopics();
         model.addAttribute("recent",recentTopics);
 
-        List<HotTopic> recentHotTopics = hotTopicService.getRecentFiveHotTopics();
+        List<TopicResponseDTO> recentHotTopics = hotTopicService.getRecentFiveHotTopics();
         model.addAttribute("hot",recentHotTopics);
 
-        List<Tag> allTags = tagService.findAll();
+        List<BoardTag> allTags = tagService.findAll();
         model.addAttribute("tags",allTags);
 
         StatisticsVo statistics = topicService.getStatistics();

@@ -15,9 +15,7 @@ public class UserProfileService {
         this.repository = repository;
     }
 
-    public UserProfileVo getProfile(HttpSession session){
-        Long userId = (Long) session.getAttribute("LOGIN_USER");
-
+    public UserProfileVo getProfile(Long userId){
         User user = repository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
         return UserProfileVo.builder()
