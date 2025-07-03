@@ -19,5 +19,18 @@ public interface TopicRepository extends JpaRepository<BoardTopic, Long> {
 
     Page<BoardTopic> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
+    @Query(value = "SELECT * " +
+            "FROM topic " +
+            "WHERE (title LIKE CONCAT('%', :keyword, '%') OR content LIKE CONCAT('%', :keyword, '%'))"
+            , nativeQuery = true)
+    Page<BoardTopic> searchByKeyword(Pageable pageable, String keyword);
+
+    @Query(value = "SELECT * " +
+            "FROM topic " +
+            "WHERE (title LIKE CONCAT('%', :keyword, '%')) OR content LIKE CONCAT('%', :keyword, '%') " +
+            "AND status = 'RESOLVED'"
+            , nativeQuery = true)
+    Page<BoardTopic> searchSolvedByKeyword(Pageable pageable, String keyword);
+
     long countByStatus(Status status);
 }

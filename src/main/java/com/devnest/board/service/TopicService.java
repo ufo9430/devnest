@@ -38,28 +38,28 @@ public class TopicService {
 
     public Page<TopicResponseDTO> getRecentTopics(int page){
         Pageable pageable = PageRequest.of(page, 7);
-        List<TopicResponseDTO> dtoList = new ArrayList<>();
+        List<TopicResponseDTO> responseDTOS = new ArrayList<>();
 
-        Page<BoardTopic> topicPage = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<BoardTopic> topics = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        for (BoardTopic topic : topicPage) {
-            dtoList.add(new TopicResponseDTO(topic));
+        for (BoardTopic topic : topics) {
+            responseDTOS.add(new TopicResponseDTO(topic));
         }
 
-        return new PageImpl<>(dtoList, pageable, topicPage.getTotalElements());
+        return new PageImpl<>(responseDTOS, pageable, topics.getTotalElements());
     }
 
     public Page<TopicResponseDTO> getSolvedTopics(int page) {
         Pageable pageable = PageRequest.of(page, 7);
-        List<TopicResponseDTO> dtoList = new ArrayList<>();
+        List<TopicResponseDTO> responseDTOS = new ArrayList<>();
 
-        Page<BoardTopic> topicPage = topicRepository.findByStatus(Status.RESOLVED, pageable);
+        Page<BoardTopic> topics = topicRepository.findByStatus(Status.RESOLVED, pageable);
 
-        for (BoardTopic topic : topicPage) {
-            dtoList.add(new TopicResponseDTO(topic));
+        for (BoardTopic topic : topics) {
+            responseDTOS.add(new TopicResponseDTO(topic));
         }
 
-        return new PageImpl<>(dtoList, pageable, topicPage.getTotalElements());
+        return new PageImpl<>(responseDTOS, pageable, topics.getTotalElements());
     }
 
     public StatisticsVo getStatistics(){
