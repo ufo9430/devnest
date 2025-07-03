@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>계정 찾기 - DevNest</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
+
     <style>
         :root {
             --primary-color: #6366F1;
@@ -25,26 +25,26 @@
             --warning-color: #F59E0B;
             --danger-color: #EF4444;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background-color);
             color: var(--text-primary);
         }
-        
+
         .navbar {
             background-color: var(--card-background);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
         }
-        
+
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
             color: var(--primary-color) !important;
             text-decoration: none;
         }
-        
+
         .btn-primary-custom {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -57,25 +57,25 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .btn-primary-custom:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
             color: white;
             text-decoration: none;
         }
-        
+
         .search-box {
             position: relative;
             max-width: 400px;
         }
-        
+
         .search-box input {
             padding-right: 40px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
         }
-        
+
         .search-box button {
             position: absolute;
             right: 8px;
@@ -85,11 +85,11 @@
             border: none;
             color: var(--text-secondary);
         }
-        
+
         .notification-dropdown {
             position: relative;
         }
-        
+
         .notification-icon-button {
             background: none;
             border: none;
@@ -98,11 +98,11 @@
             color: var(--text-secondary);
             position: relative;
         }
-        
+
         .notification-icon-button:hover {
             background-color: #F3F4F6;
         }
-        
+
         .notification-badge {
             position: absolute;
             top: 5px;
@@ -117,7 +117,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .dropdown-menu {
             min-width: 300px;
             border-radius: 8px;
@@ -125,57 +125,57 @@
             border: 1px solid var(--border-color);
             padding: 0;
         }
-        
+
         .dropdown-header {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border-color);
             font-weight: 600;
             color: var(--text-primary);
         }
-        
+
         .dropdown-item {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid #F3F4F6;
             white-space: normal;
             cursor: pointer;
         }
-        
+
         .dropdown-item:last-child {
             border-bottom: none;
         }
-        
+
         .dropdown-item:hover {
             background-color: #F8F9FA;
         }
-        
+
         .notification-content {
             font-size: 0.875rem;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
-        
+
         .notification-time {
             font-size: 0.75rem;
             color: var(--text-secondary);
         }
-        
+
         .dropdown-footer {
             padding: 0.75rem 1rem;
             border-top: 1px solid var(--border-color);
             text-align: center;
         }
-        
+
         .dropdown-footer a {
             color: var(--primary-color);
             text-decoration: none;
             font-weight: 500;
         }
-        
+
         .dropdown-footer a:hover {
             text-decoration: underline;
         }
 
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background-color);
@@ -195,25 +195,25 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .btn-primary-custom:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
             color: white;
             text-decoration: none;
         }
-        
+
         .search-box {
             position: relative;
             max-width: 400px;
         }
-        
+
         .search-box input {
             padding-right: 40px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
         }
-        
+
         .search-box button {
             position: absolute;
             right: 8px;
@@ -223,7 +223,7 @@
             border: none;
             color: var(--text-secondary);
         }
-        
+
         .main-content {
             display: flex;
             align-items: center;
@@ -231,7 +231,7 @@
             min-height: calc(100vh - 100px);
             padding: 2rem 1rem;
         }
-        
+
         .account-find-card {
             background-color: var(--card-background);
             border-radius: 12px;
@@ -241,12 +241,12 @@
             max-width: 400px;
             border: 1px solid var(--border-color);
         }
-        
+
         .account-find-header {
             text-align: center;
             margin-bottom: 2rem;
         }
-        
+
         .account-find-header h2 {
             font-weight: 600;
             color: var(--text-primary);
@@ -256,13 +256,13 @@
             justify-content: center;
             gap: 0.5rem;
         }
-        
+
         .form-label {
             font-weight: 500;
             color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
-        
+
         .form-control {
             border: 1px solid var(--border-color);
             border-radius: 6px;
@@ -270,12 +270,12 @@
             font-size: 0.95rem;
             height: 48px;
         }
-        
+
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
         }
-        
+
         .btn-find {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -286,38 +286,38 @@
             border-radius: 6px;
             margin-top: 1rem;
         }
-        
+
         .btn-find:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
             color: white;
         }
-        
+
         .back-link {
             text-align: center;
             margin-top: 1.5rem;
         }
-        
+
         .back-link a {
             color: var(--primary-color);
             text-decoration: none;
             font-weight: 500;
         }
-        
+
         .back-link a:hover {
             color: var(--primary-hover);
             text-decoration: underline;
         }
-        
+
         @media (max-width: 768px) {
             .main-content {
                 padding: 1rem 0.5rem;
             }
-            
+
             .account-find-card {
                 padding: 2rem;
             }
-            
+
             .navbar .container-fluid {
                 flex-direction: column;
                 gap: 1rem;
@@ -332,7 +332,7 @@
             <div class="d-flex align-items-center gap-3">
                 <a class="navbar-brand" href="/">DevNest</a>
             </div>
-            
+
             <div class="d-flex align-items-center gap-3">
                 <div class="search-box">
                     <input type="text" class="form-control" placeholder="질문 검색...">
@@ -340,12 +340,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;" class="lucide lucide-search"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                     </button>
                 </div>
-                
+
                 <a href="/ask_question.html" class="btn-primary-custom">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                     질문하기
                 </a>
-                
+
                 <!-- Notification Dropdown -->
                 <div class="notification-dropdown dropdown">
                     <button class="notification-icon-button" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -385,7 +385,51 @@
     </nav>
 
 
-    <!-- Main Content -->
+<!--    &lt;!&ndash; Main Content &ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="main-content">&ndash;&gt;-->
+<!--&lt;!&ndash;        <div class="account-find-card">&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="account-find-header">&ndash;&gt;-->
+<!--&lt;!&ndash;                <h2>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <i data-lucide="user-search" style="width: 24px; height: 24px;"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                    계정 찾기&ndash;&gt;-->
+<!--&lt;!&ndash;                </h2>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;            <form id="findAccountForm">&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="mb-3">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <label for="email" class="form-label">이메일</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요" required>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <button type="submit" class="btn btn-find">&ndash;&gt;-->
+<!--&lt;!&ndash;                    계정 확인&ndash;&gt;-->
+<!--&lt;!&ndash;                </button>&ndash;&gt;-->
+<!--&lt;!&ndash;            </form>&ndash;&gt;-->
+
+<!--&lt;!&ndash;            <div class="back-link">&ndash;&gt;-->
+<!--&lt;!&ndash;                <a href="/member/login">로그인으로 돌아가기</a>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--    <div class="container mt-5">-->
+<!--        <div class="card p-4 mx-auto" style="max-width: 500px;">-->
+<!--            <h3 class="text-center mb-4">-->
+<!--                <i data-lucide="user-search" class="me-2"></i> 계정 찾기-->
+<!--            </h3>-->
+<!--            <form id="findAccountForm">-->
+<!--                <div class="mb-3">-->
+<!--                    <label for="email" class="form-label">이메일</label>-->
+<!--                    <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요" required>-->
+<!--                </div>-->
+<!--                <button type="submit" class="btn btn-primary w-100" id="submitBtn">계정 확인</button>-->
+<!--            </form>-->
+<!--            <div class="text-center mt-3">-->
+<!--                <a href="/member/login">로그인으로 돌아가기</a>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
     <div class="main-content">
         <div class="account-find-card">
             <div class="account-find-header">
@@ -394,90 +438,187 @@
                     계정 찾기
                 </h2>
             </div>
-            
+
             <form id="findAccountForm">
                 <div class="mb-3">
                     <label for="email" class="form-label">이메일</label>
                     <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요" required>
                 </div>
-                
-                <button type="submit" class="btn btn-find">
+
+                <button type="submit" class="btn btn-find" id="submitBtn">
                     계정 확인
                 </button>
             </form>
-            
+
             <div class="back-link">
                 <a href="/member/login">로그인으로 돌아가기</a>
             </div>
         </div>
     </div>
 
+
+
+
+
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script>-->
+<!--        // lucide.createIcons();-->
+<!--        //-->
+<!--        // // Sample user data for demonstration-->
+<!--        // const users = [-->
+<!--        //     {-->
+<!--        //         email: "kimdev@example.com",-->
+<!--        //         name: "김개발",-->
+<!--        //         status: "active"-->
+<!--        //     },-->
+<!--        //     {-->
+<!--        //         email: "leefront@example.com",-->
+<!--        //         name: "이프론트",-->
+<!--        //         status: "active"-->
+<!--        //     },-->
+<!--        //     {-->
+<!--        //         email: "parkback@example.com",-->
+<!--        //         name: "박백엔드",-->
+<!--        //         status: "suspended"-->
+<!--        //     }-->
+<!--        // ];-->
+<!--        //-->
+<!--        // // Form submission-->
+<!--        // document.getElementById('findAccountForm').addEventListener('submit', function(e) {-->
+<!--        //     e.preventDefault();-->
+<!--        //-->
+<!--        //     const email = document.getElementById('email').value.trim();-->
+<!--        //-->
+<!--        //     if (!email) {-->
+<!--        //         alert('이메일을 입력해주세요.');-->
+<!--        //         return;-->
+<!--        //     }-->
+<!--        //-->
+<!--        //     // Email validation-->
+<!--        //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;-->
+<!--        //     if (!emailRegex.test(email)) {-->
+<!--        //         alert('올바른 이메일 형식을 입력해주세요.');-->
+<!--        //         return;-->
+<!--        //     }-->
+<!--        //-->
+<!--        //     // Show loading state-->
+<!--        //     const submitBtn = document.querySelector('.btn-find');-->
+<!--        //     submitBtn.disabled = true;-->
+<!--        //     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>확인 중...';-->
+<!--        //-->
+<!--        //     // Simulate API call-->
+<!--        //     setTimeout(() => {-->
+<!--        //         const user = users.find(u => u.email === email);-->
+<!--        //-->
+<!--        //         if (user) {-->
+<!--        //             if (user.status === 'active') {-->
+<!--        //                 alert(`계정을 찾았습니다!\n이름: ${user.name}\n이메일: ${user.email}\n\n비밀번호 재설정을 원하시면 비밀번호 찾기를 이용해주세요.`);-->
+<!--        //                 window.location.href = '/member/forgot_password';-->
+<!--        //             } else {-->
+<!--        //                 alert('해당 계정은 현재 사용이 제한되어 있습니다.\n관리자에게 문의해주세요.');-->
+<!--        //             }-->
+<!--        //         } else {-->
+<!--        //             alert('입력하신 이메일로 등록된 계정을 찾을 수 없습니다.\n회원가입을 진행해주세요.');-->
+<!--        //         }-->
+<!--        //-->
+<!--        //         // Reset button-->
+<!--        //         submitBtn.disabled = false;-->
+<!--        //         submitBtn.innerHTML = '계정 확인';-->
+<!--        //     }, 1500);-->
+<!--        // });-->
+
+<!--        lucide.createIcons();-->
+
+<!--        document.getElementById('findAccountForm').addEventListener('submit', async function (e) {-->
+<!--            e.preventDefault();-->
+
+<!--            const email = document.getElementById('email').value.trim();-->
+<!--            const submitBtn = document.getElementById('submitBtn');-->
+
+<!--            if (!email) {-->
+<!--                alert("이메일을 입력해주세요.");-->
+<!--                return;-->
+<!--            }-->
+
+<!--            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;-->
+<!--            if (!emailRegex.test(email)) {-->
+<!--                alert("올바른 이메일 형식을 입력해주세요.");-->
+<!--                return;-->
+<!--            }-->
+
+<!--            submitBtn.disabled = true;-->
+<!--            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>확인 중...';-->
+
+<!--            try {-->
+<!--                const response = await fetch(`/member/find-by-email?email=${encodeURIComponent(email)}`);-->
+<!--                if (!response.ok) {-->
+<!--                    throw new Error("계정을 찾을 수 없습니다.");-->
+<!--                }-->
+
+<!--                const result = await response.json();-->
+
+<!--                const createdAt = new Date(result.createdAt);-->
+<!--                const formattedDate = createdAt.toLocaleDateString('ko-KR', {-->
+<!--                    year: 'numeric', month: 'long', day: 'numeric'-->
+<!--                });-->
+
+<!--                alert(`계정을 찾았습니다!\n닉네임: ${result.nickname}\n가입일: ${formattedDate}\n\n비밀번호를 재설정하려면 계속 진행해주세요.`);-->
+<!--                window.location.href = "/member/forgot_password";-->
+<!--            } catch (error) {-->
+<!--                alert("입력하신 이메일로 등록된 계정을 찾을 수 없습니다.");-->
+<!--            } finally {-->
+<!--                submitBtn.disabled = false;-->
+<!--                submitBtn.innerHTML = '계정 확인';-->
+<!--            }-->
+<!--        });-->
+<!--    </script>-->
+
+
     <script>
         lucide.createIcons();
 
-        // Sample user data for demonstration
-        const users = [
-            {
-                email: "kimdev@example.com",
-                name: "김개발",
-                status: "active"
-            },
-            {
-                email: "leefront@example.com",
-                name: "이프론트",
-                status: "active"
-            },
-            {
-                email: "parkback@example.com",
-                name: "박백엔드",
-                status: "suspended"
-            }
-        ];
-
-        // Form submission
-        document.getElementById('findAccountForm').addEventListener('submit', function(e) {
+        document.getElementById('findAccountForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value.trim();
-            
+            const submitBtn = document.getElementById('submitBtn');
+
             if (!email) {
-                alert('이메일을 입력해주세요.');
+                alert("이메일을 입력해주세요.");
                 return;
             }
-            
-            // Email validation
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                alert('올바른 이메일 형식을 입력해주세요.');
+                alert("올바른 이메일 형식을 입력해주세요.");
                 return;
             }
-            
-            // Show loading state
-            const submitBtn = document.querySelector('.btn-find');
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>확인 중...';
-            
-            // Simulate API call
-            setTimeout(() => {
-                const user = users.find(u => u.email === email);
-                
-                if (user) {
-                    if (user.status === 'active') {
-                        alert(`계정을 찾았습니다!\n이름: ${user.name}\n이메일: ${user.email}\n\n비밀번호 재설정을 원하시면 비밀번호 찾기를 이용해주세요.`);
-                        window.location.href = '/member/forgot_password';
-                    } else {
-                        alert('해당 계정은 현재 사용이 제한되어 있습니다.\n관리자에게 문의해주세요.');
-                    }
-                } else {
-                    alert('입력하신 이메일로 등록된 계정을 찾을 수 없습니다.\n회원가입을 진행해주세요.');
+
+            try {
+                const response = await fetch(`/member/find-by-email?email=${encodeURIComponent(email)}`);
+                if (!response.ok) {
+                    throw new Error("계정을 찾을 수 없습니다.");
                 }
-                
-                // Reset button
+
+                const result = await response.json();
+
+                const createdAt = new Date(result.createdAt);
+                const formattedDate = createdAt.toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+
+                alert(`계정을 찾았습니다!\n닉네임: ${result.nickname}\n가입일: ${formattedDate}\n\n비밀번호를 재설정하려면 계속 진행해주세요.`);
+                window.location.href = "/member/forgot_password";
+            } catch (error) {
+                alert("입력하신 이메일로 등록된 계정을 찾을 수 없습니다.");
+            } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '계정 확인';
-            }, 1500);
+            }
         });
     </script>
 </body>
