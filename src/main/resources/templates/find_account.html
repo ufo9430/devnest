@@ -452,7 +452,7 @@
                 });
 
                 alert(`계정을 찾았습니다!\n닉네임: ${result.nickname}\n가입일: ${formattedDate}\n\n비밀번호를 재설정하려면 계속 진행해주세요.`);
-                window.location.href = "/member/forgot_password";
+                window.location.href = "/member/password-recovery";
             } catch (error) {
                 alert("입력하신 이메일로 등록된 계정을 찾을 수 없습니다.");
             } finally {
