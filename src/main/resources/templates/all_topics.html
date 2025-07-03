@@ -543,15 +543,28 @@
                 <!-- Pagination -->
                 <div class="pagination-container">
                     <div class="pagination">
-                        <a href="#" onclick="return false;">&lt;&lt;</a>
-                        <a href="#" onclick="return false;">&lt;</a>
-                        <span class="current">1</span>
-                        <a href="#" onclick="return false;">2</a>
-                        <a href="#" onclick="return false;">3</a>
-                        <a href="#" onclick="return false;">4</a>
-                        <a href="#" onclick="return false;">5</a>
-                        <a href="#" onclick="return false;">&gt;</a>
-                        <a href="#" onclick="return false;">&gt;&gt;</a>
+                        <a th:href="@{/topics(page=0)}" th:classappend="${topics.first} ? 'disabled'"
+                            aria-label="First">&laquo;</a>
+
+                        <a th:href="@{/topics(page=${topics.number - 1})}" th:if="${!topics.first}"
+                            aria-label="Previous">&lt;</a>
+                        <a href="#" th:if="${topics.first}" onclick="return false;" class="disabled">&lt;</a>
+
+                        <th:block th:with="start=${T(java.lang.Math).max(0, topics.number - 2)},
+                       end=${T(java.lang.Math).min(topics.totalPages - 1, topics.number + 2)}">
+                            <th:block th:each="i : ${#numbers.sequence(start, end)}">
+                                <span th:if="${i == topics.number}" class="current" th:text="${i + 1}">1</span>
+                                <a th:if="${i != topics.number}" th:href="@{/topics(page=${i})}"
+                                    th:text="${i + 1}">1</a>
+                            </th:block>
+                        </th:block>
+
+                        <a th:href="@{/topics(page=${topics.number + 1})}" th:if="${!topics.last}"
+                            aria-label="Next">&gt;</a>
+                        <a href="#" th:if="${topics.last}" onclick="return false;" class="disabled">&gt;</a>
+
+                        <a th:href="@{/topics(page=${topics.totalPages - 1})}"
+                            th:classappend="${topics.last} ? 'disabled'" aria-label="Last">&raquo;</a>
                     </div>
                 </div>
             </div>
