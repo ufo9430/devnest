@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체 알림 보기 - DevNest</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E9ECEF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --info-color: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 피그마 DevNest 헤더 */
+        .main-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header-search {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--background-color);
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            width: 16px;
+            height: 16px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            color: white;
+        }
+
+        .user-profile {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mark-all-read {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .mark-all-read:hover {
+            color: var(--primary-hover);
+        }
+
+        /* 알림 리스트 */
+        .notifications-list {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .notification-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background-color: rgba(99, 102, 241, 0.02);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary-color);
+        }
+
+        .notification-content {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .notification-icon.answer {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .notification-icon.accept {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+        }
+
+        .notification-icon.recommend {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .notification-icon.system {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
+        }
+
+        .notification-body {
+            flex: 1;
+        }
+
+        .notification-message {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            line-height: 1.4;
+        }
+
+        .notification-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .notification-time {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* 더 보기 버튼 */
+        .load-more-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn-load-more {
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-load-more:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .header-search {
+                margin: 0 1rem;
+                max-width: 300px;
+            }
+
+            .notification-content {
+                gap: 0.75rem;
+            }
+
+            .notification-item {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 메인 헤더 (피그마와 동일) -->
+    <header class="main-header">
+        <div class="header-content">
+            <!-- 로고 -->
+            <a href="/" class="logo">
+                <div class="logo-icon">D</div>
+                <span class="logo-text">DevNest</span>
+            </a>
+
+            <!-- 검색바 -->
+            <div class="header-search">
+                <div class="search-icon">
+                    <i data-lucide="search"></i>
+                </div>
+                <input type="text" class="search-input" placeholder="질문 검색...">
+            </div>
+
+            <!-- 헤더 액션 -->
+            <div class="header-actions">
+                <a href="/questions/new" class="btn-primary">
+                    <i data-lucide="plus"></i>
+                    질문하기
+                </a>
+                <div class="user-profile">김</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <!-- 페이지 헤더 -->
+        <div class="notifications-header">
+            <h1 class="page-title">전체 알림</h1>
+            <a href="#" class="mark-all-read" onclick="markAllAsRead()">모두 읽음</a>
+        </div>
+
+        <!-- 알림 리스트 -->
+        <div class="notifications-list">
+            <!-- 새로운 답변 알림 -->
+            <div class="notification-item unread">
+                <div class="notification-content">
+                    <div class="notification-icon answer">
+                        <i data-lucide="message-circle"></i>
+                    </div>
+                    <div class="notification-body">
+                        <div class="notification-message">개발자123가 새로운 답변을 달았습니다.</div>
+                        <div class="notification-title">글 제목: React Hook에서 useEffect 의존성 배열 관련 질문입니다</div>
+                        <div class="notification-time">5분 전</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 답변 채택 알림 -->
+            <div class="notification-item">
+                <div class="notification-content">
+                    <div class="notification-icon accept">
+                        <i data-lucide="check-circle"></i>
+                    </div>
+                    <div class="notification-body">
+                        <div class="notification-message">회원님의 답변이 채택되었습니다.</div>
+                        <div class="notification-title">글 제목: JavaScript 클로저와 스코프 완벽 이해하기</div>
+                        <div class="notification-time">1시간 전</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 추천 알림 -->
+            <div class="notification-item">
+                <div class="notification-content">
+                    <div class="notification-icon recommend">
+                        <i data-lucide="thumbs-up"></i>
+                    </div>
+                    <div class="notification-body">
+                        <div class="notification-message">회원님의 답변이 추천되었습니다.</div>
+                        <div class="notification-title">글 제목: Python 리스트 컴프리헨션 최적화 방법</div>
+                        <div class="notification-time">3시간 전</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JS마스터 답변 알림 -->
+            <div class="notification-item">
+                <div class="notification-content">
+                    <div class="notification-icon answer">
+                        <i data-lucide="message-circle"></i>
+                    </div>
+                    <div class="notification-body">
+                        <div class="notification-message">JS마스터가 새로운 답변을 달았습니다.</div>
+                        <div class="notification-title">글 제목: JavaScript 클로저와 스코프 완벽 이해하기</div>
+                        <div class="notification-time">6시간 전</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 시스템 알림 -->
+            <div class="notification-item">
+                <div class="notification-content">
+                    <div class="notification-icon system">
+                        <i data-lucide="bell"></i>
+                    </div>
+                    <div class="notification-body">
+                        <div class="notification-message">회원님의 답변이 채택되었습니다.</div>
+                        <div class="notification-title">글 제목: Python 리스트 컴프리헨션 최적화 방법</div>
+                        <div class="notification-time">1일 전</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 더 보기 버튼 -->
+        <div class="load-more-container">
+            <button class="btn-load-more" onclick="loadMoreNotifications()">
+                <span>더 보기</span>
+                <i data-lucide="chevron-down"></i>
+            </button>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Lucide 아이콘 초기화
+        lucide.createIcons();
+
+        // 모든 알림을 읽음으로 표시
+        function markAllAsRead() {
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            unreadItems.forEach(item => {
+                item.classList.remove('unread');
+            });
+            
+            // 서버에 읽음 상태 업데이트 요청
+            fetch('/api/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).catch(console.error);
+        }
+
+        // 더 많은 알림 로드
+        function loadMoreNotifications() {
+            const button = document.querySelector('.btn-load-more');
+            button.innerHTML = '<span>로딩 중...</span><i data-lucide="loader-2"></i>';
+            
+            // 임시로 3초 후 완료 표시
+            setTimeout(() => {
+                button.innerHTML = '<span>더 보기</span><i data-lucide="chevron-down"></i>';
+                lucide.createIcons();
+                
+                // 실제로는 여기서 새로운 알림들을 추가
+                console.log('더 많은 알림을 로드했습니다');
+            }, 2000);
+        }
+
+        // 개별 알림 클릭 시 읽음 표시
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (this.classList.contains('unread')) {
+                    this.classList.remove('unread');
+                    
+                    // 서버에 읽음 상태 업데이트 요청
+                    const notificationId = this.dataset.id;
+                    if (notificationId) {
+                        fetch(`/api/notifications/${notificationId}/read`, {
+                            method: 'POST'
+                        }).catch(console.error);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

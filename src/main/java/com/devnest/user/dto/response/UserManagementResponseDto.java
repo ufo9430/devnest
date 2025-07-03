@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,9 +16,5 @@ public class UserManagementResponseDto {
     private String nickname;
     private Role role;
     private Boolean isActive;
-    private LocalDateTime createdAt;
-    private String profileImage;
-    private Long totalPosts;
-    private Long totalAnswers;
-    private String lastActiveDate;
+    private String createdAt; // String으로 포맷된 날짜
 }

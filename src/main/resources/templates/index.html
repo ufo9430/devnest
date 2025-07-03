@@ -328,6 +328,178 @@
             color: var(--primary-hover);
         }
         
+        /* 피그마 스타일 사이드 패널 */
+        .notification-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            border-left: 1px solid var(--border-color);
+        }
+        
+        .notification-panel.active {
+            right: 0;
+        }
+        
+        .notification-panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-panel-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .notification-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: white;
+        }
+        
+        .notification-panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .notification-panel-close {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .notification-panel-close:hover {
+            background-color: #F3F4F6;
+        }
+        
+        .notification-panel-content {
+            height: calc(100vh - 140px);
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+        
+        .notification-panel-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .notification-panel-item:hover {
+            background-color: #F9FAFB;
+        }
+        
+        .notification-panel-item.unread {
+            background-color: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid var(--primary-color);
+            margin-left: 0;
+            padding-left: calc(1.5rem - 4px);
+        }
+        
+        .notification-panel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+        
+        .notification-panel-icon.answer {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+        
+        .notification-panel-icon.accept {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+        }
+        
+        .notification-panel-icon.recommend {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .notification-panel-body {
+            flex: 1;
+        }
+        
+        .notification-panel-message {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            line-height: 1.4;
+            font-size: 0.9rem;
+        }
+        
+        .notification-panel-title-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .notification-panel-time {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .notification-panel-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background: white;
+        }
+        
+        .notification-panel-footer-btn {
+            width: 100%;
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .notification-panel-footer-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+        }
+
         @media (max-width: 768px) {
             .main-container {
                 padding: 1rem 0.5rem;
@@ -335,6 +507,11 @@
             
             .navbar-custom .container-fluid {
                 padding: 0 1rem;
+            }
+            
+            .notification-panel {
+                width: 100vw;
+                right: -100vw;
             }
         }
     </style>
@@ -367,36 +544,12 @@
                 </form>
               </div>
                 
-                <!-- Notification Dropdown -->
-                <div th:if="${profile != null}" class="notification-dropdown dropdown">
-                    <button class="notification-icon-button" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <!-- Notification Icon (피그마 스타일) -->
+                <div th:if="${profile != null}" class="notification-wrapper">
+                    <button class="notification-icon-button" type="button" onclick="toggleNotificationPanel()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
                         <span class="notification-badge">3</span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                        <li class="dropdown-header">알림</li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <div class="notification-content">새로운 답변이 등록되었습니다: "React Hooks 사용법"</div>
-                                <div class="notification-time">5분 전</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <div class="notification-content">회원님의 질문에 새로운 댓글이 달렸습니다: "Spring Security 설정"</div>
-                                <div class="notification-time">1시간 전</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <div class="notification-content">관리자 공지: 시스템 점검 안내</div>
-                                <div class="notification-time">어제</div>
-                            </a>
-                        </li>
-                        <li class="dropdown-footer">
-                            <a href="/all_notifications.html">모든 알림 보기</a>
-                        </li>
-                    </ul>
                 </div>
                 <a th:if="${profile != null}" href="/member/profile">
                     <img class="profile-badge" th:src="${profile.profile_image}" alt="프로필 링크">
@@ -523,8 +676,160 @@
         </div>
     </div>
 
+    <!-- 피그마 스타일 알림 사이드 패널 -->
+    <div class="notification-panel-overlay" onclick="closeNotificationPanel()"></div>
+    <div class="notification-panel" id="notificationPanel">
+        <!-- 패널 헤더 -->
+        <div class="notification-panel-header">
+            <h3 class="notification-panel-title">알림</h3>
+            <button class="notification-panel-close" onclick="closeNotificationPanel()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                    <path d="M18 6L6 18"></path>
+                    <path d="M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- 알림 리스트 -->
+        <div class="notification-panel-content">
+            <!-- 새로운 답변 알림 (읽지 않음) -->
+            <div class="notification-panel-item unread">
+                <div class="notification-panel-icon answer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="notification-panel-body">
+                    <div class="notification-panel-message">개발자123가 새로운 답변을 달았습니다.</div>
+                    <div class="notification-panel-title-text">글 제목: React Hook에서 useEffect 의존성 배열 관련 질문입니다</div>
+                    <div class="notification-panel-time">5분 전</div>
+                </div>
+            </div>
+
+            <!-- 답변 채택 알림 -->
+            <div class="notification-panel-item">
+                <div class="notification-panel-icon accept">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 12l2 2 4-4"></path>
+                        <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                </div>
+                <div class="notification-panel-body">
+                    <div class="notification-panel-message">회원님의 답변이 채택되었습니다.</div>
+                    <div class="notification-panel-title-text">글 제목: JavaScript 클로저와 스코프 완벽 이해하기</div>
+                    <div class="notification-panel-time">1시간 전</div>
+                </div>
+            </div>
+
+            <!-- 추천 알림 -->
+            <div class="notification-panel-item">
+                <div class="notification-panel-icon recommend">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 10v12"></path>
+                        <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"></path>
+                    </svg>
+                </div>
+                <div class="notification-panel-body">
+                    <div class="notification-panel-message">회원님의 답변이 추천되었습니다.</div>
+                    <div class="notification-panel-title-text">글 제목: Python 리스트 컴프리헨션 최적화 방법</div>
+                    <div class="notification-panel-time">3시간 전</div>
+                </div>
+            </div>
+
+            <!-- JS마스터 답변 알림 -->
+            <div class="notification-panel-item">
+                <div class="notification-panel-icon answer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="notification-panel-body">
+                    <div class="notification-panel-message">JS마스터가 새로운 답변을 달았습니다.</div>
+                    <div class="notification-panel-title-text">글 제목: JavaScript 클로저와 스코프 완벽 이해하기</div>
+                    <div class="notification-panel-time">6시간 전</div>
+                </div>
+            </div>
+
+            <!-- 더 많은 알림들... -->
+            <div class="notification-panel-item">
+                <div class="notification-panel-icon accept">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 12l2 2 4-4"></path>
+                        <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                </div>
+                <div class="notification-panel-body">
+                    <div class="notification-panel-message">회원님의 답변이 채택되었습니다.</div>
+                    <div class="notification-panel-title-text">글 제목: Python 리스트 컴프리헨션 최적화 방법</div>
+                    <div class="notification-panel-time">1일 전</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 패널 푸터 -->
+        <div class="notification-panel-footer">
+            <a href="/notifications" class="notification-panel-footer-btn">
+                <span>전체 보기</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 피그마 스타일 알림 패널 제어
+        function toggleNotificationPanel() {
+            const panel = document.getElementById('notificationPanel');
+            const overlay = document.querySelector('.notification-panel-overlay');
+            
+            if (panel.classList.contains('active')) {
+                closeNotificationPanel();
+            } else {
+                openNotificationPanel();
+            }
+        }
+
+        function openNotificationPanel() {
+            const panel = document.getElementById('notificationPanel');
+            const overlay = document.querySelector('.notification-panel-overlay');
+            
+            panel.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 스크롤 방지
+        }
+
+        function closeNotificationPanel() {
+            const panel = document.getElementById('notificationPanel');
+            const overlay = document.querySelector('.notification-panel-overlay');
+            
+            panel.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto'; // 스크롤 복원
+        }
+
+        // ESC 키로 패널 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeNotificationPanel();
+            }
+        });
+
+        // 알림 항목 클릭 시 읽음 표시
+        document.querySelectorAll('.notification-panel-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (this.classList.contains('unread')) {
+                    this.classList.remove('unread');
+                    
+                    // 서버에 읽음 상태 업데이트 요청 (실제 구현 시)
+                    // const notificationId = this.dataset.id;
+                    // fetch(`/api/notifications/${notificationId}/read`, { method: 'POST' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 

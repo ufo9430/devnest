@@ -143,22 +143,27 @@
             border-radius: 12px;
             padding: 1.5rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .stat-card h3 {
-            margin: 0;
             font-size: 2rem;
             font-weight: 700;
-            color: var(--primary-color);
+            margin: 0 0 0.5rem 0;
         }
 
         .stat-card p {
-            margin: 0.5rem 0 0;
             color: var(--text-secondary);
+            margin: 0;
             font-weight: 500;
         }
 
-        .users-table {
+        .stat-card.primary h3 { color: var(--primary-color); }
+        .stat-card.success h3 { color: var(--success-color); }
+        .stat-card.warning h3 { color: var(--warning-color); }
+        .stat-card.danger h3 { color: var(--danger-color); }
+
+        .user-table {
             background-color: var(--card-background);
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -169,6 +174,9 @@
             background-color: #F8F9FA;
             padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .table-header h5 {
@@ -235,34 +243,58 @@
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .status-active {
-            background-color: #DCFCE7;
+        .status-badge.active {
+            background-color: #D1FAE5;
             color: var(--success-color);
         }
 
-        .status-suspended {
+        .status-badge.inactive {
             background-color: #FEE2E2;
             color: var(--danger-color);
         }
 
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            cursor: pointer;
-            text-decoration: none;
+        .role-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        .action-btn:hover {
+        .role-badge.admin {
             background-color: #EEF2FF;
-            color: var(--primary-hover);
+            color: var(--primary-color);
+        }
+
+        .role-badge.user {
+            background-color: #F3F4F6;
+            color: var(--text-secondary);
+        }
+
+        .btn-action {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #F8F9FA;
+            color: var(--text-primary);
+        }
+
+        .table-pagination {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background-color: #F8F9FA;
+            display: flex;
+            justify-content: between;
+            align-items: center;
         }
 
         @media (max-width: 768px) {
@@ -287,7 +319,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <h4>
-                    <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+                    <i data-lucide="shield-check"></i>
                     관리자 대시보드
                 </h4>
             </div>
@@ -296,13 +328,13 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link active" href="/admin/member-manage">
-                            <i data-lucide="users" style="width: 18px; height: 18px;"></i>
+                            <i data-lucide="users"></i>
                             회원 관리
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link alert-item" href="/admin/report-manage">
-                            <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                            <i data-lucide="flag"></i>
                             신고 관리
                             <span class="alert-badge">3</span>
                         </a>
@@ -317,47 +349,75 @@
                 <h1>회원 관리</h1>
             </div>
 
-            <!-- Statistics -->
+            <!-- Stats Cards -->
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card primary">
                     <h3 id="totalUsers">-</h3>
-                    <p>총 회원 수</p>
+                    <p>전체 회원</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card success">
                     <h3 id="activeUsers">-</h3>
                     <p>활성 회원</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card warning">
                     <h3 id="suspendedUsers">-</h3>
                     <p>정지 회원</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card danger">
                     <h3 id="adminUsers">-</h3>
                     <p>관리자</p>
                 </div>
             </div>
 
-            <!-- Users Table -->
-            <div class="users-table">
+            <!-- User Table -->
+            <div class="user-table">
                 <div class="table-header">
                     <h5>회원 목록</h5>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="form-control" placeholder="회원 검색..." style="width: 200px;">
+                        <button class="btn btn-outline-secondary">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </div>
                 </div>
-
                 <table class="table">
                     <thead>
                         <tr>
                             <th>회원 정보</th>
-                            <th>이메일</th>
-                            <th>역할</th>
-                            <th>상태</th>
                             <th>가입일</th>
+                            <th>상태</th>
+                            <th>역할</th>
                             <th>작업</th>
                         </tr>
                     </thead>
-                    <tbody id="usersTableBody">
-                        <!-- 데이터는 JavaScript로 동적 로드 -->
+                    <tbody id="userTableBody">
+                        <!-- 회원 데이터가 JavaScript로 로드됩니다 -->
                     </tbody>
                 </table>
+                <div class="table-pagination">
+                    <div>
+                        <span id="pageInfo">1-10 of 25 회원</span>
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">이전</a>
+                            </li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">다음</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -385,10 +445,10 @@
                 const response = await fetch('/admin/api/users/stats');
                 const stats = await response.json();
                 
-                document.getElementById('totalUsers').textContent = stats.totalUsers;
-                document.getElementById('activeUsers').textContent = stats.activeUsers;
-                document.getElementById('suspendedUsers').textContent = stats.suspendedUsers;
-                document.getElementById('adminUsers').textContent = stats.adminUsers;
+                document.getElementById('totalUsers').textContent = stats.totalUsers || 0;
+                document.getElementById('activeUsers').textContent = stats.activeUsers || 0;
+                document.getElementById('suspendedUsers').textContent = stats.suspendedUsers || 0;
+                document.getElementById('adminUsers').textContent = stats.adminUsers || 0;
             } catch (error) {
                 console.error('통계 로드 실패:', error);
             }
@@ -400,49 +460,65 @@
                 const response = await fetch(`/admin/api/users?page=${page}&size=${size}&search=${search}`);
                 const data = await response.json();
                 
-                const tbody = document.getElementById('usersTableBody');
+                const tbody = document.getElementById('userTableBody');
                 tbody.innerHTML = '';
                 
                 data.content.forEach(user => {
-                    const row = document.createElement('tr');
-                    
-                    const createdAt = new Date(user.createdAt).toLocaleDateString('ko-KR');
-                    const avatar = user.nickname ? user.nickname.charAt(0) : 'U';
-                    
-                    row.innerHTML = `
-                        <td>
-                            <div class="user-info">
-                                <div class="user-avatar">${avatar}</div>
-                                <div class="user-details">
-                                    <h6>${user.nickname || '이름 없음'}</h6>
-                                    <p>ID: ${user.userId}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${user.email}</td>
-                        <td>${user.role === 'ADMIN' ? '관리자' : '일반 회원'}</td>
-                        <td>
-                            <span class="status-badge ${user.isActive ? 'status-active' : 'status-suspended'}">
-                                ${user.isActive ? '활성' : '정지'}
-                            </span>
-                        </td>
-                        <td>${createdAt}</td>
-                        <td>
-                            <button class="action-btn" onclick="viewUser(${user.userId})">상세보기</button>
-                        </td>
-                    `;
-                    
+                    const row = createUserRow(user);
                     tbody.appendChild(row);
                 });
+                
+                // 페이지 정보 업데이트
+                const startIndex = (data.number * data.size) + 1;
+                const endIndex = Math.min(startIndex + data.size - 1, data.totalElements);
+                document.getElementById('pageInfo').textContent = 
+                    `${startIndex}-${endIndex} of ${data.totalElements} 회원`;
+                    
             } catch (error) {
-                console.error('사용자 목록 로드 실패:', error);
+                console.error('회원 목록 로드 실패:', error);
             }
         }
 
-        // View user details
-        function viewUser(userId) {
-            console.log('사용자 상세보기:', userId);
-            // 상세보기 기능 구현
+        // Create user table row
+        function createUserRow(user) {
+            const row = document.createElement('tr');
+            
+            const avatar = user.nickname.charAt(0).toUpperCase();
+            const statusClass = user.isActive ? 'active' : 'inactive';
+            const statusText = user.isActive ? '활성' : '정지';
+            const roleClass = user.role === 'ADMIN' ? 'admin' : 'user';
+            const roleText = user.role === 'ADMIN' ? '관리자' : '일반';
+            
+            row.innerHTML = `
+                <td>
+                    <div class="user-info">
+                        <div class="user-avatar">${avatar}</div>
+                        <div class="user-details">
+                            <h6>${user.nickname}</h6>
+                            <p>${user.email}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>${user.createdAt}</td>
+                <td>
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </td>
+                <td>
+                    <span class="role-badge ${roleClass}">${roleText}</span>
+                </td>
+                <td>
+                    <button class="btn-action" onclick="manageUser(${user.userId})">
+                        관리
+                    </button>
+                </td>
+            `;
+            
+            return row;
+        }
+
+        // Manage user modal (to be implemented)
+        function manageUser(userId) {
+            alert(`회원 ID: ${userId} 관리 모달 구현 예정`);
         }
 
         // Initialize page
