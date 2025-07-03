@@ -360,6 +360,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                     질문하기
                 </a>
+
+              <div th:if="${profile != null}">
+                <form method="post" action="/member/logout">
+                  <button type="submit" class="btn-primary-custom">로그아웃</button>
+                </form>
+              </div>
                 
                 <!-- Notification Dropdown -->
                 <div th:if="${profile != null}" class="notification-dropdown dropdown">
@@ -392,19 +398,16 @@
                         </li>
                     </ul>
                 </div>
-                <a th:if="${profile != null}" href="#" >
+                <a th:if="${profile != null}" href="/member/profile">
                     <img class="profile-badge" th:src="${profile.profile_image}" alt="프로필 링크">
                 </a>
 
-
-
-                <a th:if="${profile == null}" href="/login.html" class="btn-primary-custom">로그인</a>
-                <a th:if="${profile == null}" href="/signup.html" class="btn-primary-custom">회원가입</a>
+                <a th:if="${profile == null}" href="/member/login" class="btn-primary-custom">로그인</a>
+                <a th:if="${profile == null}" href="/member/signup" class="btn-primary-custom">회원가입</a>
             </div>
         </div>
     </nav>
 
-    
 
     <!-- Main Content -->
     <div class="main-container">

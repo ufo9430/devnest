@@ -13,6 +13,8 @@ public class CustomUserDetails implements UserDetails {
   private final Long userId;
   private final String email;
   private final String password;
+  private final String nickname;
+  private final String profileImage;
   private final boolean enabled;
   private final Collection<? extends GrantedAuthority> authorities;
 
@@ -20,6 +22,8 @@ public class CustomUserDetails implements UserDetails {
     this.userId = user.getUserId();
     this.email = user.getEmail();
     this.password = user.getPassword();
+    this.nickname = user.getNickname();
+    this.profileImage = user.getProfileImage();
     this.enabled = user.getIsActive();
     this.authorities = List.of(user.getRole());
   }

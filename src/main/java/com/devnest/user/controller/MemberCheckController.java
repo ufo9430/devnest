@@ -1,10 +1,21 @@
 package com.devnest.user.controller;
 
 
+import com.devnest.auth.domain.CustomUserDetails;
+import com.devnest.user.domain.User;
+import com.devnest.user.dto.common.NicknameRequestDto;
+import com.devnest.user.repository.UserRepository;
 import com.devnest.user.service.MemberCheckService;
+import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberCheckController {
 
 
-
     private final MemberCheckService memberCheckService;
+    private final UserRepository userRepository;
 
     @GetMapping("/check-email")
     public Map<String, Boolean> checkEmailDuplicate(@RequestParam String email) {
@@ -32,4 +43,5 @@ public class MemberCheckController {
     }
 
     //닉네임 체크
+
 }
