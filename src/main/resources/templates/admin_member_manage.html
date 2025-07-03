@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드 - DevNest</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E9ECEF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --card-background: #FFFFFF;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E9ECEF;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            padding: 1.5rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-header h4 {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sidebar-nav {
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: #F3F4F6;
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background-color: #EEF2FF;
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+        
+        .nav-link.alert-item {
+            position: relative;
+        }
+        
+        .alert-badge {
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 2rem;
+        }
+        
+        .content-header {
+            margin-bottom: 2rem;
+        }
+        
+        .content-header h1 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .user-table {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background-color: #F8F9FA;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .table {
+            margin: 0;
+        }
+        
+        .table th {
+            background-color: transparent;
+            border-top: none;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+        }
+        
+        .table td {
+            border-top: none;
+            border-bottom: 1px solid #F3F4F6;
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .user-details h6 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .user-details p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-active {
+            background-color: #DCFCE7;
+            color: var(--success-color);
+        }
+        
+        .status-suspended {
+            background-color: #FEE2E2;
+            color: var(--danger-color);
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .action-btn:hover {
+            background-color: #EEF2FF;
+            color: var(--primary-hover);
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4>
+                    <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+                    관리자 대시보드
+                </h4>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin_dashboard.html">
+                            <i data-lucide="users" style="width: 18px; height: 18px;"></i>
+                            회원 관리
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link alert-item" href="/report_management.html">
+                            <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                            신고 관리
+                            <span class="alert-badge">3</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1>회원 관리</h1>
+            </div>
+            
+            <div class="user-table">
+                <div class="table-header">
+                    <h5>회원 정보</h5>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>회원 정보</th>
+                                <th>가입일</th>
+                                <th>상태</th>
+                                <th>작업</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="user-details">
+                                            <h6>개발자123</h6>
+                                            <p>dev123@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>2024-01-15</td>
+                                <td>
+                                    <span class="status-badge status-active">활성</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn" onclick="openUserModal('개발자123')">관리</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="user-details">
+                                            <h6>백엔드마스터</h6>
+                                            <p>backend@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>2024-02-20</td>
+                                <td>
+                                    <span class="status-badge status-active">활성</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn" onclick="openUserModal('백엔드마스터')">관리</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="user-details">
+                                            <h6>JS마스터</h6>
+                                            <p>jsmaster@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>2024-03-10</td>
+                                <td>
+                                    <span class="status-badge status-suspended">정지</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn" onclick="openUserModal('JS마스터')">관리</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="user-details">
+                                            <h6>타입러버</h6>
+                                            <p>typelover@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>2024-01-05</td>
+                                <td>
+                                    <span class="status-badge status-active">활성</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn" onclick="openUserModal('타입러버')">관리</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="user-details">
+                                            <h6>Vue개발자</h6>
+                                            <p>vuedev@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>2024-02-28</td>
+                                <td>
+                                    <span class="status-badge status-active">활성</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn" onclick="openUserModal('Vue개발자')">관리</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="user-details">
+                                            <h6>자바마니아</h6>
+                                            <p>javamania@example.com</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>2024-03-15</td>
+                                <td>
+                                    <span class="status-badge status-active">활성</span>
+                                </td>
+                                <td>
+                                    <button class="action-btn" onclick="openUserModal('자바마니아')">관리</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">회원 관리</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="user-info mb-3">
+                        <div class="user-avatar me-3">
+                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <div class="user-details">
+                            <h6 id="modalUserName">개발자123</h6>
+                            <p id="modalUserEmail">dev123@example.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>가입일:</strong> <span id="modalJoinDate">2024-01-15</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>게시물:</strong> <span id="modalPostCount">23</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>상태:</strong> 
+                        <span class="status-badge status-active" id="modalUserStatus">활성</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="suspendUser()">계정 정지</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Sample user data
+        const users = {
+            '개발자123': {
+                email: 'dev123@example.com',
+                joinDate: '2024-01-15',
+                postCount: 23,
+                status: 'active'
+            },
+            '백엔드마스터': {
+                email: 'backend@example.com',
+                joinDate: '2024-02-20',
+                postCount: 45,
+                status: 'active'
+            },
+            'JS마스터': {
+                email: 'jsmaster@example.com',
+                joinDate: '2024-03-10',
+                postCount: 12,
+                status: 'suspended'
+            },
+            '타입러버': {
+                email: 'typelover@example.com',
+                joinDate: '2024-01-05',
+                postCount: 67,
+                status: 'active'
+            },
+            'Vue개발자': {
+                email: 'vuedev@example.com',
+                joinDate: '2024-02-28',
+                postCount: 34,
+                status: 'active'
+            },
+            '자바마니아': {
+                email: 'javamania@example.com',
+                joinDate: '2024-03-15',
+                postCount: 18,
+                status: 'active'
+            }
+        };
+
+        function openUserModal(userName) {
+            const user = users[userName];
+            if (!user) return;
+
+            document.getElementById('modalUserName').textContent = userName;
+            document.getElementById('modalUserEmail').textContent = user.email;
+            document.getElementById('modalJoinDate').textContent = user.joinDate;
+            document.getElementById('modalPostCount').textContent = user.postCount;
+            
+            const statusElement = document.getElementById('modalUserStatus');
+            if (user.status === 'active') {
+                statusElement.textContent = '활성';
+                statusElement.className = 'status-badge status-active';
+            } else {
+                statusElement.textContent = '정지';
+                statusElement.className = 'status-badge status-suspended';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('userModal'));
+            modal.show();
+        }
+
+        function suspendUser() {
+            const userName = document.getElementById('modalUserName').textContent;
+            
+            if (confirm(`${userName} 계정을 정지하시겠습니까?`)) {
+                alert(`${userName} 계정이 정지되었습니다.`);
+                
+                // Update user status in data
+                users[userName].status = 'suspended';
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('userModal'));
+                modal.hide();
+                
+                // Update table row
+                location.reload(); // Simple reload for demo
+            }
+        }
+    </script>
+</body>
+</html>
+
