@@ -16,5 +16,5 @@ public class HotTopic {
 
     @OneToOne
     @JoinColumn(name = "topic_id")
-    private Topic topic;
+    private BoardTopic topic;
 }

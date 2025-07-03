@@ -1,9 +1,8 @@
 package com.devnest.board.dto;
 
 import com.devnest.board.domain.Status;
-import com.devnest.board.domain.Tag;
-import com.devnest.board.domain.Topic;
-import lombok.Builder;
+import com.devnest.board.domain.BoardTag;
+import com.devnest.board.domain.BoardTopic;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -22,7 +21,7 @@ public class TopicResponseDTO {
     private List<String> tags;
     private LocalDateTime createdAt;
 
-    public TopicResponseDTO(Topic topic) {
+    public TopicResponseDTO(BoardTopic topic) {
         this.topicId = topic.getTopicId();
         this.title = topic.getTitle();
         this.content = topic.getContent();
@@ -33,7 +32,7 @@ public class TopicResponseDTO {
         this.createdAt = topic.getCreatedAt();
         this.tags = new ArrayList<>();
 
-        for (Tag tag : topic.getTags()) {
+        for (BoardTag tag : topic.getTags()) {
             tags.add(tag.getName());
         }
     }

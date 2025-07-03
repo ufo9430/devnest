@@ -7,7 +7,8 @@ import java.util.List;
 
 @Entity
 @Data
-public class Tag {
+@Table(name = "tag")
+public class BoardTag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long tagId;
@@ -16,7 +17,7 @@ public class Tag {
     @JoinTable(name = "topic_tag",
     joinColumns = @JoinColumn(name = "tag_id"),
     inverseJoinColumns = @JoinColumn(name = "topic_id"))
-    private List<Topic> topics;
+    private List<BoardTopic> topics;
 
     private String name;
 }
