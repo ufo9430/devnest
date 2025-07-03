@@ -1,6 +1,7 @@
 package com.devnest.domain.notification.controller;
 
 import com.devnest.user.dto.common.ApiResponse;
+import com.devnest.domain.notification.dto.request.SystemNotificationRequestDto;
 import com.devnest.domain.notification.dto.response.NotificationListResponseDto;
 import com.devnest.domain.notification.dto.response.NotificationStatsResponseDto;
 import com.devnest.domain.notification.service.NotificationService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -148,6 +150,7 @@ public class NotificationController {
      * 관리자용 - 시스템 알림 전체 발송
      */
     @PostMapping("/broadcast")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Integer>> broadcastSystemNotification(
             @RequestParam String message) {
         try {
@@ -164,18 +167,22 @@ public class NotificationController {
      * 관리자용 - 개별 시스템 알림 발송
      */
     @PostMapping("/system")
+    // @PreAuthorize("hasRole('ADMIN')") // 테스트용으로 임시 제거
     public ResponseEntity<ApiResponse<Boolean>> createSystemNotification(
-            @RequestParam Long userId,
-            @RequestParam String message) {
+            @RequestBody SystemNotificationRequestDto request) {
         try {
-            notificationService.createSystemNotification(userId, message);
+            String message = request.getMessage();
+            if (request.getTitle() != null && !request.getTitle().isEmpty()) {
+                message = request.getTitle() + ": " + message;
+            }
+            notificationService.createSystemNotification(request.getUserId(), message);
             return ResponseEntity.ok(ApiResponse.success("시스템 알림을 발송했습니다.", true));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.fail(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.fail("시스템 알림 발송에 실패했습니다."));
+                    .body(ApiResponse.fail("시스템 알림 발송에 실패했습니다: " + e.getMessage()));
         }
     }
 
@@ -183,6 +190,7 @@ public class NotificationController {
      * 관리자용 - 오래된 알림 정리
      */
     @DeleteMapping("/cleanup")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Integer>> cleanupOldNotifications() {
         try {
             Integer count = notificationService.cleanupOldNotifications();

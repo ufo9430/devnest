@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체 알림 관리 - DevNest</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E9ECEF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --info-color: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .admin-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .admin-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .admin-nav a:hover {
+            color: var(--primary-color);
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .admin-nav a.active {
+            color: var(--primary-color);
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+
+        .notification-sent { background-color: rgba(59, 130, 246, 0.1); color: var(--info-color); }
+        .notification-pending { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+        .notification-failed { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
+        .notification-success { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+
+        .send-notification-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .send-notification-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .recipient-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .recipient-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .recipient-option:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+
+        .recipient-option input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+
+        .send-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .send-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .notifications-table {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #F8F9FA;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background: #F8F9FA;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+        }
+
+        .table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: #F8F9FA;
+        }
+
+        .notification-type-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .type-system {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+        }
+
+        .type-answer {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .type-accept {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .type-recommend {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: #8B5CF6;
+        }
+
+        .read-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .read-status.unread {
+            background-color: var(--primary-color);
+        }
+
+        .read-status.read {
+            background-color: var(--border-color);
+        }
+
+        .notification-content {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .user-details {
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .user-email {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: white;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            gap: 1rem;
+        }
+
+        .pagination-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .pagination-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .table-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .recipient-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <div class="container">
+            <nav class="admin-nav">
+                <a href="/admin/dashboard">📊 관리자 대시보드</a>
+                <a href="/admin/report-management">🚨 신고 관리</a>
+                <a href="/admin/notifications" class="active">📢 전체 알림</a>
+                <a href="/admin/system">⚙️ 시스템 관리</a>
+                <a href="/admin/content">📝 콘텐츠 관리</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">전체 알림 관리</h1>
+            <p class="page-subtitle">시스템 알림 발송 및 알림 내역을 관리할 수 있습니다</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">총 알림 발송</div>
+                    <div class="stat-icon notification-sent">
+                        <i data-lucide="send" style="width: 20px; height: 20px;"></i>
+                    </div>
+                </div>
+                <div class="stat-value">1,247</div>
+                <div class="stat-change positive">+23 오늘</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">읽지 않은 알림</div>
+                    <div class="stat-icon notification-pending">
+                        <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
+                    </div>
+                </div>
+                <div class="stat-value">89</div>
+                <div class="stat-change positive">+12 어제</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">읽은 알림</div>
+                    <div class="stat-icon notification-success">
+                        <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+                    </div>
+                </div>
+                <div class="stat-value">1,158</div>
+                <div class="stat-change positive">+11 어제</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-title">발송 실패</div>
+                    <div class="stat-icon notification-failed">
+                        <i data-lucide="alert-circle" style="width: 20px; height: 20px;"></i>
+                    </div>
+                </div>
+                <div class="stat-value">3</div>
+                <div class="stat-change negative">+1 어제</div>
+            </div>
+        </div>
+
+        <!-- Send Notification Panel -->
+        <div class="send-notification-panel">
+            <h2 class="send-notification-title">
+                <i data-lucide="megaphone" style="width: 20px; height: 20px;"></i>
+                시스템 알림 발송
+            </h2>
+
+            <form id="sendNotificationForm">
+                <div class="form-group">
+                    <label class="form-label">수신자 대상</label>
+                    <div class="recipient-options">
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient" value="all" checked>
+                            <span>전체 사용자</span>
+                        </label>
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient" value="active">
+                            <span>활성 사용자만</span>
+                        </label>
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient" value="admin">
+                            <span>관리자만</span>
+                        </label>
+                        <label class="recipient-option">
+                            <input type="radio" name="recipient" value="custom">
+                            <span>특정 사용자</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">알림 제목</label>
+                    <input type="text" class="form-input" placeholder="알림 제목을 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">알림 내용</label>
+                    <textarea class="form-input form-textarea" placeholder="알림 내용을 입력하세요" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">알림 유형</label>
+                    <select class="form-input">
+                        <option value="SYSTEM">시스템 알림</option>
+                        <option value="ANNOUNCEMENT">공지사항</option>
+                        <option value="MAINTENANCE">점검 안내</option>
+                        <option value="UPDATE">업데이트 안내</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="send-btn">
+                    <i data-lucide="send" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                    알림 발송
+                </button>
+            </form>
+        </div>
+
+        <!-- Notifications Table -->
+        <div class="notifications-table">
+            <div class="table-header">
+                <h3 class="table-title">알림 내역</h3>
+                <div class="table-controls">
+                    <select class="filter-select">
+                        <option value="">모든 알림</option>
+                        <option value="SYSTEM">시스템</option>
+                        <option value="ANSWER">답변</option>
+                        <option value="ACCEPT">채택</option>
+                        <option value="RECOMMEND">추천</option>
+                    </select>
+                    <select class="filter-select">
+                        <option value="">모든 상태</option>
+                        <option value="unread">읽지 않음</option>
+                        <option value="read">읽음</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>상태</th>
+                            <th>수신자</th>
+                            <th>유형</th>
+                            <th>제목</th>
+                            <th>내용</th>
+                            <th>발송자</th>
+                            <th>발송 일시</th>
+                            <th>읽은 일시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="read-status unread"></div>
+                                    <span class="small text-muted">읽지 않음</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">김</div>
+                                    <div class="user-details">
+                                        <div class="user-name">김개발</div>
+                                        <div class="user-email">kim@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="notification-type-badge type-system">시스템</span></td>
+                            <td>시스템 점검 안내</td>
+                            <td>
+                                <div class="notification-content">
+                                    오늘 밤 12시부터 새벽 2시까지 시스템 점검이 있을 예정입니다. 잠시 서비스 이용이 불가능할 수 있습니다.
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">관</div>
+                                    <div class="user-details">
+                                        <div class="user-name">관리자</div>
+                                        <div class="user-email">admin@devnest.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-muted small">2024-01-15</div>
+                                <div class="text-muted small">14:30</div>
+                            </td>
+                            <td>
+                                <span class="text-muted small">-</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="read-status read"></div>
+                                    <span class="small text-muted">읽음</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">이</div>
+                                    <div class="user-details">
+                                        <div class="user-name">이코더</div>
+                                        <div class="user-email">lee@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="notification-type-badge type-answer">답변</span></td>
+                            <td>새로운 답변이 달렸습니다</td>
+                            <td>
+                                <div class="notification-content">
+                                    React Hook에서 useEffect 의존성 배열 관련 질문에 새로운 답변이 달렸습니다.
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">박</div>
+                                    <div class="user-details">
+                                        <div class="user-name">박백엔드</div>
+                                        <div class="user-email">park@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-muted small">2024-01-14</div>
+                                <div class="text-muted small">16:45</div>
+                            </td>
+                            <td>
+                                <div class="text-muted small">2024-01-14</div>
+                                <div class="text-muted small">18:20</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="read-status read"></div>
+                                    <span class="small text-muted">읽음</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">최</div>
+                                    <div class="user-details">
+                                        <div class="user-name">최프론트</div>
+                                        <div class="user-email">choi@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="notification-type-badge type-accept">채택</span></td>
+                            <td>답변이 채택되었습니다</td>
+                            <td>
+                                <div class="notification-content">
+                                    JavaScript 클로저와 스코프 완벽 이해하기 질문에 대한 답변이 채택되었습니다.
+                                </div>
+                            </td>
+                            <td>
+                                <span class="text-muted small">시스템</span>
+                            </td>
+                            <td>
+                                <div class="text-muted small">2024-01-13</div>
+                                <div class="text-muted small">10:15</div>
+                            </td>
+                            <td>
+                                <div class="text-muted small">2024-01-13</div>
+                                <div class="text-muted small">11:30</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="read-status unread"></div>
+                                    <span class="small text-muted">읽지 않음</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">한</div>
+                                    <div class="user-details">
+                                        <div class="user-name">한풀스택</div>
+                                        <div class="user-email">han@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="notification-type-badge type-recommend">추천</span></td>
+                            <td>답변이 추천되었습니다</td>
+                            <td>
+                                <div class="notification-content">
+                                    Python 리스트 컴프리헨션 최적화 방법에 대한 답변이 추천되었습니다.
+                                </div>
+                            </td>
+                            <td>
+                                <div class="user-info">
+                                    <div class="user-avatar">송</div>
+                                    <div class="user-details">
+                                        <div class="user-name">송데이터</div>
+                                        <div class="user-email">song@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-muted small">2024-01-12</div>
+                                <div class="text-muted small">15:40</div>
+                            </td>
+                            <td>
+                                <span class="text-muted small">-</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    총 1,247개 중 1-10개 표시
+                </div>
+                <div class="pagination-controls">
+                    <button class="pagination-btn" disabled>이전</button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn">4</button>
+                    <button class="pagination-btn">5</button>
+                    <button class="pagination-btn">다음</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Send notification form
+        document.getElementById('sendNotificationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const notificationData = {
+                recipient: formData.get('recipient'),
+                title: formData.get('title'),
+                message: formData.get('message'),
+                type: formData.get('type')
+            };
+            
+            // 실제 API 호출
+            fetch('/api/admin/notifications/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(notificationData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('알림이 성공적으로 발송되었습니다.');
+                    this.reset();
+                    // 테이블 새로고침
+                    location.reload();
+                } else {
+                    alert('알림 발송에 실패했습니다: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('알림 발송 중 오류가 발생했습니다.');
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-select').forEach(select => {
+            select.addEventListener('change', function() {
+                // 필터 로직
+                console.log('Filter changed:', this.value);
+                // 실제로는 서버에 요청하여 필터된 데이터를 가져와야 함
+            });
+        });
+
+        // Pagination
+        document.querySelectorAll('.pagination-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.disabled) return;
+                
+                // Remove active class from all buttons
+                document.querySelectorAll('.pagination-btn').forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button (if it's a number)
+                if (!isNaN(this.textContent)) {
+                    this.classList.add('active');
+                }
+                
+                console.log('Page changed to:', this.textContent);
+                // 실제로는 서버에 요청하여 해당 페이지 데이터를 가져와야 함
+            });
+        });
+
+        // Real-time notification updates (WebSocket 연결 시뮬레이션)
+        function updateNotificationStats() {
+            // 실제로는 WebSocket이나 Server-Sent Events를 사용
+            console.log('Updating notification stats...');
+        }
+
+        // 5초마다 통계 업데이트 (실제 환경에서는 WebSocket 사용 권장)
+        setInterval(updateNotificationStats, 5000);
+    </script>
+</body>
+</html> 

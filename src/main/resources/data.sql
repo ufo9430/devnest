@@ -1,25 +1,15 @@
 -- 관리자 계정 생성 (비밀번호: admin123)
-INSERT INTO users (user_id, email, nickname, password, role, is_active, email_verified, created_at) 
-VALUES (1, 'admin@devnest.com', '관리자', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'ADMIN', true, true, NOW());
+INSERT INTO users (user_id, email, nickname, password, role, is_active, created_at) 
+VALUES (1, 'admin@devnest.com', '관리자', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'ADMIN', true, NOW());
 
 -- 일반 사용자들 생성
-INSERT INTO users (user_id, email, nickname, password, role, is_active, email_verified, created_at) 
+INSERT INTO users (user_id, email, nickname, password, role, is_active, created_at) 
 VALUES 
-    (2, 'user1@test.com', '개발자123', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, true, NOW()),
-    (3, 'user2@test.com', '백엔드마스터', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, true, NOW()),
-    (4, 'user3@test.com', 'Vue개발자', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, true, NOW()),
-    (5, 'user4@test.com', '타입러버', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, true, NOW()),
-    (6, 'user5@test.com', '스프링신입', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, true, NOW());
-
--- 신고 데이터 생성
-INSERT INTO report (report_id, reporter_id, reported_user_id, content, target_type, target_id, status, created_at) 
-VALUES 
-    (1, 2, 3, '부적절한 광고성 게시물을 지속적으로 올리고 있습니다.', 'POST', 101, 'PENDING', DATE_SUB(NOW(), INTERVAL 2 DAY)),
-    (2, 3, 5, '댓글에서 욕설과 비방을 일삼고 있습니다.', 'COMMENT', 201, 'PENDING', DATE_SUB(NOW(), INTERVAL 1 DAY)),
-    (3, 4, 2, '코드를 무단으로 복사해서 자신의 것처럼 올리고 있습니다.', 'POST', 102, 'APPROVED', DATE_SUB(NOW(), INTERVAL 3 DAY)),
-    (4, 5, 6, '반복적인 스팸 게시물로 인해 불편합니다.', 'POST', 103, 'PENDING', DATE_SUB(NOW(), INTERVAL 6 HOUR)),
-    (5, 6, 4, '질문에 대한 잘못된 답변을 계속 달고 있습니다.', 'COMMENT', 202, 'REJECTED', DATE_SUB(NOW(), INTERVAL 4 DAY)),
-    (6, 2, 5, '개인정보를 요구하는 부적절한 댓글을 남겼습니다.', 'COMMENT', 203, 'PENDING', DATE_SUB(NOW(), INTERVAL 3 HOUR));
+    (2, 'user1@test.com', '개발자123', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, NOW()),
+    (3, 'user2@test.com', '백엔드마스터', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, NOW()),
+    (4, 'user3@test.com', 'Vue개발자', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, NOW()),
+    (5, 'user4@test.com', '타입러버', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, NOW()),
+    (6, 'user5@test.com', '스프링신입', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', 'USER', true, NOW());
 
 -- 알림 데이터 생성
 INSERT INTO notification (notification_id, recipient_id, sender_id, type, message, title, target_type, target_id, is_read, created_at) 

@@ -1,19 +1,28 @@
+server:
+  port: 8080
+
 spring:
-  config:
-    import: classpath:db.properties
   datasource:
-    driver: ${db.driver}
-    url: ${db.url}
-    username: ${db.username}
-    password: ${db.password}
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  
+  sql:
+    init:
+      mode: never
 
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: create-drop
+    show-sql: true
+    defer-datasource-initialization: true
+
+  h2:
+    console:
+      enabled: true
+
 logging:
   level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace
+    org.springframework.security: debug

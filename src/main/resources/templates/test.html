@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevNest - 테스트 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        .time {
+            font-size: 1.2em;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+        .nav {
+            margin-top: 30px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        .nav a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 DevNest 테스트 페이지</h1>
+        
+        <div class="message" th:text="${message}">
+            테스트 메시지
+        </div>
+        
+        <div class="time">
+            현재 시간: <span th:text="${time}">시간</span>
+        </div>
+        
+        <div class="nav">
+            <a href="/login">🔑 로그인</a>
+            <a href="/member/signup">👤 회원가입</a>
+            <a href="/topics">📋 게시판</a>
+            <a href="/api/notifications/stats">📢 알림 테스트</a>
+        </div>
+        
+        <div style="margin-top: 40px; font-size: 0.9em; opacity: 0.7;">
+            💡 이 페이지가 보인다면 Spring Boot 웹 애플리케이션이 정상 작동하고 있습니다!
+        </div>
+    </div>
+</body>
+</html> 
