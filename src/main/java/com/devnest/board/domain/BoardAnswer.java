@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Answer {
+public class BoardAnswer {
     @Id
     @Column(name = "answer_id")
     private Long answerId;

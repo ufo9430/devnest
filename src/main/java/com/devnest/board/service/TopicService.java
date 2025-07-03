@@ -1,7 +1,7 @@
 package com.devnest.board.service;
 
 import com.devnest.board.domain.Status;
-import com.devnest.board.domain.Topic;
+import com.devnest.board.domain.BoardTopic;
 import com.devnest.board.dto.TopicResponseDTO;
 import com.devnest.board.repository.TopicRepository;
 import com.devnest.board.vo.StatisticsVo;
@@ -27,9 +27,9 @@ public class TopicService {
     public List<TopicResponseDTO> getRecentFiveTopics(){
         List<TopicResponseDTO> responseDTOList = new ArrayList<>();
 
-        List<Topic> topics = topicRepository.findRecentFiveTopics();
+        List<BoardTopic> topics = topicRepository.findRecentFiveTopics();
 
-        for (Topic topic : topics) {
+        for (BoardTopic topic : topics) {
             responseDTOList.add(new TopicResponseDTO(topic));
         }
 
@@ -40,9 +40,9 @@ public class TopicService {
         Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> dtoList = new ArrayList<>();
 
-        Page<Topic> topicPage = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<BoardTopic> topicPage = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        for (Topic topic : topicPage) {
+        for (BoardTopic topic : topicPage) {
             dtoList.add(new TopicResponseDTO(topic));
         }
 
@@ -53,9 +53,9 @@ public class TopicService {
         Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> dtoList = new ArrayList<>();
 
-        Page<Topic> topicPage = topicRepository.findByStatus(Status.RESOLVED, pageable);
+        Page<BoardTopic> topicPage = topicRepository.findByStatus(Status.RESOLVED, pageable);
 
-        for (Topic topic : topicPage) {
+        for (BoardTopic topic : topicPage) {
             dtoList.add(new TopicResponseDTO(topic));
         }
 

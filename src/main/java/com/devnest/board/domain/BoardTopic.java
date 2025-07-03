@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic {
+public class BoardTopic {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long topicId;
@@ -36,11 +36,11 @@ public class Topic {
     @JoinTable(name = "topic_tag",
     joinColumns = @JoinColumn(name = "tag_id"),
     inverseJoinColumns = @JoinColumn(name = "topic_id"))
-    private List<Tag> tags;
+    private List<BoardTag> tags;
 
     @OneToMany
     @JoinColumn(name = "answer_id")
-    private List<Answer> answers;
+    private List<BoardAnswer> answers;
 
     private LocalDateTime createdAt;
 
