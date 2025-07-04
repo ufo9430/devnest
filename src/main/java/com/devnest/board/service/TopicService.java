@@ -3,6 +3,7 @@ package com.devnest.board.service;
 import com.devnest.board.domain.Status;
 import com.devnest.board.domain.BoardTopic;
 import com.devnest.board.dto.TopicResponseDTO;
+import com.devnest.board.repository.BoardAnswerRepository;
 import com.devnest.board.repository.BoardTopicRepository;
 import com.devnest.board.vo.StatisticsVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +13,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TopicService {
     private final BoardTopicRepository topicRepository;
+    private final BoardAnswerRepository answerRepository;
 
     @Autowired
-    public TopicService(BoardTopicRepository topicRepository) {
+    public TopicService(BoardTopicRepository topicRepository, BoardAnswerRepository answerRepository) {
         this.topicRepository = topicRepository;
+        this.answerRepository = answerRepository;
     }
 
     public List<TopicResponseDTO> getRecentFiveTopics(){
@@ -66,11 +71,12 @@ public class TopicService {
         long allCount = topicRepository.count();
         long waitingCount = topicRepository.countByStatus(Status.WAITING);
         long solved = topicRepository.countByStatus(Status.RESOLVED);
+        long today = answerRepository.countTodayCreated();
         return StatisticsVo.builder()
                 .allCount(allCount)
                 .waitingCount(waitingCount)
                 .solvedCount(solved)
-                .todayCount(0L)
+                .todayCount(today)
                 .build();
     }
 
