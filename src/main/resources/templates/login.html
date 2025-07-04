@@ -532,10 +532,10 @@
         loginBtn.removeAttribute("onclick");
         loginBtn.disabled = false;
 
-        // 2초 후 자동으로 모달 닫기
+        // 1.5초 후 자동으로 모달 닫기
         setTimeout(() => {
           bootstrap.Modal.getInstance(document.getElementById('emailVerificationModal')).hide();
-        }, 2000);
+        }, 1500);
       } else {
         showCustomAlert(result.message || "인증 실패", "warning");
       }
