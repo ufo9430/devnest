@@ -421,31 +421,69 @@
 </head>
 
 <body>
-    <!-- Navigation -->
+    <!--  Navbar  -->
     <nav class="navbar">
         <div class="container-fluid">
             <div class="d-flex align-items-center gap-3">
-                <a class="navbar-brand" href="/index.html">DevNest</a>
+                <a class="navbar-brand" th:href="@{/}">DevNest</a>
             </div>
-
+            
             <div class="d-flex align-items-center gap-3">
                 <div class="search-box">
                     <input type="text" class="form-control" placeholder="질문 검색..." id="searchInput">
                     <button type="button" id="searchBtn">
-                        <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;" class="lucide lucide-search"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                     </button>
                 </div>
+                
+                <a href="/ask_question.html" class="btn-primary-custom">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                    질문하기
+                </a>
 
-                <a href="/ask_question.html" class="btn-primary-custom">질문하기</a>
+              <div th:if="${profile != null}">
+                <form method="post" action="/member/logout">
+                  <button type="submit" class="btn-primary-custom">로그아웃</button>
+                </form>
+              </div>
+                
+                <!-- Notification Dropdown -->
+                <div th:if="${profile != null}" class="notification-dropdown dropdown">
+                    <button class="notification-icon-button" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <li class="dropdown-header">알림</li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">새로운 답변이 등록되었습니다: "React Hooks 사용법"</div>
+                                <div class="notification-time">5분 전</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">회원님의 질문에 새로운 댓글이 달렸습니다: "Spring Security 설정"</div>
+                                <div class="notification-time">1시간 전</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">관리자 공지: 시스템 점검 안내</div>
+                                <div class="notification-time">어제</div>
+                            </a>
+                        </li>
+                        <li class="dropdown-footer">
+                            <a href="/all_notifications.html">모든 알림 보기</a>
+                        </li>
+                    </ul>
+                </div>
+                <a th:if="${profile != null}" href="/member/profile">
+                    <img class="profile-badge" th:src="${profile.profile_image}" alt="프로필 링크">
+                </a>
 
-                <button class="notification-icon-button" type="button">
-                    <i data-lucide="bell" style="width: 24px; height: 24px;"></i>
-                </button>
-
-                <button class="profile-icon-button" type="button">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNGM0Y0RjYiLz4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxMiIgcj0iNCIgZmlsbD0iIzZCNzI4MCIvPgo8cGF0aCBkPSJNOCAyNGMwLTQuNCAzLjYtOCA4LThzOCAzLjYgOCA4IiBmaWxsPSIjNkI3MjgwIi8+Cjwvc3ZnPgo="
-                        alt="프로필">
-                </button>
+                <a th:if="${profile == null}" href="/member/login" class="btn-primary-custom">로그인</a>
+                <a th:if="${profile == null}" href="/member/signup" class="btn-primary-custom">회원가입</a>
             </div>
         </div>
     </nav>
@@ -466,7 +504,7 @@
                 </div>
                 <div class="check-solved">
                     <a type="button" class="btn btn-primary-custom" th:data-resolved="${resolved}"
-                        th:href="@{/search(keyword=${keyword}, resolved=${resolved} ? 'false' : 'true')}">
+                        th:href="@{/search(keyword=${keyword}, resolved=${resolved} ? 'false' : 'true', tag=${tag})}">
                         <span th:text="${resolved} ? '전체 문제 보기' : '해결된 문제만 보기'">해결된 문제만 보기</span>
                     </a>
                 </div>
@@ -525,10 +563,10 @@
             <!-- Pagination -->
             <div class="pagination-container">
                 <div class="pagination">
-                    <a th:href="@{/search(page=0, resolved=${resolved}, keyword=${keyword})}" th:classappend="${topics.first} ? 'disabled'"
+                    <a th:href="@{/search(page=0, resolved=${resolved}, keyword=${keyword}, tag=${tag})}" th:classappend="${topics.first} ? 'disabled'"
                         aria-label="First">&laquo;</a>
 
-                    <a th:href="@{/search(page=${topics.number - 1}, resolved=${resolved}, keyword=${keyword})}" th:if="${!topics.first}"
+                    <a th:href="@{/search(page=${topics.number - 1}, resolved=${resolved}, keyword=${keyword}, tag=${tag})}" th:if="${!topics.first}"
                         aria-label="Previous">&lt;</a>
                     <a href="#" th:if="${topics.first}" onclick="return false;" class="disabled">&lt;</a>
 
@@ -536,16 +574,16 @@
                        end=${T(java.lang.Math).min(topics.totalPages - 1, topics.number + 2)}">
                         <th:block th:each="i : ${#numbers.sequence(start, end)}">
                             <span th:if="${i == topics.number}" class="current" th:text="${i + 1}">1</span>
-                            <a th:if="${i != topics.number}" th:href="@{/search(page=${i}, resolved=${resolved}, keyword=${keyword})}"
+                            <a th:if="${i != topics.number}" th:href="@{/search(page=${i}, resolved=${resolved}, keyword=${keyword}, tag=${tag})}"
                                 th:text="${i + 1}">1</a>
                         </th:block>
                     </th:block>
 
-                    <a th:href="@{/search(page=${topics.number + 1}, resolved=${resolved}, keyword=${keyword})}" th:if="${!topics.last}"
+                    <a th:href="@{/search(page=${topics.number + 1}, resolved=${resolved}, keyword=${keyword}, tag=${tag})}" th:if="${!topics.last}"
                         aria-label="Next">&gt;</a>
                     <a href="#" th:if="${topics.last}" onclick="return false;" class="disabled">&gt;</a>
 
-                    <a th:href="@{/search(page=${topics.totalPages - 1}, resolved=${resolved}, keyword=${keyword})}"
+                    <a th:href="@{/search(page=${topics.totalPages - 1}, resolved=${resolved}, keyword=${keyword}, tag=${tag})}"
                         th:classappend="${topics.last} ? 'disabled'" aria-label="Last">&raquo;</a>
                 </div>
             </div>
