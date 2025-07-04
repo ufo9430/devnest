@@ -51,4 +51,70 @@ public class User {
   @Builder.Default
   @Column(name = "is_active", nullable = false)
   private Boolean isActive = true;
+
+  // 정지 관련 필드들
+  @Column(name = "suspended_until")
+  private LocalDateTime suspendedUntil;
+
+  @Column(name = "suspend_reason", length = 1000)
+  private String suspendReason;
+
+  @Column(name = "suspended_by")
+  private Long suspendedBy;
+
+  @Column(name = "suspended_at")
+  private LocalDateTime suspendedAt;
+
+  // 정지 관련 메서드들
+
+  /**
+   * 현재 정지 상태인지 확인
+   */
+  public boolean isSuspended() {
+    return suspendedUntil != null && LocalDateTime.now().isBefore(suspendedUntil);
+  }
+
+  /**
+   * 사용자 정지 처리
+   */
+  public void suspend(int days, String reason, Long adminId) {
+    this.suspendedUntil = LocalDateTime.now().plusDays(days);
+    this.suspendReason = reason;
+    this.suspendedBy = adminId;
+    this.suspendedAt = LocalDateTime.now();
+  }
+
+  /**
+   * 사용자 정지 처리 (특정 날짜까지)
+   */
+  public void suspend(LocalDateTime until, String reason, Long adminId) {
+    this.suspendedUntil = until;
+    this.suspendReason = reason;
+    this.suspendedBy = adminId;
+    this.suspendedAt = LocalDateTime.now();
+  }
+
+  /**
+   * 정지 해제
+   */
+  public void unsuspend() {
+    this.suspendedUntil = null;
+    this.suspendReason = null;
+    this.suspendedBy = null;
+    this.suspendedAt = null;
+  }
+
+  /**
+   * 정지 기간 연장
+   */
+  public void extendSuspension(int additionalDays, String reason, Long adminId) {
+    if (isSuspended()) {
+      this.suspendedUntil = this.suspendedUntil.plusDays(additionalDays);
+    } else {
+      this.suspendedUntil = LocalDateTime.now().plusDays(additionalDays);
+    }
+    this.suspendReason = reason;
+    this.suspendedBy = adminId;
+    this.suspendedAt = LocalDateTime.now();
+  }
 }

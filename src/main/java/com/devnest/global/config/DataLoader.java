@@ -1,8 +1,8 @@
 package com.devnest.global.config;
 
-import com.devnest.domain.notification.entity.Notification;
-import com.devnest.domain.notification.entity.NotificationType;
-import com.devnest.domain.notification.repository.NotificationRepository;
+import com.devnest.notice.entity.Notification;
+import com.devnest.notice.entity.NotificationType;
+import com.devnest.notice.repository.NotificationRepository;
 import com.devnest.user.domain.Role;
 import com.devnest.user.domain.User;
 import com.devnest.user.repository.UserRepository;
