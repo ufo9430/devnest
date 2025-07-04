@@ -408,10 +408,12 @@
         </div>
       </div>
 
-      <!-- 초기 버튼: 인증 트리거 용도 -->
+      <!-- 2차 인증 버튼 -->
       <button type="button" id="loginButton" class="btn btn-primary-custom w-100 fw-medium"
               style="height: 48px;" onclick="openVerificationModal()">
-        2차 인증하기
+        <span id="login-btn-text">2차 인증하기</span>
+        <span id="login-btn-spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"
+              aria-hidden="true"></span>
       </button>
     </form>
 
@@ -460,11 +462,19 @@
   function openVerificationModal() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const button = document.getElementById("loginButton");
+    const spinner = document.getElementById("login-btn-spinner");
+    const text = document.getElementById("login-btn-text");
 
     if (!email || !password) {
       showCustomAlert("이메일과 비밀번호를 입력해주세요.", "primary");
       return;
     }
+
+    // 버튼 상태: 로딩
+    button.disabled = true;
+    spinner.classList.remove("d-none");
+    text.innerText = "전송 중...";
 
     // 서버에 인증 코드 전송 시도
     fetch("/member/verify-user", {
