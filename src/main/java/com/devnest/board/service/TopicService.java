@@ -3,7 +3,7 @@ package com.devnest.board.service;
 import com.devnest.board.domain.Status;
 import com.devnest.board.domain.BoardTopic;
 import com.devnest.board.dto.TopicResponseDTO;
-import com.devnest.board.repository.TopicRepository;
+import com.devnest.board.repository.BoardTopicRepository;
 import com.devnest.board.vo.StatisticsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +17,10 @@ import java.util.List;
 
 @Service
 public class TopicService {
-    private final TopicRepository topicRepository;
+    private final BoardTopicRepository topicRepository;
 
     @Autowired
-    public TopicService(TopicRepository topicRepository) {
+    public TopicService(BoardTopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 

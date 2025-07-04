@@ -2,7 +2,7 @@ package com.devnest.board.service;
 
 import com.devnest.board.domain.BoardTopic;
 import com.devnest.board.dto.TopicResponseDTO;
-import com.devnest.board.repository.TopicRepository;
+import com.devnest.board.repository.BoardTopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,10 +15,10 @@ import java.util.List;
 
 @Service
 public class SearchService {
-    private final TopicRepository topicRepository;
+    private final BoardTopicRepository topicRepository;
 
     @Autowired
-    public SearchService(TopicRepository topicRepository) {
+    public SearchService(BoardTopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 

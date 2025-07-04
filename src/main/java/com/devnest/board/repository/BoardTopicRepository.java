@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TopicRepository extends JpaRepository<BoardTopic, Long> {
+public interface BoardTopicRepository extends JpaRepository<BoardTopic, Long> {
     @Query(value = "select * from topic order by created_at desc limit 5", nativeQuery = true)
     List<BoardTopic> findRecentFiveTopics();
 
