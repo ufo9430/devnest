@@ -315,12 +315,6 @@
             text-decoration: none;
         }
 
-        .topic-title .highlight {
-            background-color: #FEF3C7;
-            padding: 0.125rem 0.25rem;
-            border-radius: 3px;
-        }
-
         .topic-meta {
             display: flex;
             align-items: center;
@@ -465,29 +459,16 @@
             <!-- Search Header -->
             <div class="search-header">
                 <div>
-                    <h1 class="search-title">검색 결과</h1>
+                    <h1 class="search-title" th:text="${keyword} != '' ? |&quot;${keyword}&quot; 검색 결과| : '검색 결과'">검색 결과</h1>
                 </div>
-                <!-- Search Filters -->
-                <div class="search-filters">
-                    <div class="filter-item active">
-                        <span>"React useEffect"</span>
-                        <button class="close-btn">
-                            <i data-lucide="x" style="width: 12px; height: 12px;"></i>
-                        </button>
-                    </div>
-
-                    <div class="filter-item active">
-                        <span>"Java"</span>
-                        <button class="close-btn">
-                            <i data-lucide="x" style="width: 12px; height: 12px;"></i>
-                        </button>
-                    </div>
+                <div class="search-filters" th:if="${tag != ''}">
+                    <div class="filter-item active" th:text="|태그 : ${tag}|">태그 : </div>
                 </div>
                 <div class="check-solved">
-                    <button type="button" class="btn btn-primary-custom" th:data-resolved="${resolved}"
-                        th:onclick="'location.href=\'/topics?resolved=' + (${resolved} ? 'false' : 'true') + '\''">
+                    <a type="button" class="btn btn-primary-custom" th:data-resolved="${resolved}"
+                        th:href="@{/search(keyword=${keyword}, resolved=${resolved} ? 'false' : 'true')}">
                         <span th:text="${resolved} ? '전체 문제 보기' : '해결된 문제만 보기'">해결된 문제만 보기</span>
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -510,7 +491,7 @@
                         </span>
                     </div>
                     <a th:href="|/topics/${topic.topicId}|" class="topic-title"
-                        data-title="React Hook에서 useEffect 의존성 배열 관련 질문입니다"></a>
+                        th:text="${topic.title}"></a>
                     <div class="topic-meta">
                         <div class="topic-meta-item">
                             <i data-lucide="user" style="width: 14px; height: 14px;"></i>
@@ -544,10 +525,10 @@
             <!-- Pagination -->
             <div class="pagination-container">
                 <div class="pagination">
-                    <a th:href="@{/topics(page=0, resolved=${resolved})}" th:classappend="${topics.first} ? 'disabled'"
+                    <a th:href="@{/search(page=0, resolved=${resolved}, keyword=${keyword})}" th:classappend="${topics.first} ? 'disabled'"
                         aria-label="First">&laquo;</a>
 
-                    <a th:href="@{/topics(page=${topics.number - 1}, resolved=${resolved})}" th:if="${!topics.first}"
+                    <a th:href="@{/search(page=${topics.number - 1}, resolved=${resolved}, keyword=${keyword})}" th:if="${!topics.first}"
                         aria-label="Previous">&lt;</a>
                     <a href="#" th:if="${topics.first}" onclick="return false;" class="disabled">&lt;</a>
 
@@ -555,16 +536,16 @@
                        end=${T(java.lang.Math).min(topics.totalPages - 1, topics.number + 2)}">
                         <th:block th:each="i : ${#numbers.sequence(start, end)}">
                             <span th:if="${i == topics.number}" class="current" th:text="${i + 1}">1</span>
-                            <a th:if="${i != topics.number}" th:href="@{/topics(page=${i}, resolved=${resolved})}"
+                            <a th:if="${i != topics.number}" th:href="@{/search(page=${i}, resolved=${resolved}, keyword=${keyword})}"
                                 th:text="${i + 1}">1</a>
                         </th:block>
                     </th:block>
 
-                    <a th:href="@{/topics(page=${topics.number + 1}, resolved=${resolved})}" th:if="${!topics.last}"
+                    <a th:href="@{/search(page=${topics.number + 1}, resolved=${resolved}, keyword=${keyword})}" th:if="${!topics.last}"
                         aria-label="Next">&gt;</a>
                     <a href="#" th:if="${topics.last}" onclick="return false;" class="disabled">&gt;</a>
 
-                    <a th:href="@{/topics(page=${topics.totalPages - 1}, resolved=${resolved})}"
+                    <a th:href="@{/search(page=${topics.totalPages - 1}, resolved=${resolved}, keyword=${keyword})}"
                         th:classappend="${topics.last} ? 'disabled'" aria-label="Last">&raquo;</a>
                 </div>
             </div>
@@ -573,45 +554,22 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- 제목 하이라이트 렌더링 -->
-    <script>
-        (function () {
-            const query = new URLSearchParams(window.location.search).get("q") || "";
-            const keywords = query.toLowerCase().split(/\s+/);
-
-            document.querySelectorAll('.topic-title').forEach(el => {
-                const raw = el.dataset.title;
-                let highlighted = raw;
-
-                for (let word of keywords) {
-                    if (!word) continue;
-                    const regex = new RegExp(`(${word})`, 'gi');
-                    highlighted = highlighted.replace(regex, '<span class="highlight">$1</span>');
-                }
-
-                el.innerHTML = highlighted;
-            });
-        })();
-    </script>
     <script>
         lucide.createIcons();
 
         // Get search term from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const searchTerm = urlParams.get('q') || 'React useEffect';
+        const searchTerm = urlParams.get('keyword') || '';
 
         // Set search input values
         document.getElementById('searchInput').value = searchTerm;
         document.getElementById('searchInputLarge').value = searchTerm;
 
-        // Update active filter
-        document.querySelector('.filter-item.active span').textContent = `"${searchTerm}"`;
-
         // Search functionality
         function performSearch(input) {
             const term = input.value.trim();
             if (term) {
-                window.location.href = `/search_results.html?q=${encodeURIComponent(term)}`;
+                window.location.href = `/search?keyword=${encodeURIComponent(term)}`;
             }
         }
 
@@ -629,15 +587,6 @@
             if (e.key === 'Enter') {
                 performSearch(this);
             }
-        });
-
-        // Filter functionality
-        document.querySelector('.filter-item .close-btn').addEventListener('click', function () {
-            window.location.href = '/browse_topics.html';
-        });
-
-        document.querySelector('.filter-item:first-child').addEventListener('click', function () {
-            window.location.href = '/browse_topics.html';
         });
     </script>
 </body>
