@@ -6,6 +6,10 @@ spring:
     url: ${db.url}
     username: ${db.username}
     password: ${db.password}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   jpa:
     hibernate:
