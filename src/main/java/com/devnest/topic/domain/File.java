@@ -8,7 +8,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "file")
 public class File {
 
@@ -21,7 +23,7 @@ public class File {
     @Column(name = "target_type", nullable = false)
     private TargetType targetType; // 첨부 대상 타입
 
-    @Column(name = "target_id", nullable = false)
+    @Column(name = "target_id", nullable = true)
     private Long targetId; // 첨부 대상 ID
 
     @Column(nullable = false)
@@ -33,14 +35,6 @@ public class File {
     @CreationTimestamp
     @Column(name = "uploaded_at", nullable = false, updatable = false)
     private LocalDateTime uploadedAt; // 업로드 일시
-
-    @Builder
-    public File(TargetType targetType, Long targetId, String filename, String url) {
-        this.targetType = targetType;
-        this.targetId = targetId;
-        this.filename = filename;
-        this.url = url;
-    }
 
     public enum TargetType {
         TOPIC, ANSWER

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reports")
@@ -18,19 +20,25 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping
-    public ResponseEntity<ReportResponseDto> createReport(
+    public ResponseEntity<Map<String, String>> createReport(
             @RequestBody @Valid ReportRequestDto requestDto,
             HttpSession session) {
 
         Long currentUserId = (Long) session.getAttribute("userId");
         if (currentUserId == null) {
-            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
+            // 비로그인 처리 (테스트용)
             currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
-            // throw new IllegalStateException("로그인이 필요합니다.");
         }
 
+        // 신고 사유가 비어있는지 체크
+        if (requestDto.getReason() == null || requestDto.getReason().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "신고 사유가 필요합니다."));
+        }
+
+        // 정상 신고 생성
+        reportService.createReport(requestDto, currentUserId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(reportService.createReport(requestDto, currentUserId));
+                .body(Map.of("message", "신고가 접수되었습니다."));
     }
 }

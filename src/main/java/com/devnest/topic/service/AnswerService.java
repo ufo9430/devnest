@@ -2,16 +2,26 @@ package com.devnest.topic.service;
 
 import com.devnest.topic.domain.Answer;
 import com.devnest.topic.domain.Topic;
+import com.devnest.topic.domain.Vote;
 import com.devnest.topic.dto.AnswerAcceptRequestDto;
 import com.devnest.topic.dto.AnswerRequestDto;
 import com.devnest.topic.dto.AnswerResponseDto;
 import com.devnest.topic.repository.AnswerRepository;
 import com.devnest.topic.repository.TopicRepository;
+import com.devnest.topic.repository.VoteRepository;
+import com.devnest.user.domain.User;
+import com.devnest.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,25 +31,54 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
     private final TopicRepository topicRepository;
-    private final MarkdownService markdownService;
+    private final UserRepository userRepository;
+    private final VoteRepository voteRepository;
 
     @Transactional(readOnly = true)
     public List<AnswerResponseDto> getAnswersByTopicId(Long topicId) {
-        return answerRepository.findByTopicIdOrderByCreatedAtDesc(topicId).stream()
-                .map(AnswerResponseDto::new)
-                .collect(Collectors.toList());
+        List<Answer> answers = answerRepository.findByTopicIdOrderByVoteScoreDesc(topicId);
+        return answers.stream().map(answer -> {
+            User user = userRepository.findById(answer.getUserId()).orElse(null);
+
+            // 1. 추천/비추천 카운트 계산
+            int likeCount = voteRepository.countByTargetIdAndType(answer.getId(), Vote.VoteType.LIKE);
+            int dislikeCount = voteRepository.countByTargetIdAndType(answer.getId(), Vote.VoteType.DISLIKE);
+            int voteCount = likeCount - dislikeCount;
+
+            // 2. DTO 생성 및 voteCount 세팅
+            AnswerResponseDto dto = new AnswerResponseDto(answer, user);
+            dto.setVoteCount(voteCount);
+
+            return dto;
+        }).collect(Collectors.toList());
     }
+
+    // 마크다운 → HTML 변환
+    private String convertMarkdownToHtml(String markdown) {
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        Node document = parser.parse(markdown == null ? "" : markdown);
+        return renderer.render(document);
+    }
+
+    // HTML 새니타이징
+    private String sanitizeHtml(String html) {
+        return Jsoup.clean(html, Safelist.basicWithImages());
+    }
+
 
     @Transactional
     public AnswerResponseDto createAnswer(AnswerRequestDto requestDto) {
         Topic topic = topicRepository.findById(requestDto.getTopicId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 질문을 찾을 수 없습니다."));
 
-        // HTML 새니타이징 적용
-        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
+        String markdown = requestDto.getMarkdownContent();
+        String html = convertMarkdownToHtml(markdown);
+        String sanitizedHtml = sanitizeHtml(html);
 
         Answer answer = Answer.builder()
-                .content(sanitizedContent)  // 새니타이징된 내용 사용
+                .content(sanitizedHtml)          // 변환+새니타이징된 HTML
+                .markdownContent(markdown)       // 마크다운 원본
                 .userId(requestDto.getUserId())
                 .topic(topic)
                 .isAccepted(false)
@@ -49,37 +88,32 @@ public class AnswerService {
     }
 
     @Transactional
-    public AnswerResponseDto updateAnswer(Long answerId, AnswerRequestDto requestDto, Long currentUserId) {
+    public void updateAnswer(Long answerId, Long userId, String markdownContent) {
         Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 답변을 찾을 수 없습니다."));
-
-        // 작성자 확인
-        if (!answer.getUserId().equals(currentUserId)) {
-            throw new IllegalStateException("수정 권한이 없습니다.");
+                .orElseThrow(() -> new EntityNotFoundException("답변 없음"));
+        if (!answer.getUserId().equals(userId)) try {
+            throw new AccessDeniedException("수정 권한 없음");
+        } catch (AccessDeniedException e) {
+            throw new RuntimeException(e);
         }
 
-        // HTML 새니타이징 적용
-        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
-        answer.updateContent(sanitizedContent);  // 새니타이징된 내용으로 업데이트
+        String html = convertMarkdownToHtml(markdownContent);
+        String sanitizedHtml = sanitizeHtml(html);
 
-        return new AnswerResponseDto(answerRepository.save(answer));
+        answer.setMarkdownContent(markdownContent);
+        answer.updateContent(sanitizedHtml);
+        // JPA dirty checking
     }
 
     @Transactional
-    public void deleteAnswer(Long answerId, Long currentUserId) {
+    public void deleteAnswer(Long answerId, Long userId) {
         Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 답변을 찾을 수 없습니다."));
-
-        // 작성자 확인
-        if (!answer.getUserId().equals(currentUserId)) {
-            throw new IllegalStateException("삭제 권한이 없습니다.");
+                .orElseThrow(() -> new EntityNotFoundException("답변 없음"));
+        if (!answer.getUserId().equals(userId)) try {
+            throw new AccessDeniedException("삭제 권한 없음");
+        } catch (AccessDeniedException e) {
+            throw new RuntimeException(e);
         }
-
-        // 채택된 답변인지 확인
-        if (answer.isAccepted()) {
-            throw new IllegalStateException("채택된 답변은 삭제할 수 없습니다.");
-        }
-
         answerRepository.delete(answer);
     }
 
@@ -107,8 +141,6 @@ public class AnswerService {
         // 답변 채택 처리
         answer.accept();
         answerRepository.save(answer);
-
-        // TODO: 답변 작성자에게 알림 전송 로직 추가
 
         return new AnswerResponseDto(answer);
     }

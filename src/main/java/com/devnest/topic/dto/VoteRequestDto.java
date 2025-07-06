@@ -1,5 +1,6 @@
 package com.devnest.topic.dto;
 
+import com.devnest.topic.domain.Vote;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,6 @@ import lombok.Setter;
 public class VoteRequestDto {
     @NotNull(message = "대상 ID가 필요합니다.")
     private Long targetId;
-
-    @NotNull(message = "사용자 ID가 필요합니다.")
+    private Vote.VoteType type;
     private Long userId;
 }

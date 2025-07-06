@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class VoteService {
@@ -16,50 +18,45 @@ public class VoteService {
     private final VoteRepository voteRepository;
 
     @Transactional
-    public VoteResponseDto addVote(VoteRequestDto requestDto, VoteType voteType) {
+    public Map<String, Object> addVote(VoteRequestDto requestDto, VoteType type) {
+        Long userId = requestDto.getUserId();
+        Long targetId = requestDto.getTargetId();
+
         // 이미 해당 타입으로 투표했는지 확인
-        boolean alreadyVoted = voteRepository.existsByUserIdAndTargetIdAndType(
-                requestDto.getUserId(),
-                requestDto.getTargetId(),
-                voteType
-        );
-
-        String message;
+        boolean alreadyVoted = voteRepository.existsByUserIdAndTargetIdAndType(userId, targetId, type);
         if (alreadyVoted) {
-            String voteTypeText = voteType == VoteType.LIKE ? "추천" : "비추천";
-            message = "이미 " + voteTypeText + "하셨습니다.";
-        } else {
-            // 반대 타입의 투표가 있는지 확인
-            VoteType oppositeType = (voteType == VoteType.LIKE) ? VoteType.DISLIKE : VoteType.LIKE;
-            voteRepository.findByUserIdAndTargetIdAndType(
-                    requestDto.getUserId(),
-                    requestDto.getTargetId(),
-                    oppositeType
-            ).ifPresent(voteRepository::delete);
-
-            // 새로운 투표 추가
-            Vote vote = Vote.builder()
-                    .userId(requestDto.getUserId())
-                    .targetId(requestDto.getTargetId())
-                    .type(voteType)
-                    .build();
-            voteRepository.save(vote);
-
-            String voteTypeText = voteType == VoteType.LIKE ? "추천" : "비추천";
-            message = voteTypeText + "되었습니다.";
+            return Map.of(
+                    "success", false,
+                    "message", type == VoteType.LIKE ? "이미 추천하셨습니다." : "이미 비추천하셨습니다.",
+                    "voteCount", voteRepository.countByTargetIdAndType(targetId, VoteType.LIKE)
+                            - voteRepository.countByTargetIdAndType(targetId, VoteType.DISLIKE)
+            );
         }
 
-        // 업데이트된 투표 수 조회
-        int likeCount = voteRepository.countByTargetIdAndType(
-                requestDto.getTargetId(),
-                VoteType.LIKE
-        );
-        int dislikeCount = voteRepository.countByTargetIdAndType(
-                requestDto.getTargetId(),
-                VoteType.DISLIKE
-        );
+        // 반대 타입의 투표가 있으면 삭제 + flush
+        VoteType oppositeType = (type == VoteType.LIKE) ? VoteType.DISLIKE : VoteType.LIKE;
+        voteRepository.findByUserIdAndTargetIdAndType(userId, targetId, oppositeType)
+                .ifPresent(vote -> {
+                    voteRepository.delete(vote);
+                    voteRepository.flush();
+                });
 
-        return new VoteResponseDto(likeCount, dislikeCount, message);
+        // 투표 저장
+        Vote vote = Vote.builder()
+                .userId(userId)
+                .targetId(targetId)
+                .type(type)
+                .build();
+        voteRepository.save(vote);
+
+        int voteCount = voteRepository.countByTargetIdAndType(targetId, VoteType.LIKE)
+                - voteRepository.countByTargetIdAndType(targetId, VoteType.DISLIKE);
+
+        return Map.of(
+                "success", true,
+                "message", type == VoteType.LIKE ? "추천되었습니다." : "비추천되었습니다.",
+                "voteCount", voteCount
+        );
     }
 
     /**

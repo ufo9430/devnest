@@ -8,7 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "answer")
 public class Answer {
@@ -42,12 +43,16 @@ public class Answer {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;  // 수정일시
 
+    @Column(columnDefinition = "TEXT")
+    private String markdownContent; // ToastUI Editor의 markdown 원본 저장
+
     @Builder
-    public Answer(String content, Long userId, Topic topic, boolean isAccepted) {
+    public Answer(String content, Long userId, Topic topic, boolean isAccepted, String markdownContent) {
         this.content = content;
         this.userId = userId;
         this.topic = topic;
         this.isAccepted = isAccepted;
+        this.markdownContent = markdownContent;
     }
 
     // 답변 채택 메서드

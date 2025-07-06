@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>React Hook에서 useEffect 의존성 배열 관련 질문입니다 - DevNest</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <!-- Toast UI Editor CSS/JS -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+    <style>
+        :root {
+    --primary-color: #6366F1;
+    --primary-hover: #5856EB;
+    --background-color: #F8F9FA;
+    --border-color: #E9ECEF;
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --card-background: #FFFFFF;
+    --success-color: #10B981;
+    --warning-color: #F59E0B;
+    --danger-color: #EF4444;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+}
+
+.navbar {
+    background-color: var(--card-background);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--primary-color) !important;
+    text-decoration: none;
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    color: white;
+    text-decoration: none;
+}
+
+.search-box {
+    position: relative;
+    max-width: 400px;
+}
+
+.search-box input {
+    padding-right: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.search-box button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+}
+
+.notification-dropdown {
+    position: relative;
+}
+
+.notification-icon-button {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    position: relative;
+}
+
+.notification-icon-button:hover {
+    background-color: #F3F4F6;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-menu {
+    min-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+    padding: 0;
+}
+
+.dropdown-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dropdown-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #F3F4F6;
+    white-space: normal;
+    cursor: pointer;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: #F8F9FA;
+}
+
+.notification-content {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.dropdown-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.dropdown-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.dropdown-footer a:hover {
+    text-decoration: underline;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 500;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.main-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.card-custom {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tag {
+    background-color: #F3F4F6;
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.tag:hover {
+    background-color: #E5E7EB;
+    color: var(--text-secondary);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.vote-button {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vote-button:hover {
+    background-color: #F3F4F6;
+    color: var(--text-primary);
+}
+
+.vote-button.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.vote-count {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0.5rem 0;
+}
+
+.answer-accepted {
+    border-left: 4px solid var(--success-color);
+    background-color: #F0FDF4;
+}
+
+.code-block {
+    background-color: #F8F9FA;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+.breadcrumb-custom {
+    background-color: transparent;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb-custom .breadcrumb-item a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.breadcrumb-custom .breadcrumb-item a:hover {
+    color: var(--primary-color);
+}
+
+.stats-item {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.stats-number {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stats-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        padding: 1rem 0.5rem;
+    }
+}
+    </style>
+</head>
+<body>
+<!--  Navbar  -->
+<nav class="navbar">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center gap-3">
+            <a class="navbar-brand" href="/">DevNest</a>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="search-box">
+                <input class="form-control" placeholder="질문 검색..." type="text">
+                <button type="button">
+                    <svg class="lucide lucide-search" data-lucide="search" fill="none" height="24" stroke="currentColor"
+                         stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                         style="width: 16px; height: 16px;"
+                         viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="m21 21-4.34-4.34"></path>
+                        <circle cx="11" cy="11" r="8"></circle>
+                    </svg>
+                </button>
+            </div>
+
+            <a class="btn-primary-custom" href="/ask_question.html">
+                <svg class="lucide lucide-plus" data-lucide="plus" fill="none" height="24" stroke="currentColor"
+                     stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width: 16px; height: 16px;"
+                     viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                </svg>
+                질문하기
+            </a>
+
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown dropdown">
+                <button aria-expanded="false" class="notification-icon-button" data-bs-toggle="dropdown"
+                        id="notificationDropdown" type="button">
+                    <svg class="lucide lucide-bell" data-lucide="bell" fill="none" height="24" stroke="currentColor"
+                         stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                         style="width: 24px; height: 24px;"
+                         viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+                        <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+                <ul aria-labelledby="notificationDropdown" class="dropdown-menu dropdown-menu-end">
+                    <li class="dropdown-header">알림</li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <div class="notification-content">새로운 답변이 등록되었습니다: "React Hooks 사용법"</div>
+                            <div class="notification-time">5분 전</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <div class="notification-content">회원님의 질문에 새로운 댓글이 달렸습니다: "Spring Security 설정"</div>
+                            <div class="notification-time">1시간 전</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <div class="notification-content">관리자 공지: 시스템 점검 안내</div>
+                            <div class="notification-time">어제</div>
+                        </a>
+                    </li>
+                    <li class="dropdown-footer">
+                        <a href="/all_notifications.html">모든 알림 보기</a>
+                    </li>
+                </ul>
+            </div>
+
+            <a class="btn-primary-custom" href="/login.html">로그인</a>
+            <a class="btn-primary-custom" href="/signup.html">회원가입</a>
+        </div>
+    </div>
+</nav>
+
+
+<!-- Main Content -->
+<nav class="main-container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-custom">
+            <li class="breadcrumb-item"><a href="/">홈</a></li>
+            <li class="breadcrumb-item"><a href="/questions">질문</a></li>
+            <li aria-current="page" class="breadcrumb-item active" th:text="${topic.title}"></li>
+        </ol>
+    </nav>
+
+    <!-- Question -->
+    <div class="card card-custom mb-4">
+        <div class="card-body">
+            <div class="row">
+                <!-- Vote Section -->
+                <div class="col-auto">
+                    <div class="d-flex flex-column align-items-center">
+                        <button class="vote-button up"
+                                id="vote-up-btn-topic"
+                                th:onclick="|voteUp(${topic.id}, 'TOPIC', 'question-votes', 'vote-up-btn-topic', 'vote-down-btn-topic')|">
+                            <i data-lucide="chevron-up"></i>
+                        </button>
+                        <div class="vote-count" id="question-votes" th:text="${topic.voteCount}"></div>
+                        <button class="vote-button down"
+                                id="vote-down-btn-topic"
+                                th:onclick="|voteDown(${topic.id}, 'TOPIC', 'question-votes', 'vote-up-btn-topic', 'vote-down-btn-topic')|">
+                            <i data-lucide="chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Section -->
+                <div class="col">
+                    <!-- Title and Actions -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h1 class="h4 fw-bold mb-0" th:id="'topic-title-' + ${topic.id}" th:text="${topic.title}"></h1>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                                    type="button">
+                                <i data-lucide="more-horizontal" style="width: 16px; height: 16px;"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <!-- 글 수정/삭제 버튼: 글쓴이만 노출 -->
+                                <th:block th:if="${currentUserId} == ${topic.id}">
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="#"
+                                           th:attr="data-topic-id=${topic.id}, data-markdown=${topic.markdownContent == null ? '' : topic.markdownContent}"
+                                           onclick="editTopicFromElement(this)">
+                                            <i class="me-2" data-lucide="edit" style="width: 16px; height: 16px;"></i>수정
+                                        </a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="#" th:onclick="|deleteTopic([[${topic.id}]])|">
+                                        <i class="me-2" data-lucide="delete" style="width: 16px; height: 16px;"></i>삭제
+                                    </a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                </th:block>
+                                <li><a class="dropdown-item text-danger" href="#"
+                                       th:onclick="|reportAnswer(${topic.id})|">
+                                    <i class="me-2" data-lucide="flag" style="width: 16px; height: 16px;"></i>신고
+                                </a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <!-- Tags -->
+                    <div id="question-view-mode">
+                        <div class="mb-3">
+                            <div>
+                                <span class="tag me-1" th:each="tag : ${topic.tags}" th:text="${tag}"></span>
+                            </div>
+                        </div>
+                        <!-- Question Stats and Author -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img alt="프로필"
+                                     class="avatar me-2"
+                                     th:src="${topic.ProfileImage}">
+                                <div>
+                                    <div class="fw-semibold" th:text="${topic.userNickname}"></div>
+                                    <div class="small text-muted" th:text="${topic.timeAgo}"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-3">
+                                <div class="stats-item">
+                                    <div class="stats-number" th:text="${topic.answerCount}"></div>
+                                    <div class="stats-label">답변</div>
+                                </div>
+                                <div class="stats-item">
+                                    <div class="stats-number" th:text="${topic.viewCount}"></div>
+                                    <div class="stats-label">조회</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question Content -->
+                        <div class="mb-4">
+                            <div class="mb-4">
+                                <!-- 질문 내용 보기 영역 -->
+                                <div th:id="'topic-content-view-' + ${topic.id}" th:utext="${topic.content}"></div>
+
+                                <div class="mb-3" th:if="${topic.imageUrls != null}">
+                                    <th:block th:if="${not #lists.isEmpty(topic.imageUrls)}">
+                                        <div>첨부 이미지</div>
+                                        <div th:each="url : ${topic.imageUrls}">
+                                            <img th:src="@{${url}}" style="max-width:250px;">
+                                        </div>
+                                    </th:block>
+                                </div>
+                                <div class="mb-3" th:if="${topic.fileUrls != null}">
+                                    <h6>첨부 파일</h6>
+                                    <ul>
+                                        <li th:each="fileUrl : ${topic.fileUrls}">
+                                            <a th:href="@{${fileUrl}}" th:text="${#strings.substring(fileUrl, fileUrl.lastIndexOf('/')+1)}" download></a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Toast UI Editor 영역 (수정 시에만 보임) -->
+                                <div th:id="'topic-content-editor-' + ${topic.id}" style="display:none;">
+                                    <div th:id="'toast-editor-topic-' + ${topic.id}"></div>
+                                    <div class="d-flex justify-content-end gap-2 mt-2">
+                                        <button type="button" class="btn btn-secondary" th:id="'cancel-edit-topic-btn-' + ${topic.id}">취소</button>
+                                        <button type="button" class="btn btn-primary" th:id="'submit-edit-topic-btn-' + ${topic.id}">수정 완료</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Answers Section -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h5 fw-bold mb-0" th:text="|${topic.answerCount}개의 답변|"></h3>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" type="button">
+                정렬: 추천순
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">추천순</a></li>
+                <li><a class="dropdown-item" href="#">최신순</a></li>
+                <li><a class="dropdown-item" href="#">오래된순</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 답변 리스트 반복 -->
+    <th:block th:each="answer, iterStat : ${answers}">
+        <div class="card card-custom mb-3"
+             th:classappend="${answer.isAccepted} ? 'answer-accepted'">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Vote Section -->
+                    <div class="col-auto">
+                        <div class="d-flex flex-column align-items-center">
+                            <button class="vote-button up"
+                                    th:id="|vote-up-btn-answer${answer.id}|"
+                                    th:onclick="|voteUp(${answer.id}, 'ANSWER', 'answer-votes-${answer.id}', 'vote-up-btn-answer${answer.id}', 'vote-down-btn-answer${answer.id}')|">
+                                <i data-lucide="chevron-up"></i>
+                            </button>
+                            <div class="vote-count"
+                                 th:id="|answer-votes-${answer.id}|"
+                                 th:text="${answer.voteCount}">0
+                            </div>
+                            <button class="vote-button down"
+                                    th:id="|vote-down-btn-answer${answer.id}|"
+                                    th:onclick="|voteDown(${answer.id}, 'ANSWER', 'answer-votes-${answer.id}', 'vote-up-btn-answer${answer.id}', 'vote-down-btn-answer${answer.id}')|">
+                                <i data-lucide="chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Content Section -->
+                    <div class="col">
+                        <div th:classappend="${answer.isAccepted} ? 'd-flex justify-content-between align-items-start mb-3' : 'd-flex justify-content-end mb-3'">
+                            <div th:if="${answer.isAccepted}" class="badge bg-success">채택됨</div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown">
+                                    <i data-lucide="more-horizontal" style="width: 16px; height: 16px;"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <th:block th:if="${currentUserId} == ${answer.userId}">
+                                    <li><a class="dropdown-item" href="#" th:onclick="|editAnswer(${answer.id})|">
+                                        <i data-lucide="edit" style="width: 16px; height: 16px;" class="me-2"></i>수정
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="#" th:onclick="|deleteAnswer(${answer.id})|">
+                                        <i data-lucide="delete" style="width: 16px; height: 16px;" class="me-2"></i>삭제
+                                    </a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                </th:block>
+                                    <li><a class="dropdown-item text-danger" href="#"
+                                           th:onclick="|reportAnswer(${answer.id})|">
+                                        <i data-lucide="flag" style="width: 16px; height: 16px;" class="me-2"></i>신고
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Answer Author -->
+                        <div class="d-flex justify-content-start mt-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <img th:src="${answer.profileImage}" alt="프로필" class="avatar me-2">
+                                <div>
+                                    <div class="fw-semibold" th:text="${answer.userNickname}"></div>
+                                    <div class="small text-muted" th:text="${answer.timeAgo}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 답변 내용 (보기 모드) -->
+                        <div class="mb-4" th:utext="${answer.content}" th:id="'answer-content-view-' + ${answer.id}"></div>
+
+                        <!-- Toast UI Editor (수정 모드, 초기에는 숨김) -->
+                        <div th:id="'answer-content-editor-' + ${answer.id}" style="display:none;">
+                            <div th:id="'toast-editor-answer-' + ${answer.id}"></div>
+                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                <button type="button" class="btn btn-secondary" th:id="'cancel-edit-answer-btn-' + ${answer.id}">취소</button>
+                                <button type="button" class="btn btn-primary" th:id="'submit-edit-answer-btn-' + ${answer.id}">수정 완료</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+    <!-- Add Answer Section -->
+    <div class="card card-custom" th:if="${!hasAnswered}">
+        <div class="card-header">
+            <h5 class="mb-0">답변 작성</h5>
+        </div>
+        <div class="card-body">
+            <form id="answerForm">
+                <div class="mb-3">
+                    <div id="toast-editor-answer-form"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="form-text">
+                        <i class="me-1" data-lucide="info" style="width: 16px; height: 16px;"></i>
+                        마크다운 문법을 사용할 수 있습니다.
+                    </div>
+                    <button class="btn btn-primary-custom" type="submit">
+                        <i class="me-1" data-lucide="send" style="width: 16px; height: 16px;"></i>
+                        답변 등록
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">신고하기</h5>
+                    <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="reportForm">
+                        <div class="mb-3">
+                            <label class="form-label">신고 사유</label>
+                            <div class="form-check">
+                                <input class="form-check-input" id="spam" name="reportReason" type="radio" value="spam">
+                                <label class="form-check-label" for="spam">스팸 또는 광고</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" id="inappropriate" name="reportReason" type="radio"
+                                       value="inappropriate">
+                                <label class="form-check-label" for="inappropriate">부적절한 내용</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" id="harassment" name="reportReason" type="radio"
+                                       value="harassment">
+                                <label class="form-check-label" for="harassment">괴롭힘 또는 혐오 발언</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" id="copyright" name="reportReason" type="radio"
+                                       value="copyright">
+                                <label class="form-check-label" for="copyright">저작권 침해</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" id="other" name="reportReason" type="radio"
+                                       value="other">
+                                <label class="form-check-label" for="other">기타</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="reportDetails">상세 내용 (선택사항)</label>
+                            <textarea class="form-control" id="reportDetails" placeholder="신고 사유에 대한 자세한 설명을 입력해주세요..."
+                                      rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">취소</button>
+                    <button class="btn btn-danger" onclick="submitReport()" type="button">신고하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    lucide.createIcons();
+
+let currentReportTarget = null;
+let toastEditors = {}; // 여러 답변 동시 편집 지원
+let answerFormEditor = null; // Toast UI Editor 인스턴스 생성
+
+function editTopicFromElement(el) {
+    const topicId = el.getAttribute('data-topic-id');
+    const markdown = el.getAttribute('data-markdown') || '';
+    editTopic(topicId, markdown);
+}
+
+function editTopic(topicId, initialMarkdown) {
+
+    const viewElem = document.getElementById(`topic-content-view-${topicId}`);
+    const editorElem = document.getElementById(`topic-content-editor-${topicId}`);
+    const toastElem = document.getElementById(`toast-editor-topic-${topicId}`);
+
+    if (!viewElem || !editorElem || !toastElem) {
+        alert('수정할 수 있는 영역을 찾을 수 없습니다. (id 불일치)');
+        return;
+    }
+
+    viewElem.style.display = 'none';
+    editorElem.style.display = '';
+
+    // 에디터 생성 (마크다운 원본을 initialValue로)
+    toastEditors[topicId] = new toastui.Editor({
+        el: toastElem,
+        height: '400px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        initialValue: initialMarkdown || ''
+    });
+
+
+
+    // 취소 버튼
+    document.getElementById(`cancel-edit-topic-btn-${topicId}`).onclick = function() {
+        document.getElementById(`topic-content-editor-${topicId}`).style.display = 'none';
+        document.getElementById(`topic-content-view-${topicId}`).style.display = '';
+        if (toastEditors[topicId]) toastEditors[topicId].destroy();
+    };
+
+    // 저장 버튼
+    document.getElementById(`submit-edit-topic-btn-${topicId}`).onclick = function() {
+        const updatedMarkdown = toastEditors[topicId].getMarkdown();
+        const updatedTitle = document.getElementById(`topic-title-${topicId}`).textContent.trim();
+        const updatedTags = Array.from(document.querySelectorAll('.tag')).map(e => e.textContent.trim());
+
+        fetch(`/topics/${topicId}/update`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: updatedTitle,
+                tags: updatedTags,
+                content: updatedMarkdown,            // 백엔드가 content도 받는다면
+                markdownContent: updatedMarkdown     // 반드시 마크다운 원본도 보냄
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('질문이 수정되었습니다.');
+                location.reload();
+            } else {
+                alert(data.message || '수정에 실패했습니다.');
+            }
+        })
+        .catch(() => alert('수정 처리 중 오류가 발생했습니다.'));
+    };
+}
+
+// 전역에서 호출할 수 있게 export
+window.editTopic = editTopic;
+
+// 질문 글 삭제
+function deleteTopic(topicId) {
+    if (confirm('정말 삭제하시겠습니까?')) {
+        fetch('/topics/' + topicId + '/remove', {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else if (response.ok) {
+                alert('삭제되었습니다.');
+                window.location.href = '/';
+            } else {
+                alert('삭제에 실패했습니다.');
+            }
+        })
+        .catch(() => {
+            alert('삭제 처리 중 오류가 발생했습니다.');
+        });
+    }
+}
+
+function editAnswer(answerId) {
+    // 보기 모드 숨기고 에디터 모드 보이기
+    document.getElementById(`answer-content-view-${answerId}`).style.display = 'none';
+    document.getElementById(`answer-content-editor-${answerId}`).style.display = '';
+
+    // 원본 내용 가져오기 (HTML → Markdown 변환 필요시 서버에서 markdown 원본도 내려주는 게 베스트)
+    const originalHtml = document.getElementById(`answer-content-view-${answerId}`).innerHTML;
+    // 간단하게 textContent 사용, 실제로는 markdown 원본을 내려주는 게 더 안전
+    const initialValue = document.getElementById(`answer-content-view-${answerId}`).textContent.trim();
+
+    // 에디터 생성
+    toastEditors[answerId] = new toastui.Editor({
+        el: document.getElementById(`toast-editor-answer-${answerId}`),
+        height: '300px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        initialValue: initialValue
+    });
+
+    // 취소 버튼
+    document.getElementById(`cancel-edit-answer-btn-${answerId}`).onclick = function() {
+        document.getElementById(`answer-content-editor-${answerId}`).style.display = 'none';
+        document.getElementById(`answer-content-view-${answerId}`).style.display = '';
+        if (toastEditors[answerId]) toastEditors[answerId].destroy();
+    };
+
+    // 저장 버튼
+    document.getElementById(`submit-edit-answer-btn-${answerId}`).onclick = function() {
+        const updatedContent = toastEditors[answerId].getMarkdown();
+        fetch(`/answers/${answerId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: updatedContent })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('답변이 수정되었습니다.');
+                location.reload();
+            } else {
+                alert(data.message || '수정에 실패했습니다.');
+            }
+        })
+        .catch(() => alert('수정 처리 중 오류가 발생했습니다.'));
+    };
+}
+
+function deleteAnswer(answerId) {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    fetch(`/answers/${answerId}`, {
+     method: 'DELETE',
+     headers: { 'Accept': 'application/json' }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) location.reload();
+        else alert(data.message);
+      });
+}
+
+let userVoteType = null; // 초기 상태
+
+function updateVoteButtons(type) {
+    userVoteType = type;
+    // 추천 버튼
+    document.getElementById('vote-up-btn').disabled = (userVoteType === 'LIKE');
+    // 비추천 버튼
+    document.getElementById('vote-down-btn').disabled = (userVoteType === 'DISLIKE');
+}
+
+function voteUp(targetId, targetType, voteCountElemId, upBtnId, downBtnId) {
+    fetch('/votes/like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetId, type: 'LIKE', targetType })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById(voteCountElemId).textContent = data.voteCount;
+            updateVoteButtons(upBtnId, downBtnId, 'LIKE');
+        }
+        alert(data.message);
+    });
+}
+
+function voteDown(targetId, targetType, voteCountElemId, upBtnId, downBtnId) {
+    fetch('/votes/dislike', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetId, type: 'DISLIKE', targetType })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById(voteCountElemId).textContent = data.voteCount;
+            updateVoteButtons(upBtnId, downBtnId, 'DISLIKE');
+        }
+        alert(data.message);
+    });
+}
+
+// 버튼 비활성화도 id로 제어
+function updateVoteButtons(upBtnId, downBtnId, userVoteType) {
+    document.getElementById(upBtnId).disabled = (userVoteType === 'LIKE');
+    document.getElementById(downBtnId).disabled = (userVoteType === 'DISLIKE');
+}
+
+// 게시글 공유
+function sharePost() {
+    if (navigator.share) {
+        navigator.share({
+            title: document.title,
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('링크가 클립보드에 복사되었습니다.');
+    }
+}
+
+function reportAnswer(answerId) {
+    currentReportTarget = answerId;
+    new bootstrap.Modal(document.getElementById('reportModal')).show();
+}
+
+function reportTopic(topicId) {
+    currentReportTarget = topicId;
+    new bootstrap.Modal(document.getElementById('reportModal')).show();
+}
+
+// 신고 기능
+function submitReport() {
+    const reason = document.querySelector('input[name="reportReason"]:checked');
+    if (!reason) {
+        alert('신고 사유를 선택해주세요.');
+        return;
+    }
+
+    // 대상 ID/타입 구분
+    let targetId, targetType;
+    if (currentReportTarget === 'post') {
+        targetId = window.topicId;
+        targetType = 'TOPIC';
+    } else {
+        targetId = currentReportTarget; // 답변 ID
+        targetType = 'ANSWER';
+    }
+
+    fetch('/reports', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            targetId: targetId,
+            reason: reason.value,
+            targetType: targetType
+            })
+        })
+        .then(response => {
+        if (response.ok) {
+            alert('신고가 접수되었습니다. 검토 후 조치하겠습니다.');
+            bootstrap.Modal.getInstance(document.getElementById('reportModal')).hide();
+            document.getElementById('reportForm').reset();
+        } else {
+            // 응답이 JSON인지 확인
+            return response.text().then(text => {
+                let msg = '신고 처리에 실패했습니다.';
+                try {
+                    const data = JSON.parse(text);
+                    if (data.message) msg = data.message;
+                } catch (e) {
+                    // JSON 파싱 실패 시 기본 메시지 사용
+                }
+                alert(msg);
+            });
+        }
+    })
+    .catch(() => {
+        alert('신고 처리 중 오류가 발생했습니다.');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    answerFormEditor = new toastui.Editor({
+        el: document.getElementById('toast-editor-answer-form'),
+        height: '300px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        initialValue: '',
+        placeholder: '답변을 작성해주세요...'
+    });
+
+    document.getElementById('answerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const markdown = answerFormEditor.getMarkdown().trim();
+        const topicId = [[${topic.id}]];
+
+        if (!markdown) {
+            alert('답변 내용을 입력해주세요.');
+            return;
+        }
+
+        fetch('/answers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                topicId: topicId,
+                content: markdown,
+                markdownContent: markdown
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('답변이 등록되었습니다.');
+                location.reload();
+            } else {
+                alert(data.message || '등록에 실패했습니다.');
+            }
+        })
+        .catch(() => alert('등록 처리 중 오류가 발생했습니다.'));
+    });
+});
+
+// 답변 폼 제출
+document.getElementById('answerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('답변이 등록되었습니다.');
+    this.reset();
+});
+</script>
+</body>
+</html>
+

@@ -1,5 +1,6 @@
 package com.devnest.topic.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "vote", uniqueConstraints = {@UniqueConstraint(name = "unique_user_target_type", columnNames = {"user_id", "target_id", "type"})})
+@Table(name = "vote", uniqueConstraints = {@UniqueConstraint(name = "unique_vote", columnNames = {"user_id", "target_id", "type"})})
 public class Vote {
 
     @Id
@@ -46,6 +47,12 @@ public class Vote {
 
     // 추천 타입을 나타내는 Enum
     public enum VoteType {
-        LIKE, DISLIKE
+        LIKE, DISLIKE;
+
+        @JsonCreator
+        public static VoteType from(String value) {
+            if (value == null) return null;
+            return VoteType.valueOf(value.trim().toUpperCase());
+        }
     }
 }
