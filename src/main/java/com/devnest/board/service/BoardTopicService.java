@@ -5,6 +5,7 @@ import com.devnest.topic.repository.TopicRepository;
 import com.devnest.board.vo.StatisticsVo;
 import com.devnest.topic.domain.Topic;
 import com.devnest.topic.repository.AnswerRepository;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

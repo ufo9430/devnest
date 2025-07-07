@@ -11,4 +11,7 @@ import java.util.List;
 public interface HotTopicRepository extends JpaRepository<HotTopic, Long> {
     @Query(value = "select * from hot_topic order by snapshot_time desc limit 5", nativeQuery = true)
     List<HotTopic> findRecentFiveHotTopics();
+
+    @Query(value = "select exists (select 1 from hot_topic where topic_id = :targetId)", nativeQuery = true)
+    Long existsByTopicId(Long targetId);
 }
