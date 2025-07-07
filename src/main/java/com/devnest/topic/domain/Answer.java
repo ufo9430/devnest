@@ -33,7 +33,7 @@ public class Answer {
     private String content;  // 답변 내용
 
     @Column(name = "is_accepted", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean isAccepted = false;  // 채택 여부
+    private boolean accepted = false;  // 채택 여부
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -47,22 +47,12 @@ public class Answer {
     private String markdownContent; // ToastUI Editor의 markdown 원본 저장
 
     @Builder
-    public Answer(String content, Long userId, Topic topic, boolean isAccepted, String markdownContent) {
+    public Answer(String content, Long userId, Topic topic, boolean accepted, String markdownContent) {
         this.content = content;
         this.userId = userId;
         this.topic = topic;
-        this.isAccepted = isAccepted;
+        this.accepted = accepted;
         this.markdownContent = markdownContent;
-    }
-
-    // 답변 채택 메서드
-    public void accept() {
-        this.isAccepted = true;
-    }
-
-    // 답변 채택 취소 메서드
-    public void unaccept() {
-        this.isAccepted = false;
     }
 
     // 답변 내용 수정 메서드
