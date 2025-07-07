@@ -566,12 +566,12 @@
             <!-- Profile Photo -->
             <div class="profile-photo-section">
                 <div class="profile-photo-container">
-                    <img src="/images/default.jpg" alt="프로필 사진" class="profile-photo" id="profilePhoto">
+                    <img th:src="${profile.profileImage}" alt="프로필 사진" class="profile-photo" id="profilePhoto">
                     <button class="edit-photo-btn" type="button" data-bs-toggle="modal" data-bs-target="#photoModal">
                         <i data-lucide="edit-2" style="width: 16px; height: 16px;"></i>
                     </button>
                 </div>
-                <div class="username" id="usernameDisplay">개발자123</div>
+                <div class="username" id="usernameDisplay" th:text="${profile.nickname}">개발자123</div>
                 <div class="user-bio">프로필 사진은 언제든지 변경할 수 있습니다.</div>
             </div>
 
@@ -580,14 +580,14 @@
                 <!-- 수정 불가. readonly로! -->
                 <div class="form-group">
                     <label class="form-label">이메일</label>
-                    <input type="email" class="form-control" id="emailInput" value="developer123@example.com" readonly style="background-color: #e9ecef;">
+                    <input type="email" class="form-control" id="emailInput" th:value="${profile.email}" readonly style="background-color: #e9ecef;">
                 </div>
 
                 <!-- 수정 가능-->
                 <div class="form-group">
                     <label class="form-label">닉네임</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="nicknameInput" value="개발자123">
+                        <input type="text" class="form-control" id="nicknameInput" th:value="${profile.nickname}">
                         <button type="button" class="btn-primary-form" id="checkNicknameBtn" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">중복 확인</button>
                     </div>
 
@@ -620,7 +620,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="photo-upload-area">
-                        <img src="/images/default.jpg" alt="현재 프로필 사진" id="modalProfilePhoto">
+                        <img th:src="${profile.profileImage}" alt="현재 프로필 사진" id="modalProfilePhoto">
 
                         <div class="upload-info">
                             <div style="margin-bottom: 0.5rem; font-weight: 500;">이미지 업로드</div>
@@ -649,31 +649,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         lucide.createIcons();
-
-        document.addEventListener("DOMContentLoaded", function () {
-            fetch('/member/profile-info')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("사용자 정보를 불러오지 못했습니다.");
-                }
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById("emailInput").value = data.email;
-                document.getElementById("nicknameInput").value = data.nickname;
-                document.getElementById("usernameDisplay").innerText = data.nickname;
-
-                if (data.profileImage) {
-                    document.getElementById("profilePhoto").src = data.profileImage;
-                    document.getElementById("modalProfilePhoto").src = data.profileImage;
-                    document.getElementById("navProfilePhoto").src = data.profileImage;
-                }
-            })
-            .catch(error => {
-                console.error(error);
-                showCustomAlert("사용자 정보 로딩에 실패했습니다.", "danger");
-            });
-        });
 
         // 닉네임 중복 확인
         document.getElementById("checkNicknameBtn").addEventListener("click", function () {
@@ -709,40 +684,12 @@
                 },
                 body: JSON.stringify({ nickname })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("닉네임 변경 실패");
-                }
-                return response.text();
-            })
             .then(message => {
                 showCustomAlert(message, "success"); // 닉네임이 성공적으로 변경되었습니다.
 
-                // 변경된 사용자 정보 다시 불러오기
-                return fetch('/member/profile-info');
+                // 새로고침으로 변경된 정보 불러오기
+                setTimeout(() => location.reload(), 500);
             })
-            .then(response => {
-                if (!response.ok) throw new Error("사용자 정보 다시 불러오기 실패");
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById("emailInput").value = data.email;
-                document.getElementById("nicknameInput").value = data.nickname;
-                document.getElementById("usernameDisplay").innerText = data.nickname;
-
-                if (data.profileImage) {
-                    document.getElementById("profilePhoto").src = data.profileImage;
-                    document.getElementById("modalProfilePhoto").src = data.profileImage;
-                    document.getElementById("navProfilePhoto").src = data.profileImage;
-                }
-
-                // 저장 버튼 다시 비활성화
-                document.getElementById("saveButton").disabled = true;
-            })
-            .catch(error => {
-                console.error("닉네임 저장 후 사용자 정보 갱신 오류:", error);
-                showCustomAlert("사용자 정보 갱신 중 오류가 발생했습니다.", "danger");
-            });
         });
 
         // 등록 취소 시, 홈으로 이동
@@ -801,22 +748,14 @@
                     throw new Error("프로필 이미지 변경 실패");
                 }
 
-                // 3단계: 변경된 정보 다시 불러와 UI 반영
-                return fetch('/member/profile-info');
-            })
-            .then(response => response.json())
-            .then(data => {
-                const newImage = data.profileImage;
-
-                document.getElementById("profilePhoto").src = newImage;
-                document.getElementById("modalProfilePhoto").src = newImage;
-                document.getElementById("navProfilePhoto").src = newImage;
-
+                // 변경된 정보 다시 불러와 UI 반영
                 showCustomAlert("프로필 이미지가 성공적으로 변경되었습니다.", "success");
 
-                // 모달 닫기
                 const modal = bootstrap.Modal.getInstance(document.getElementById('photoModal'));
                 modal.hide();
+
+                // 자동 새로고침
+                setTimeout(() => location.reload(), 500);  // 0.5초 후 새로고침
             })
             .catch(error => {
                 console.error("프로필 이미지 변경 중 오류:", error);
