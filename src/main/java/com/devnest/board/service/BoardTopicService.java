@@ -1,11 +1,10 @@
 package com.devnest.board.service;
 
-import com.devnest.board.domain.Status;
-import com.devnest.board.domain.BoardTopic;
 import com.devnest.board.dto.TopicResponseDTO;
-import com.devnest.board.repository.BoardAnswerRepository;
-import com.devnest.board.repository.BoardTopicRepository;
+import com.devnest.topic.repository.TopicRepository;
 import com.devnest.board.vo.StatisticsVo;
+import com.devnest.topic.domain.Topic;
+import com.devnest.topic.repository.AnswerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,18 +12,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TopicService {
-    private final BoardTopicRepository topicRepository;
-    private final BoardAnswerRepository answerRepository;
+public class BoardTopicService {
+    private final TopicRepository topicRepository;
+    private final AnswerRepository answerRepository;
 
     @Autowired
-    public TopicService(BoardTopicRepository topicRepository, BoardAnswerRepository answerRepository) {
+    public BoardTopicService(TopicRepository topicRepository, AnswerRepository answerRepository) {
         this.topicRepository = topicRepository;
         this.answerRepository = answerRepository;
     }
@@ -32,9 +29,9 @@ public class TopicService {
     public List<TopicResponseDTO> getRecentFiveTopics(){
         List<TopicResponseDTO> responseDTOList = new ArrayList<>();
 
-        List<BoardTopic> topics = topicRepository.findRecentFiveTopics();
+        List<Topic> topics = topicRepository.findRecentFiveTopics();
 
-        for (BoardTopic topic : topics) {
+        for (Topic topic : topics) {
             responseDTOList.add(new TopicResponseDTO(topic));
         }
 
@@ -45,9 +42,9 @@ public class TopicService {
         Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> responseDTOS = new ArrayList<>();
 
-        Page<BoardTopic> topics = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Topic> topics = topicRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-        for (BoardTopic topic : topics) {
+        for (Topic topic : topics) {
             responseDTOS.add(new TopicResponseDTO(topic));
         }
 
@@ -58,9 +55,9 @@ public class TopicService {
         Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> responseDTOS = new ArrayList<>();
 
-        Page<BoardTopic> topics = topicRepository.findByStatus(Status.RESOLVED, pageable);
+        Page<Topic> topics = topicRepository.findByStatus(Topic.TopicStatus.RESOLVED, pageable);
 
-        for (BoardTopic topic : topics) {
+        for (Topic topic : topics) {
             responseDTOS.add(new TopicResponseDTO(topic));
         }
 
@@ -69,8 +66,8 @@ public class TopicService {
 
     public StatisticsVo getStatistics(){
         long allCount = topicRepository.count();
-        long waitingCount = topicRepository.countByStatus(Status.WAITING);
-        long solved = topicRepository.countByStatus(Status.RESOLVED);
+        long waitingCount = topicRepository.countByStatus(Topic.TopicStatus.WAITING);
+        long solved = topicRepository.countByStatus(Topic.TopicStatus.RESOLVED);
         long today = answerRepository.countTodayCreated();
         return StatisticsVo.builder()
                 .allCount(allCount)

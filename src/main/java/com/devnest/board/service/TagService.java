@@ -1,7 +1,7 @@
 package com.devnest.board.service;
 
-import com.devnest.board.domain.BoardTag;
-import com.devnest.board.repository.BoardTagRepository;
+import com.devnest.topic.domain.Tag;
+import com.devnest.topic.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +9,14 @@ import java.util.List;
 
 @Service
 public class TagService {
-    private final BoardTagRepository tagRepository;
+    private final TagRepository tagRepository;
 
     @Autowired
-    public TagService(BoardTagRepository tagRepository) {
+    public TagService(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
     }
 
-    public List<BoardTag> findAll(){
+    public List<Tag> findAll(){
         return tagRepository.findAll();
     }
 }

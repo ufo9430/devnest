@@ -1,9 +1,9 @@
 package com.devnest.board.service;
 
 import com.devnest.board.domain.HotTopic;
-import com.devnest.board.domain.BoardTopic;
 import com.devnest.board.dto.TopicResponseDTO;
 import com.devnest.board.repository.HotTopicRepository;
+import com.devnest.topic.domain.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class HotTopicService {
         List<HotTopic> hotTopics = hotTopicRepository.findRecentFiveHotTopics();
 
         for (HotTopic hotTopic : hotTopics) {
-            BoardTopic topic = hotTopic.getTopic();
+            Topic topic = hotTopic.getTopic();
             responseDTOList.add(new TopicResponseDTO(topic));
         }
 

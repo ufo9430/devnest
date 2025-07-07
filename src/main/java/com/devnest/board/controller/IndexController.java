@@ -1,9 +1,9 @@
 package com.devnest.board.controller;
 
 import com.devnest.auth.domain.CustomUserDetails;
-import com.devnest.board.domain.BoardTag;
+import com.devnest.topic.domain.Tag;
 import com.devnest.board.dto.TopicResponseDTO;
-import com.devnest.board.service.TopicService;
+import com.devnest.board.service.BoardTopicService;
 import com.devnest.board.service.TagService;
 import com.devnest.board.service.HotTopicService;
 import com.devnest.board.vo.StatisticsVo;
@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 public class IndexController {
     @Autowired
-    private TopicService topicService;
+    private BoardTopicService boardTopicService;
     @Autowired
     private HotTopicService hotTopicService;
     @Autowired
@@ -51,16 +51,16 @@ public class IndexController {
             System.out.println("인증되지 않은 사용자입니다.");
         }
 
-        List<TopicResponseDTO> recentTopics = topicService.getRecentFiveTopics();
+        List<TopicResponseDTO> recentTopics = boardTopicService.getRecentFiveTopics();
         model.addAttribute("recent",recentTopics);
 
         List<TopicResponseDTO> recentHotTopics = hotTopicService.getRecentFiveHotTopics();
         model.addAttribute("hot",recentHotTopics);
 
-        List<BoardTag> allTags = tagService.findAll();
+        List<Tag> allTags = tagService.findAll();
         model.addAttribute("tags",allTags);
 
-        StatisticsVo statistics = topicService.getStatistics();
+        StatisticsVo statistics = boardTopicService.getStatistics();
         model.addAttribute("statistics",statistics);
 
         return "index";

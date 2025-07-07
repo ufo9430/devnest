@@ -1,5 +1,6 @@
 package com.devnest.topic.domain;
 
+import com.devnest.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,9 +29,6 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "topic_id")
     private Long id;  // 질문 고유 ID
-
-    @Column(name = "user_id", nullable = false)
-    private Long userId;  // 작성자 ID
 
     @Column(nullable = false, length = 255)
     private String title;  // 질문 제목
@@ -85,6 +83,17 @@ public class Topic {
     public void updateContent(String content) {
         this.content = content;
     }
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToMany
+    @JoinTable(name = "topic_tag",
+            joinColumns = @JoinColumn(name = "tag_id"),
+            inverseJoinColumns = @JoinColumn(name = "topic_id"))
+    private List<Tag> tags;
 
     // 답변과의 양방향 관계를 위한 메서드
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)

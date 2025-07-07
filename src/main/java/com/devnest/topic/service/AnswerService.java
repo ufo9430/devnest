@@ -1,5 +1,6 @@
 package com.devnest.topic.service;
 
+import com.devnest.topic.repository.TopicRepository;
 import com.devnest.topic.domain.Answer;
 import com.devnest.topic.domain.Topic;
 import com.devnest.topic.domain.Vote;
@@ -128,7 +129,7 @@ public class AnswerService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 답변을 찾을 수 없습니다."));
 
         // 질문 작성자 확인
-        if (!topic.getUserId().equals(requestDto.getUserId())) {
+        if (!topic.getUser().getUserId().equals(requestDto.getUserId())) {
             throw new IllegalStateException("답변을 채택할 권한이 없습니다.");
         }
 
@@ -141,6 +142,8 @@ public class AnswerService {
         // 답변 채택 처리
         answer.accept();
         answerRepository.save(answer);
+
+        // TODO: 답변 작성자에게 알림 전송 로직 추가
 
         return new AnswerResponseDto(answer);
     }
@@ -156,7 +159,7 @@ public class AnswerService {
                 .orElseThrow(() -> new EntityNotFoundException("해당 답변을 찾을 수 없습니다."));
 
         // 질문 작성자 확인
-        if (!topic.getUserId().equals(requestDto.getUserId())) {
+        if (!topic.getUser().getUserId().equals(requestDto.getUserId())) {
             throw new IllegalStateException("답변 채택을 취소할 권한이 없습니다.");
         }
 

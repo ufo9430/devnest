@@ -1,25 +1,28 @@
 package com.devnest.topic.service;
 
+import com.devnest.topic.repository.FileRepository;
+import com.devnest.topic.repository.TagRepository;
+import com.devnest.topic.repository.TopicRepository;
+import com.devnest.topic.domain.Topic;
+import com.devnest.topic.domain.Topic.TopicStatus;
 import com.devnest.topic.domain.*;
 import com.devnest.topic.dto.AnswerRequestDto;
 import com.devnest.topic.dto.AnswerResponseDto;
 import com.devnest.topic.dto.TopicRequestDto;
 import com.devnest.topic.dto.TopicResponseDto;
-import com.devnest.topic.repository.*;
+import com.devnest.topic.repository.VoteRepository;
 import com.devnest.user.domain.User;
 import com.devnest.user.repository.UserRepository;
 import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.ast.Node;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Node;
 
+import javax.swing.text.html.parser.Parser;
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Service(value = "TopicTopicService")
+@Service
 @RequiredArgsConstructor
 public class TopicService {
 
@@ -49,6 +52,8 @@ public class TopicService {
     private String sanitizeHtml(String html) {
         return Jsoup.clean(html, Safelist.basicWithImages());
     }
+    private final MarkdownService markdownService;
+    private final UserRepository userRepository;
 
     /**
      * 새로운 질문을 생성합니다.
@@ -60,12 +65,17 @@ public class TopicService {
         String html = convertMarkdownToHtml(markdown);
         String sanitizedHtml = sanitizeHtml(html);
 
+        // HTML 새니타이징 적용
+        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
+
+        User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
+
         // Topic 생성 (HTML/마크다운 모두 저장)
         Topic topic = Topic.builder()
                 .title(requestDto.getTitle())
                 .content(sanitizedHtml) // 변환+새니타이징된 HTML
                 .markdownContent(markdown) // 마크다운 원본
-                .userId(userId)
+                .user(user)
                 .status(requestDto.getStatus())
                 .build();
 
@@ -188,7 +198,7 @@ public class TopicService {
      * 질문 소유자 확인 (도우미 메서드)
      */
     private void validateTopicOwner(Topic topic, Long currentUserId) {
-        if (!topic.getUserId().equals(currentUserId)) {
+        if (!topic.getUser().getUserId().equals(currentUserId)) {
             throw new IllegalStateException("권한이 없습니다.");
         }
     }

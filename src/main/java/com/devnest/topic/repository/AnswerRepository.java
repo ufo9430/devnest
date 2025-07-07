@@ -3,6 +3,7 @@ package com.devnest.topic.repository;
 import com.devnest.topic.domain.Answer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.List;
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findByTopicIdOrderByCreatedAtDesc(Long topicId);
     boolean existsByTopicIdAndIsAcceptedTrue(Long topicId);
+    // /board
+    @Query(value = "SELECT COUNT(*) FROM topic WHERE DATE(created_at) = CURDATE()", nativeQuery = true)
+    long countTodayCreated();
     @Query(value = """
     SELECT a.*
     FROM answer a

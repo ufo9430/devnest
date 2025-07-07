@@ -40,7 +40,7 @@ public class TopicResponseDto {
 
     public TopicResponseDto(Topic topic) {
         this.id = topic.getId();
-        this.userId = topic.getUserId();
+        this.userId = topic.getUser().getUserId();
         this.title = topic.getTitle();
         this.content = topic.getContent();
         this.viewCount = topic.getViewCount();
