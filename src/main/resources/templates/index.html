@@ -350,8 +350,8 @@
             
             <div class="d-flex align-items-center gap-3">
                 <div class="search-box">
-                    <input type="text" class="form-control" placeholder="질문 검색...">
-                    <button type="button">
+                    <input type="text" class="form-control" placeholder="질문 검색..." id="searchInput">
+                    <button type="button" id="searchBtn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;" class="lucide lucide-search"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                     </button>
                 </div>
@@ -360,6 +360,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                     질문하기
                 </a>
+
+              <div th:if="${profile != null}">
+                <form method="post" action="/member/logout">
+                  <button type="submit" class="btn-primary-custom">로그아웃</button>
+                </form>
+              </div>
                 
                 <!-- Notification Dropdown -->
                 <div th:if="${profile != null}" class="notification-dropdown dropdown">
@@ -392,19 +398,16 @@
                         </li>
                     </ul>
                 </div>
-                <a th:if="${profile != null}" href="#" >
-                    <img class="profile-badge" th:src="${profile.profile_image}" alt="프로필 링크">
+                <a th:if="${profile != null}" href="/member/profile">
+                    <img class="profile-badge" th:src="${profile.profileImage}" alt="프로필 링크">
                 </a>
 
-
-
-                <a th:if="${profile == null}" href="/login.html" class="btn-primary-custom">로그인</a>
-                <a th:if="${profile == null}" href="/signup.html" class="btn-primary-custom">회원가입</a>
+                <a th:if="${profile == null}" href="/member/login" class="btn-primary-custom">로그인</a>
+                <a th:if="${profile == null}" href="/member/signup" class="btn-primary-custom">회원가입</a>
             </div>
         </div>
     </nav>
 
-    
 
     <!-- Main Content -->
     <div class="main-container">
@@ -419,7 +422,7 @@
                         <!-- Discussion Item 1 -->
                         <div class="discussion-item" th:each="topic : ${recent}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <a th:href="@{/post(id=${topic.topicId})}" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
+                                <a th:href="|/topics/${topic.topicId}|" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
                                 <small class="text-muted" th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</small>
                             </div>
                             <p class="text-muted small mb-2" th:text="${topic.content.length() > 30} ? ${#strings.substring(topic.content, 0, 30)} + '...' : ${topic.content}" >글 내용</p>
@@ -453,7 +456,7 @@
                         <!-- Topic Item -->
                         <div class="discussion-item" th:each="topic : ${hot}">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <a th:href="@{/post(id=${topic.topicId})}" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
+                                <a th:href="|/topics/${topic.topicId}|" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
                                 <small class="text-muted" th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</small>
                             </div>
                             <p class="text-muted small mb-2" th:text="${topic.content.length() > 30} ? ${#strings.substring(topic.content, 0, 30)} + '...' : ${topic.content}" >글 내용</p>
@@ -522,6 +525,31 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Get search term from URL
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Search functionality
+        function performSearch(input, searchTerm) {
+            const term = input.value.trim();
+            if (term) {
+                window.location.href = `/search?keyword=${encodeURIComponent(term)}`;
+            }
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', function () {
+            performSearch(document.getElementById('searchInput'));
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                performSearch(this, searchTerm);
+            }
+        });
+    </script>
 </body>
 </html>
 
