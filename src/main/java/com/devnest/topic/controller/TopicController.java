@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,30 +32,6 @@ public class TopicController {
 
     @GetMapping("/post") // 임의 매핑한것
     public String showNewPostForm(Model model, Authentication authentication) {
-
-        // 로그인한 사용자 정보 확인
-        if (authentication != null && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
-
-            Long userId = userDetails.getUserId();
-            String email = userDetails.getEmail();
-            String nickname = userDetails.getNickname();
-
-            // 콘솔 확인용
-            System.out.println("로그인 유저 정보:");
-            System.out.println(" - ID: " + userId);
-            System.out.println(" - Email: " + email);
-            System.out.println(" - Nickname: " + nickname);
-
-            if (userDetails.isAdmin()) {
-                return "redirect:/admin";
-            }
-
-            model.addAttribute("profile", userDetails);
-        } else {
-            System.out.println("인증되지 않은 사용자입니다.");
-        }
-
         return "post_new"; // src/main/resources/templates/post_new.html
     }
 
@@ -66,10 +43,6 @@ public class TopicController {
             @ModelAttribute @Valid TopicRequestDto requestDto,
             Authentication authentication) {
 
-        if (authentication == null || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
@@ -83,14 +56,10 @@ public class TopicController {
      */
 
     @GetMapping("/{topicId}")
-    public String getTopicDetail(@PathVariable Long topicId, Model model, Authentication authentication) {
+    public String getTopicDetail(@PathVariable Long topicId, Model model, Authentication authentication) throws AccessDeniedException {
         TopicResponseDto topic = topicService.getDetailTopic(topicId);
         List<AnswerResponseDto> answers = answerService.getAnswersByTopicId(topicId);
 
-        if (authentication == null || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
@@ -116,10 +85,6 @@ public class TopicController {
             @RequestBody @Valid TopicRequestDto requestDto,
             Authentication authentication) {
 
-        if (authentication == null || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
@@ -142,10 +107,6 @@ public class TopicController {
             @PathVariable Long topicId,
             Authentication authentication) {
 
-        if (authentication == null || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
-        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
