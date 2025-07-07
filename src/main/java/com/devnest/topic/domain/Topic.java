@@ -85,8 +85,8 @@ public class Topic {
 
     @ManyToMany
     @JoinTable(name = "topic_tag",
-            joinColumns = @JoinColumn(name = "tag_id"),
-            inverseJoinColumns = @JoinColumn(name = "topic_id"))
+            joinColumns = @JoinColumn(name = "topic_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<Tag> tags;
 
     // 답변과의 양방향 관계를 위한 메서드

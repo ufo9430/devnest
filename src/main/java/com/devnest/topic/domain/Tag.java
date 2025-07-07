@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,12 +19,13 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
 
-    @ManyToMany
-    @JoinTable(name = "topic_tag",
-            joinColumns = @JoinColumn(name = "tag_id"),
-            inverseJoinColumns = @JoinColumn(name = "topic_id"))
-    private List<Topic> topics;
+    @ManyToMany(mappedBy = "tags")
+    private List<Topic> topics = new ArrayList<>();
 
     @Column(name = "name", length = 50, nullable = false, unique = true)
     private String name;
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }

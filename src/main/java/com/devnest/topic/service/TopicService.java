@@ -62,26 +62,34 @@ public class TopicService {
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
         // Topic 생성 (HTML/마크다운 모두 저장)
-        Topic topic = Topic.builder()
+        Topic newTopic = Topic.builder()
                 .title(requestDto.getTitle())
                 .content(sanitizedHtml) // 변환+새니타이징된 HTML
                 .markdownContent(markdown) // 마크다운 원본
                 .user(user)
                 .status(requestDto.getStatus())
+                .tags(new ArrayList<>())
                 .build();
-
-        if (topic.getTags() == null) {
-            topic.setTags(new ArrayList<>());
-        }
 
         // 태그 연결
         for (String tagName : requestDto.getTags()) {
-            Tag tag = tagRepository.findByName(tagName).orElseThrow(EntityNotFoundException::new);
-            topic.getTags().add(tag);
+            Tag tag;
+
+            try{
+                tag = tagRepository.findByName(tagName).orElseThrow(EntityNotFoundException::new);
+            }catch (EntityNotFoundException e){
+                Tag newTag = new Tag(tagName);
+                tag = tagRepository.saveAndFlush(newTag);
+            }
+
+            System.out.println("tagId = " + tag.getTagId() + "\ntagName = " + tag.getName());
+
+            newTopic.getTags().add(tag);
         }
 
         // 1. 질문 저장
-        Topic saved = topicRepository.save(topic);
+        Topic saved = topicRepository.save(newTopic);
+
 
         // 2. 마크다운에서 이미지 url 추출
         List<String> imageUrls = extractImageUrls(markdown);
@@ -89,7 +97,7 @@ public class TopicService {
         // 3. files 테이블의 targetId update
         fileRepository.updateTargetIdByUrls(saved.getId(), imageUrls, File.TargetType.TOPIC);
 
-        topicRepository.save(topic);
+        topicRepository.save(newTopic);
     }
 
 
@@ -173,7 +181,7 @@ public class TopicService {
     public void deleteDetailTopic(Long topicId, Long currentUserId) {
         Topic topic = findTopicById(topicId);
         validateTopicOwner(topic, currentUserId);
-        topicRepository.delete(topic);
+            topicRepository.delete(topic);
     }
 
     /**
