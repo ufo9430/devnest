@@ -395,6 +395,9 @@
                 gap: 1rem;
             }
         }
+        img[alt]:not([src]) {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -635,7 +638,7 @@
             initialEditType: 'markdown',
             previewStyle: 'vertical',
             placeholder: '질문의 상세 내용을 작성하세요...',
-            hideModeSwitch: true,
+            hideModeSwitch: false,
             hooks: {
                 addImageBlobHook: async (blob, callback) => {
                     // 1. FormData로 파일 준비
@@ -678,6 +681,7 @@
             const tagInputs = document.querySelectorAll('input[name="tags"]');
             const title = document.getElementById('title').value.trim();
             const markdown = questionEditor.getMarkdown();
+            const html = questionEditor.getHTML();
             const tags = Array.from(tagContainer.querySelectorAll('.tag')).map(tag =>
                 tag.textContent.trim().replace('×', '').trim()
             );
@@ -709,13 +713,13 @@
                 return;
             }
 
-            // 마크다운 원본을 hidden input에 넣기
-            document.getElementById('content').value = markdown;
+            // hidden input에 값 세팅
+            document.getElementById('content').value = html;
+            document.getElementById('markdownContent').value = markdown;
 
-            // Show loading state
-            const submitBtn = document.querySelector('.btn-primary-submit');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>등록 중...';
+            // 값이 제대로 들어갔는지 콘솔로 확인
+            console.log('content:', html);
+            console.log('markdownContent:', markdown);
 
             // 실제 폼 제출 (동기)
             this.submit();

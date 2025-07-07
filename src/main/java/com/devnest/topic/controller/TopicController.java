@@ -17,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +42,10 @@ public class TopicController {
             @ModelAttribute @Valid TopicRequestDto requestDto,
             Authentication authentication) {
 
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
@@ -56,10 +59,14 @@ public class TopicController {
      */
 
     @GetMapping("/{topicId}")
-    public String getTopicDetail(@PathVariable Long topicId, Model model, Authentication authentication) throws AccessDeniedException {
+    public String getTopicDetail(@PathVariable Long topicId, Model model, Authentication authentication) {
         TopicResponseDto topic = topicService.getDetailTopic(topicId);
         List<AnswerResponseDto> answers = answerService.getAnswersByTopicId(topicId);
 
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
@@ -85,6 +92,10 @@ public class TopicController {
             @RequestBody @Valid TopicRequestDto requestDto,
             Authentication authentication) {
 
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
@@ -107,6 +118,10 @@ public class TopicController {
             @PathVariable Long topicId,
             Authentication authentication) {
 
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
