@@ -55,6 +55,9 @@ public class Topic {
     @Column(columnDefinition = "TEXT")
     private String markdownContent; // ToastUI Editor의 markdown 원본 저장
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // 질문 상태를 나타내는 Enum
     public enum TopicStatus {
@@ -77,11 +80,6 @@ public class Topic {
     public void updateContent(String content) {
         this.content = content;
     }
-
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @ManyToMany
     @JoinTable(name = "topic_tag",

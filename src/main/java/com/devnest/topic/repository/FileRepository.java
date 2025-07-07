@@ -14,7 +14,7 @@ public interface FileRepository extends JpaRepository<File, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE File f SET f.targetId = :targetId WHERE f.url IN :urls AND f.targetType = :targetType")
-    void updateTargetIdByUrls(@Param("targetId") Long targetId, @Param("urls") List<String> urls, @Param("targetType") File.TargetType targetType);
+    int updateTargetIdByUrls(@Param("targetId") Long targetId, @Param("urls") List<String> urls, @Param("targetType") File.TargetType targetType);
 
     List<File> findByTargetTypeAndTargetId(File.TargetType targetType, Long targetId);
 }
