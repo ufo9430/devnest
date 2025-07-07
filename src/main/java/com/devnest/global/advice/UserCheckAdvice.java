@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice(basePackages = "com.devnest.board")
+@ControllerAdvice(basePackages = "com.devnest")
 public class UserCheckAdvice {
     private final UserProfileService service;
     private final HttpSession session;
