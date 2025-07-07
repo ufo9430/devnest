@@ -4,26 +4,22 @@ import com.devnest.topic.repository.FileRepository;
 import com.devnest.topic.repository.TagRepository;
 import com.devnest.topic.repository.TopicRepository;
 import com.devnest.topic.domain.Topic;
-import com.devnest.topic.domain.Topic.TopicStatus;
 import com.devnest.topic.domain.*;
-import com.devnest.topic.dto.AnswerRequestDto;
-import com.devnest.topic.dto.AnswerResponseDto;
 import com.devnest.topic.dto.TopicRequestDto;
 import com.devnest.topic.dto.TopicResponseDto;
 import com.devnest.topic.repository.VoteRepository;
 import com.devnest.user.domain.User;
 import com.devnest.user.repository.UserRepository;
-import com.vladsch.flexmark.html.HtmlRenderer;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Node;
 
-import javax.swing.text.html.parser.Parser;
-import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -52,8 +48,6 @@ public class TopicService {
     private String sanitizeHtml(String html) {
         return Jsoup.clean(html, Safelist.basicWithImages());
     }
-    private final MarkdownService markdownService;
-    private final UserRepository userRepository;
 
     /**
      * 새로운 질문을 생성합니다.
@@ -64,9 +58,6 @@ public class TopicService {
         String markdown = requestDto.getMarkdownContent();
         String html = convertMarkdownToHtml(markdown);
         String sanitizedHtml = sanitizeHtml(html);
-
-        // HTML 새니타이징 적용
-        String sanitizedContent = markdownService.sanitizeHtml(requestDto.getContent());
 
         User user = userRepository.findById(userId).orElseThrow(EntityNotFoundException::new);
 
@@ -85,8 +76,7 @@ public class TopicService {
 
         // 태그 연결
         for (String tagName : requestDto.getTags()) {
-            Tag tag = tagRepository.findByName(tagName)
-                    .orElseGet(() -> tagRepository.save(new Tag(tagName)));
+            Tag tag = tagRepository.findByName(tagName).orElseThrow(EntityNotFoundException::new);
             topic.getTags().add(tag);
         }
 
@@ -114,11 +104,11 @@ public class TopicService {
         topic.increaseViewCount();
 
         // 사용자 정보 조회
-        User user = userRepository.findById(topic.getUserId()).orElse(null);
+        User user = userRepository.findById(topic.getUser().getUserId()).orElse(null);
 
 
         // 사용자 닉네임 조회
-        String nickname = userRepository.findById(topic.getUserId())
+        String nickname = userRepository.findById(topic.getUser().getUserId())
                 .map(User::getNickname)
                 .orElse("알 수 없음");
 

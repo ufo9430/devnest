@@ -55,12 +55,6 @@ public class Topic {
     @Column(columnDefinition = "TEXT")
     private String markdownContent; // ToastUI Editor의 markdown 원본 저장
 
-    // 질문 생성 메서드
-    public Topic(String safeTitle, String safeContent, Long userId) {
-        this.title = safeTitle;
-        this.content = safeContent;
-        this.userId = userId;
-    }
 
     // 질문 상태를 나타내는 Enum
     public enum TopicStatus {
@@ -99,14 +93,6 @@ public class Topic {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Answer> answers = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "topic_tag",
-            joinColumns = @JoinColumn(name = "topic_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> tags = new ArrayList<>();
 
 //    Answer와 Topic간의 다대일(Many-to-One) 관계가 설정됨
 //    Topic에서 Answer 리스트를 조회 할 수 있음
