@@ -26,9 +26,10 @@ public class IndexController {
 
 
     @RequestMapping("/")
-    public String index(Model model, Authentication authentication) {
+    public String index(Model model) {
 
         // 로그인한 사용자 정보 확인
+        /*
         if (authentication != null && authentication.isAuthenticated()
             && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
 
@@ -50,6 +51,7 @@ public class IndexController {
         } else {
             System.out.println("인증되지 않은 사용자입니다.");
         }
+        */
 
         List<TopicResponseDTO> recentTopics = boardTopicService.getRecentFiveTopics();
         model.addAttribute("recent",recentTopics);

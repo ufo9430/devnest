@@ -7,5 +7,5 @@ import lombok.Getter;
 @Builder
 public class UserProfileVo {
     private Long user_id;
-    private String profile_image;
+    private String profileImage;
 }
