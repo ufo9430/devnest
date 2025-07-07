@@ -188,6 +188,15 @@ body {
     color: var(--text-primary);
 }
 
+.profile-badge{
+            position: relative;
+            display: inline-block;
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            overflow: hidden;
+}
+
 .btn-primary-custom {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
@@ -365,7 +374,7 @@ body {
                                 <!-- 글 수정/삭제 버튼: 글쓴이만 노출 -->
                                 <th:block th:if="${profile.userId} == ${topic.userId}">
                                     <li>
-                                        <a class="dropdown-item" currentUserId
+                                        <a class="dropdown-item"
                                            href="#"
                                            th:attr="data-topic-id=${topic.id}, data-markdown=${topic.markdownContent == null ? '' : topic.markdownContent}"
                                            onclick="editTopicFromElement(this)">
