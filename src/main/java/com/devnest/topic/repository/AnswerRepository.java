@@ -12,7 +12,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findByTopicIdOrderByCreatedAtDesc(Long topicId);
     boolean existsByTopicIdAndIsAcceptedTrue(Long topicId);
     // /board
-    @Query(value = "SELECT COUNT(*) FROM topic WHERE DATE(created_at) = CURDATE()", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM answer WHERE DATE(created_at) = CURDATE()", nativeQuery = true)
     long countTodayCreated();
     @Query(value = """
     SELECT a.*
