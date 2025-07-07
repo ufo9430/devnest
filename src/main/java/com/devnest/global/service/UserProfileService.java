@@ -20,7 +20,7 @@ public class UserProfileService {
 
         return UserProfileVo.builder()
                 .user_id(user.getUserId())
-                .profile_image(user.getProfileImage())
+                .profileImage(user.getProfileImage())
                 .build();
     }
 }

@@ -448,7 +448,7 @@
               </div>
                 
                 <!-- Notification Dropdown -->
-                <div th:if="${profile != null}" class="notification-dropdown dropdown">
+                <!-- <div th:if="${profile != null}" class="notification-dropdown dropdown">
                     <button class="notification-icon-button" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
                         <span class="notification-badge">3</span>
@@ -477,9 +477,9 @@
                             <a href="/all_notifications.html">모든 알림 보기</a>
                         </li>
                     </ul>
-                </div>
+                </div> -->
                 <a th:if="${profile != null}" href="/member/profile">
-                    <img class="profile-badge" th:src="${profile.profile_image}" alt="프로필 링크">
+                    <img class="profile-badge" th:src="${profile.profileImage}" alt="프로필 링크">
                 </a>
 
                 <a th:if="${profile == null}" href="/member/login" class="btn-primary-custom">로그인</a>
