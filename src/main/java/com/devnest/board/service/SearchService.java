@@ -1,8 +1,8 @@
 package com.devnest.board.service;
 
-import com.devnest.board.domain.BoardTopic;
 import com.devnest.board.dto.TopicResponseDTO;
-import com.devnest.board.repository.BoardTopicRepository;
+import com.devnest.topic.repository.TopicRepository;
+import com.devnest.topic.domain.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,10 +15,10 @@ import java.util.List;
 
 @Service
 public class SearchService {
-    private final BoardTopicRepository topicRepository;
+    private final TopicRepository topicRepository;
 
     @Autowired
-    public SearchService(BoardTopicRepository topicRepository) {
+    public SearchService(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 
@@ -26,10 +26,10 @@ public class SearchService {
         Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> responseDTOS = new ArrayList<>();
 
-        Page<BoardTopic> topics = resolved ? topicRepository.searchSolvedByKeyword(pageable, keyword)
+        Page<Topic> topics = resolved ? topicRepository.searchSolvedByKeyword(pageable, keyword)
                 : topicRepository.searchByKeyword(pageable, keyword);
 
-        for (BoardTopic topic : topics) {
+        for (Topic topic : topics) {
             responseDTOS.add(new TopicResponseDTO(topic));
         }
 
@@ -40,10 +40,10 @@ public class SearchService {
         Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> responseDTOS = new ArrayList<>();
 
-        Page<BoardTopic> topics = resolved ? topicRepository.searchSolvedByTag(pageable, tag)
+        Page<Topic> topics = resolved ? topicRepository.searchSolvedByTag(pageable, tag)
                 : topicRepository.searchByTag(pageable, tag);
 
-        for (BoardTopic topic : topics) {
+        for (Topic topic : topics) {
             responseDTOS.add(new TopicResponseDTO(topic));
         }
 
@@ -54,10 +54,10 @@ public class SearchService {
         Pageable pageable = PageRequest.of(page, 7);
         List<TopicResponseDTO> responseDTOS = new ArrayList<>();
 
-        Page<BoardTopic> topics = resolved ? topicRepository.searchSolvedByKeywordAndTag(pageable, keyword, tag)
+        Page<Topic> topics = resolved ? topicRepository.searchSolvedByKeywordAndTag(pageable, keyword, tag)
                 : topicRepository.searchByKeywordAndTag(pageable, keyword, tag);
 
-        for (BoardTopic topic : topics) {
+        for (Topic topic : topics) {
             responseDTOS.add(new TopicResponseDTO(topic));
         }
 
