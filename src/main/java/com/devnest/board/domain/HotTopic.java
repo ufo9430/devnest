@@ -1,5 +1,6 @@
 package com.devnest.board.domain;
 
+import com.devnest.topic.domain.Topic;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,5 +17,5 @@ public class HotTopic {
 
     @OneToOne
     @JoinColumn(name = "topic_id")
-    private BoardTopic topic;
+    private Topic topic;
 }

@@ -101,6 +101,12 @@
 			<version>0.64.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.commonmark</groupId>
+			<artifactId>commonmark</artifactId>
+			<version>0.21.0</version>
+		</dependency>
+
 <!--		API 명세-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
