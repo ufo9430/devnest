@@ -135,7 +135,10 @@ public class AnswerService {
         }
 
         answer.setAccepted(true);
-        answerRepository.save(answer);
+
+        topic.setStatus(Topic.TopicStatus.RESOLVED);
+
+        answerRepository.saveAndFlush(answer);
     }
 
     public Long getTopicIdByAnswerId(Long answerId) {
