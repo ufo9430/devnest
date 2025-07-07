@@ -12,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/answers")
 public class AnswerController {
@@ -25,11 +27,13 @@ public class AnswerController {
     private final AnswerService answerService;
 
     @GetMapping("/topic/{topicId}")
+    @ResponseBody
     public ResponseEntity<List<AnswerResponseDto>> getAnswersByTopicId(@PathVariable Long topicId) {
         return ResponseEntity.ok(answerService.getAnswersByTopicId(topicId));
     }
 
     @PostMapping
+    @ResponseBody
     public ResponseEntity<?> createAnswer(
             @RequestBody @Valid AnswerRequestDto requestDto,
             Authentication authentication) {
@@ -64,6 +68,7 @@ public class AnswerController {
     }
 
     @PatchMapping("/{answerId}")
+    @ResponseBody
     public ResponseEntity<?> updateAnswer(
             @PathVariable Long answerId,
             @RequestBody AnswerRequestDto dto,
@@ -82,6 +87,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("/{answerId}")
+    @ResponseBody
     public ResponseEntity<?> deleteAnswer(
             @PathVariable Long answerId,
             Authentication authentication) {
@@ -98,10 +104,8 @@ public class AnswerController {
         return ResponseEntity.ok(Map.of("success", true, "message", "답변이 삭제되었습니다."));
     }
 
-    @PostMapping("/accept")
-    public ResponseEntity<AnswerResponseDto> acceptAnswer(
-            @RequestBody @Valid AnswerAcceptRequestDto requestDto,
-            Authentication authentication) {
+    @PostMapping("/{answerId}/accept")
+    public String acceptAnswer(@PathVariable Long answerId, Authentication authentication, RedirectAttributes redirectAttributes) {
 
         if (authentication == null || !authentication.isAuthenticated()
                 || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
@@ -111,28 +115,14 @@ public class AnswerController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
-        // 세션의 사용자 ID로 설정
-        requestDto.setUserId(userId);
-
-        return ResponseEntity.ok(answerService.acceptAnswer(requestDto));
-    }
-
-    @PostMapping("/unaccept")
-    public ResponseEntity<AnswerResponseDto> unacceptAnswer(
-            @RequestBody @Valid AnswerAcceptRequestDto requestDto,
-            Authentication authentication) {
-
-        if (authentication == null || !authentication.isAuthenticated()
-                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            throw new IllegalStateException("로그인이 필요합니다.");
+        try {
+            answerService.acceptAnswer(answerId, userId);
+            redirectAttributes.addFlashAttribute("successMessage", "답변이 채택되었습니다.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getUserId();
-
-        // 세션의 사용자 ID로 설정
-        requestDto.setUserId(userId);
-
-        return ResponseEntity.ok(answerService.unacceptAnswer(requestDto));
+        // 질문 상세 페이지로 리다이렉트 (answerId로 topicId를 조회해야 함)
+        Long topicId = answerService.getTopicIdByAnswerId(answerId);
+        return "redirect:/topics/" + topicId;
     }
 }

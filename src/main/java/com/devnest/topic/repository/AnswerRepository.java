@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    List<Answer> findByTopicIdOrderByCreatedAtDesc(Long topicId);
-    boolean existsByTopicIdAndIsAcceptedTrue(Long topicId);
+
     // /board
     @Query(value = "SELECT COUNT(*) FROM answer WHERE DATE(created_at) = CURDATE()", nativeQuery = true)
     long countTodayCreated();
@@ -27,4 +27,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     ORDER BY COALESCE(v.score, 0) DESC, a.created_at DESC
     """, nativeQuery = true)
     List<Answer> findByTopicIdOrderByVoteScoreDesc(@Param("topicId") Long topicId);
+
+    boolean existsByTopicIdAndAcceptedTrue(Long topicId);
 }

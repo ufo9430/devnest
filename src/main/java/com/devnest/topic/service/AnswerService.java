@@ -82,7 +82,7 @@ public class AnswerService {
                 .markdownContent(markdown)       // 마크다운 원본
                 .userId(requestDto.getUserId())
                 .topic(topic)
-                .isAccepted(false)
+                .accepted(false)
                 .build();
 
         return new AnswerResponseDto(answerRepository.save(answer));
@@ -119,54 +119,28 @@ public class AnswerService {
     }
 
     @Transactional
-    public AnswerResponseDto acceptAnswer(AnswerAcceptRequestDto requestDto) {
-        // 질문 조회
-        Topic topic = topicRepository.findById(requestDto.getTopicId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 질문을 찾을 수 없습니다."));
+    public void acceptAnswer(Long answerId, Long userId) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new IllegalArgumentException("답변이 존재하지 않습니다."));
+        Topic topic = answer.getTopic();
 
-        // 답변 조회
-        Answer answer = answerRepository.findById(requestDto.getAnswerId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 답변을 찾을 수 없습니다."));
-
-        // 질문 작성자 확인
-        if (!topic.getUser().getUserId().equals(requestDto.getUserId())) {
-            throw new IllegalStateException("답변을 채택할 권한이 없습니다.");
+        // 질문 작성자만 채택 가능
+        if (!topic.getUser().getUserId().equals(userId)) {
+            throw new IllegalStateException("질문 작성자만 답변을 채택할 수 있습니다.");
         }
 
-        // 이미 채택된 답변이 있는지 확인
-        boolean hasAcceptedAnswer = answerRepository.existsByTopicIdAndIsAcceptedTrue(topic.getId());
-        if (hasAcceptedAnswer) {
+        // 이미 채택된 답변이 있으면 예외 발생 (단일 채택 정책)
+        if (answerRepository.existsByTopicIdAndAcceptedTrue(topic.getId())) {
             throw new IllegalStateException("이미 채택된 답변이 있습니다.");
         }
 
-        // 답변 채택 처리
-        answer.accept();
+        answer.setAccepted(true);
         answerRepository.save(answer);
-
-        // TODO: 답변 작성자에게 알림 전송 로직 추가
-
-        return new AnswerResponseDto(answer);
     }
 
-    @Transactional
-    public AnswerResponseDto unacceptAnswer(AnswerAcceptRequestDto requestDto) {
-        // 질문 조회
-        Topic topic = topicRepository.findById(requestDto.getTopicId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 질문을 찾을 수 없습니다."));
-
-        // 답변 조회
-        Answer answer = answerRepository.findById(requestDto.getAnswerId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 답변을 찾을 수 없습니다."));
-
-        // 질문 작성자 확인
-        if (!topic.getUser().getUserId().equals(requestDto.getUserId())) {
-            throw new IllegalStateException("답변 채택을 취소할 권한이 없습니다.");
-        }
-
-        // 채택 취소 처리
-        answer.unaccept();
-        answerRepository.save(answer);
-
-        return new AnswerResponseDto(answer);
+    public Long getTopicIdByAnswerId(Long answerId) {
+        return answerRepository.findById(answerId)
+                .map(a -> a.getTopic().getId())
+                .orElseThrow(() -> new IllegalArgumentException("답변이 존재하지 않습니다."));
     }
 }
