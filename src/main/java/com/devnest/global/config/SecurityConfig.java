@@ -17,20 +17,24 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity  // Spring Security 필터 체인 활성화
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final CustomUserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http
-                .csrf(csrf -> csrf.disable()) // api 테스트용 임시 해제!
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/member/**", "/email/**","/test/email", "/topics", "/search").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/topics/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                ).exceptionHandling(ex ->
-                        ex.accessDeniedHandler(new CustomAccessDeniedHandler()).authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
-        return http.build();
-    }
+  private final CustomUserDetailsService userDetailsService;
+  private final PasswordEncoder passwordEncoder;
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> {
+        })  // csrf 활성화
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/", "/member/**", "/email/**", "/test/email", "/topics", "/search")
+            .permitAll()
+            .requestMatchers(HttpMethod.GET, "/topics/**").authenticated()
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        ).exceptionHandling(ex ->
+            ex.accessDeniedHandler(new CustomAccessDeniedHandler())
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+    return http.build();
+  }
 }
