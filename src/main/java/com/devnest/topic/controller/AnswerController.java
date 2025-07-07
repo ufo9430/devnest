@@ -1,5 +1,6 @@
 package com.devnest.topic.controller;
 
+import com.devnest.auth.domain.CustomUserDetails;
 import com.devnest.topic.dto.AnswerAcceptRequestDto;
 import com.devnest.topic.dto.AnswerRequestDto;
 import com.devnest.topic.dto.AnswerResponseDto;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,15 +32,17 @@ public class AnswerController {
     @PostMapping
     public ResponseEntity<?> createAnswer(
             @RequestBody @Valid AnswerRequestDto requestDto,
-            HttpSession session) {
+            Authentication authentication) {
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        currentUserId = 1L; // 테스트용
-        if (currentUserId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("success", false, "message", "로그인이 필요합니다."));
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
-        requestDto.setUserId(currentUserId);
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
+        requestDto.setUserId(userId);
 
         String markdown = requestDto.getMarkdownContent();
         if (markdown == null) markdown = "";
@@ -63,46 +67,52 @@ public class AnswerController {
     public ResponseEntity<?> updateAnswer(
             @PathVariable Long answerId,
             @RequestBody AnswerRequestDto dto,
-            HttpSession session) {
-        Long currentUserId = (Long) session.getAttribute("userId");
-        if (currentUserId == null) {
-            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
-            currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
-            // throw new IllegalStateException("로그인이 필요합니다.");
+            Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
 
-        answerService.updateAnswer(answerId, currentUserId, dto.getContent());
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
+        answerService.updateAnswer(answerId, userId, dto.getContent());
         return ResponseEntity.ok(Map.of("success", true, "message", "답변이 수정되었습니다."));
     }
 
     @DeleteMapping("/{answerId}")
     public ResponseEntity<?> deleteAnswer(
             @PathVariable Long answerId,
-            HttpSession session) {
-        Long currentUserId = (Long) session.getAttribute("userId");
-        // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
-        currentUserId = 1L;
-        // 권한 체크(작성자만 삭제 가능)
-        answerService.deleteAnswer(answerId, currentUserId);
+            Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
+        answerService.deleteAnswer(answerId, userId);
         return ResponseEntity.ok(Map.of("success", true, "message", "답변이 삭제되었습니다."));
     }
 
     @PostMapping("/accept")
     public ResponseEntity<AnswerResponseDto> acceptAnswer(
             @RequestBody @Valid AnswerAcceptRequestDto requestDto,
-            HttpSession session) {
+            Authentication authentication) {
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        if (currentUserId == null) {
-            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
-            currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
-            // throw new IllegalStateException("로그인이 필요합니다.");
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
 
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
         // 세션의 사용자 ID로 설정
-        requestDto.setUserId(currentUserId);
+        requestDto.setUserId(userId);
 
         return ResponseEntity.ok(answerService.acceptAnswer(requestDto));
     }
@@ -110,18 +120,18 @@ public class AnswerController {
     @PostMapping("/unaccept")
     public ResponseEntity<AnswerResponseDto> unacceptAnswer(
             @RequestBody @Valid AnswerAcceptRequestDto requestDto,
-            HttpSession session) {
+            Authentication authentication) {
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        if (currentUserId == null) {
-            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
-            currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
-            // throw new IllegalStateException("로그인이 필요합니다.");
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
 
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
         // 세션의 사용자 ID로 설정
-        requestDto.setUserId(currentUserId);
+        requestDto.setUserId(userId);
 
         return ResponseEntity.ok(answerService.unacceptAnswer(requestDto));
     }

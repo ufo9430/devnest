@@ -74,7 +74,6 @@ public class TopicService {
         // 태그 연결
         for (String tagName : requestDto.getTags()) {
             Tag tag;
-
             try{
                 tag = tagRepository.findByName(tagName).orElseThrow(EntityNotFoundException::new);
             }catch (EntityNotFoundException e){
@@ -82,20 +81,17 @@ public class TopicService {
                 tag = tagRepository.saveAndFlush(newTag);
             }
 
-            System.out.println("tagId = " + tag.getTagId() + "\ntagName = " + tag.getName());
-
             newTopic.getTags().add(tag);
         }
 
         // 1. 질문 저장
         Topic saved = topicRepository.save(newTopic);
 
-
         // 2. 마크다운에서 이미지 url 추출
         List<String> imageUrls = extractImageUrls(markdown);
 
         // 3. files 테이블의 targetId update
-        fileRepository.updateTargetIdByUrls(saved.getId(), imageUrls, File.TargetType.TOPIC);
+        int updated = fileRepository.updateTargetIdByUrls(saved.getId(), imageUrls, File.TargetType.TOPIC);
 
         topicRepository.save(newTopic);
     }
@@ -112,8 +108,8 @@ public class TopicService {
         topic.increaseViewCount();
 
         // 사용자 정보 조회
-        User user = userRepository.findById(topic.getUser().getUserId()).orElse(null);
-
+        User user = topic.getUser();
+        Long userId = (user != null) ? user.getUserId() : null;
 
         // 사용자 닉네임 조회
         String nickname = userRepository.findById(topic.getUser().getUserId())
@@ -144,7 +140,7 @@ public class TopicService {
                 .collect(Collectors.toList());
         dto.setFileUrls(fileUrls);
 
-
+        dto.setUserId(userId);
         dto.setUserNickname(nickname); // 닉네임 세팅
         dto.setProfileImage(ProfileImage); // 이미지 URL 세팅
         return dto;
@@ -181,7 +177,7 @@ public class TopicService {
     public void deleteDetailTopic(Long topicId, Long currentUserId) {
         Topic topic = findTopicById(topicId);
         validateTopicOwner(topic, currentUserId);
-            topicRepository.delete(topic);
+        topicRepository.delete(topic);
     }
 
     /**

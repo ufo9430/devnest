@@ -1,6 +1,6 @@
 package com.devnest.topic.controller;
 
-import com.devnest.topic.domain.Answer;
+import com.devnest.auth.domain.CustomUserDetails;
 import com.devnest.topic.dto.AnswerResponseDto;
 import com.devnest.topic.dto.TopicRequestDto;
 import com.devnest.topic.dto.TopicResponseDto;
@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,31 @@ public class TopicController {
     private final AnswerService answerService;
 
     @GetMapping("/post") // 임의 매핑한것
-    public String showNewPostForm(Model model) {
-        // 필요하다면 model에 값 추가
+    public String showNewPostForm(Model model, Authentication authentication) {
+
+        // 로그인한 사용자 정보 확인
+        if (authentication != null && authentication.isAuthenticated()
+                && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+
+            Long userId = userDetails.getUserId();
+            String email = userDetails.getEmail();
+            String nickname = userDetails.getNickname();
+
+            // 콘솔 확인용
+            System.out.println("로그인 유저 정보:");
+            System.out.println(" - ID: " + userId);
+            System.out.println(" - Email: " + email);
+            System.out.println(" - Nickname: " + nickname);
+
+            if (userDetails.isAdmin()) {
+                return "redirect:/admin";
+            }
+
+            model.addAttribute("profile", userDetails);
+        } else {
+            System.out.println("인증되지 않은 사용자입니다.");
+        }
+
         return "post_new"; // src/main/resources/templates/post_new.html
     }
 
@@ -40,18 +64,17 @@ public class TopicController {
     @PostMapping("/add")
     public String createTopic(
             @ModelAttribute @Valid TopicRequestDto requestDto,
-            HttpSession session) {
+            Authentication authentication) {
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        if (currentUserId == null) {
-            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
-            currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
-            //throw new IllegalStateException("로그인이 필요합니다.");
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
 
         // TopicRequestDto에 markdownContent가 포함되어 있어야 함
-        topicService.createTopic(requestDto, currentUserId);
+        topicService.createTopic(requestDto, userId);
         return "redirect:/";
     }
 
@@ -60,28 +83,26 @@ public class TopicController {
      */
 
     @GetMapping("/{topicId}")
-    public String getTopicDetail(@PathVariable Long topicId, Model model, HttpSession session) {
+    public String getTopicDetail(@PathVariable Long topicId, Model model, Authentication authentication) {
         TopicResponseDto topic = topicService.getDetailTopic(topicId);
         List<AnswerResponseDto> answers = answerService.getAnswersByTopicId(topicId);
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        if (currentUserId == null) {
-            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
-            currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
-            // throw new IllegalStateException("로그인이 필요합니다.");
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
 
-        Long finalCurrentUserId = currentUserId;
         boolean hasAnswered = answers.stream()
-                .anyMatch(answer -> answer.getUserId().equals(finalCurrentUserId));
+                .anyMatch(answer -> answer.getUserId().equals(userId));
 
         System.out.println(topic.getImageUrls());
 
         model.addAttribute("hasAnswered", hasAnswered);
         model.addAttribute("topic", topic);
         model.addAttribute("answers", answers);
-        model.addAttribute("currentUserId", currentUserId); // 임시로 userId 부여
+        model.addAttribute("profile", userDetails);
 
         return "post_detail"; // src/main/resources/templates/post_detail.html로 이동
     }
@@ -93,15 +114,16 @@ public class TopicController {
     public ResponseEntity<?> updateTopic(
             @PathVariable Long topicId,
             @RequestBody @Valid TopicRequestDto requestDto,
-            HttpSession session) {
+            Authentication authentication) {
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        if (currentUserId == null) {
-            currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
 
-        TopicResponseDto updated = topicService.updateDetailTopic(topicId, requestDto, currentUserId);
+        TopicResponseDto updated = topicService.updateDetailTopic(topicId, requestDto, userId);
 
         // 수정된 마크다운/HTML 등도 함께 반환하고 싶다면 아래처럼 응답
         return ResponseEntity.ok(Map.of(
@@ -118,18 +140,16 @@ public class TopicController {
     @DeleteMapping("/{topicId}/remove")
     public String deleteTopic(
             @PathVariable Long topicId,
-            HttpSession session) {
+            Authentication authentication) {
 
-        Long currentUserId = (Long) session.getAttribute("userId");
-        if (currentUserId == null) {
-            // Swagger 테스트 등 비로그인 상황에서 임시 userId 부여
-           currentUserId = 1L;
-            session.setAttribute("userId", currentUserId);
-
-            // throw new IllegalStateException("로그인이 필요합니다.");
+        if (authentication == null || !authentication.isAuthenticated()
+                || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("로그인이 필요합니다.");
         }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
 
-        topicService.deleteDetailTopic(topicId, currentUserId);
+        topicService.deleteDetailTopic(topicId, userId);
         return "redirect:/";
     }
 }

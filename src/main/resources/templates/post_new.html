@@ -89,11 +89,11 @@
             border: none;
             color: var(--text-secondary);
         }
-        
+
         .notification-dropdown {
             position: relative;
         }
-        
+
         .notification-icon-button {
             background: none;
             border: none;
@@ -102,11 +102,11 @@
             color: var(--text-secondary);
             position: relative;
         }
-        
+
         .notification-icon-button:hover {
             background-color: #F3F4F6;
         }
-        
+
         .notification-badge {
             position: absolute;
             top: 5px;
@@ -130,7 +130,7 @@
             border-radius: 50%;
             overflow: hidden;
         }
-        
+
         .dropdown-menu {
             min-width: 300px;
             border-radius: 8px;
@@ -138,79 +138,79 @@
             border: 1px solid var(--border-color);
             padding: 0;
         }
-        
+
         .dropdown-header {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border-color);
             font-weight: 600;
             color: var(--text-primary);
         }
-        
+
         .dropdown-item {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid #F3F4F6;
             white-space: normal;
             cursor: pointer;
         }
-        
+
         .dropdown-item:last-child {
             border-bottom: none;
         }
-        
+
         .dropdown-item:hover {
             background-color: #F8F9FA;
         }
-        
+
         .notification-content {
             font-size: 0.875rem;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
-        
+
         .notification-time {
             font-size: 0.75rem;
             color: var(--text-secondary);
         }
-        
+
         .dropdown-footer {
             padding: 0.75rem 1rem;
             border-top: 1px solid var(--border-color);
             text-align: center;
         }
-        
+
         .dropdown-footer a {
             color: var(--primary-color);
             text-decoration: none;
             font-weight: 500;
         }
-        
+
         .dropdown-footer a:hover {
             text-decoration: underline;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background-color);
             color: var(--text-primary);
         }
-        
+
         .btn-primary-custom {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             font-weight: 500;
         }
-        
+
         .btn-primary-custom:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
         }
-        
+
         .search-input {
             border-color: #D1D5DB;
             padding-left: 2.5rem;
             height: 42px;
         }
-        
+
         .search-icon {
             position: absolute;
             left: 12px;
@@ -398,13 +398,13 @@
     </style>
 </head>
 <body>
-    <!--  Navbar  -->
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="container-fluid">
             <div class="d-flex align-items-center gap-3">
                 <a class="navbar-brand" th:href="@{/}">DevNest</a>
             </div>
-            
+
             <div class="d-flex align-items-center gap-3">
                 <div class="search-box">
                     <input type="text" class="form-control" placeholder="질문 검색..." id="searchInput">
@@ -412,20 +412,20 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;" class="lucide lucide-search"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
                     </button>
                 </div>
-                
-                <a href="/ask_question.html" class="btn-primary-custom">
+
+                <a href="/topics/post" class="btn-primary-custom">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
                     질문하기
                 </a>
 
-              <div th:if="${profile != null}">
-                <form method="post" action="/member/logout">
-                  <button type="submit" class="btn-primary-custom">로그아웃</button>
-                </form>
-              </div>
-                
+                <div th:if="${profile != null}">
+                    <form method="post" action="/member/logout">
+                        <button type="submit" class="btn-primary-custom">로그아웃</button>
+                    </form>
+                </div>
+
                 <!-- Notification Dropdown -->
-                <!-- <div th:if="${profile != null}" class="notification-dropdown dropdown">
+                <!--<div th:if="${profile != null}" class="notification-dropdown dropdown">
                     <button class="notification-icon-button" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
                         <span class="notification-badge">3</span>
@@ -498,38 +498,40 @@
                     </label>
                     <!-- Toast UI Editor가 들어갈 div -->
                     <div id="toast-editor-question-form"></div>
-                    <!-- 마크다운 원본을 담을 hidden input (서버로 전송) -->
+                    <!-- 마크다운 원본 -->
+                    <input type="hidden" id="markdownContent" name="markdownContent" />
+                    <!-- 변환된 HTML -->
                     <input type="hidden" id="content" name="content" />
                     <div class="character-count" id="contentCount">0 / 20000</div>
                     <div class="form-text">최소 20자 이상, 최대 20000자 이하로 작성해주세요</div>
                 </div>
 
 
-            <!-- 질문 작성 가이드라인 -->
-            <div class="guidelines">
-                <h6>
-                    <i data-lucide="info" style="width: 20px; height: 20px;"></i>
-                    질문 작성 가이드라인
-                </h6>
-                <ul>
-                    <li>구체적이고 명확한 제목을 작성해주세요</li>
-                    <li>문제 상황과 기대하는 결과를 명시해주세요</li>
-                    <li>관련 코드나 예시가 있다면 포함해주세요</li>
-                    <li>시도해본 해결 방법이 있다면 함께 작성해주세요</li>
-                    <li>적절한 태그를 선택하여 더 많은 도움을 받으세요</li>
-                </ul>
-            </div>
+                <!-- 질문 작성 가이드라인 -->
+<!--                <div class="guidelines">-->
+<!--                    <h6>-->
+<!--                        <i data-lucide="info" style="width: 20px; height: 20px;"></i>-->
+<!--                        질문 작성 가이드라인-->
+<!--                    </h6>-->
+<!--                    <ul>-->
+<!--                        <li>구체적이고 명확한 제목을 작성해주세요</li>-->
+<!--                        <li>문제 상황과 기대하는 결과를 명시해주세요</li>-->
+<!--                        <li>관련 코드나 예시가 있다면 포함해주세요</li>-->
+<!--                        <li>시도해본 해결 방법이 있다면 함께 작성해주세요</li>-->
+<!--                        <li>적절한 태그를 선택하여 더 많은 도움을 받으세요</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
 
-            <!-- 버튼 -->
-            <div class="form-actions">
-                <button type="button" class="btn btn-outline-secondary" onclick="window.history.back()">
-                    취소
-                </button>
-                <button type="submit" class="btn btn-primary-submit" form="questionForm">
-                    <i data-lucide="send" style="width: 16px; height: 16px;" class="me-2"></i>
-                    질문 등록
-                </button>
-            </div>
+                <!-- 버튼 -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline-secondary" onclick="window.history.back()">
+                        취소
+                    </button>
+                    <button type="submit" class="btn btn-primary-submit" form="questionForm">
+                        <i data-lucide="send" style="width: 16px; height: 16px;" class="me-2"></i>
+                        질문 등록
+                    </button>
+                </div>
             </form>
         </div>
     </div>
