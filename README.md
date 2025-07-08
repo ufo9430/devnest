@@ -30,6 +30,26 @@
 
 <img width="2378" height="2822" alt="Image" src="https://github.com/user-attachments/assets/b838b530-719d-400b-bce0-fed8fc5a00b9" />
 
+## 질문 작성
+
+<img width="2048" height="1115" alt="Image" src="https://github.com/user-attachments/assets/93c0bb85-ca93-47f1-8c7d-1fb9b6fb1509" />
+
+- 로그인 한 사용자는 자신의 게시글을 새로 작성하거나 수정, 삭제 가능
+- 게시글의 내용은 마크다운 문법으로 작성
+- 게시글 생성 시 하나 이상의 태그를 게시글에 표시
+
+## 답변 작성
+<img width="1119" height="853" alt="Image" src="https://github.com/user-attachments/assets/8a111e1d-41c7-4de6-8fa3-8692e4d3510b" />
+
+- 로그인 한 사용자는 게시글에 답변을 작성하거나 수정, 삭제 가능
+- 답변의 내용은 마크다운 문법으로 작성
+
+## 답변 채택
+<img width="715" height="554" alt="Image" src="https://github.com/user-attachments/assets/15ac03a9-a199-4630-be20-7879c106bd45" />
+
+- 글 작성자는 자신의 글에 달린 답변 중 마음에 드는 답변이 있을 경우 채택하기 버튼을 통해 채택 가능
+- 채택 받은 답변은 아래와 같이 채택됨 표시와 함께 초록 배경으로 표시
+
 ## 키워드, 태그 검색 기능
 
 - 사용자는 내비게이션 바 혹은 게시판의 검색 바로 키워드를 입력할 수 있다.
@@ -167,23 +187,3 @@
 - **신고 목록 조회**: 사용자 신고 내역 관리
 - **신고 처리**: 신고 상태 변경 및 조치
 - **신고 통계**: 신고 유형별 통계 정보
-
-## 질문 작성
-
-<img width="2048" height="1115" alt="Image" src="https://github.com/user-attachments/assets/93c0bb85-ca93-47f1-8c7d-1fb9b6fb1509" />
-
-- 로그인 한 사용자는 자신의 게시글을 새로 작성하거나 수정, 삭제 가능
-- 게시글의 내용은 마크다운 문법으로 작성
-- 게시글 생성 시 하나 이상의 태그를 게시글에 표시
-
-## 답변 작성
-<img width="1119" height="853" alt="Image" src="https://github.com/user-attachments/assets/8a111e1d-41c7-4de6-8fa3-8692e4d3510b" />
-
-- 로그인 한 사용자는 게시글에 답변을 작성하거나 수정, 삭제 가능
-- 답변의 내용은 마크다운 문법으로 작성
-
-## 답변 채택
-<img width="715" height="554" alt="Image" src="https://github.com/user-attachments/assets/15ac03a9-a199-4630-be20-7879c106bd45" />
-
-- 글 작성자는 자신의 글에 달린 답변 중 마음에 드는 답변이 있을 경우 채택하기 버튼을 통해 채택 가능
-- 채택 받은 답변은 아래와 같이 채택됨 표시와 함께 초록 배경으로 표시
