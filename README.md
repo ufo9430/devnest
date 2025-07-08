@@ -38,7 +38,7 @@
 
 ## 회원가입
 
-![image.png](attachment:3585f071-6cb5-4307-a388-c67399052e79:image.png)
+<img width="1898" height="908" alt="Image" src="https://github.com/user-attachments/assets/3b796bca-2b51-4fc1-92dd-1603bf335346" />
 
 - 이메일을 통해 회원가입을 진행한다.
 - 이메일은 중복 확인을 통해 해당 이메일을 통해 가입한 사람이 있는지 확인한다.
