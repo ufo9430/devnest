@@ -12,14 +12,20 @@ import com.devnest.user.domain.User;
 import com.devnest.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.commonmark.node.Node;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.vladsch.flexmark.ext.gfm.strikethrough.StrikethroughExtension;
+import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.data.MutableDataSet;
+import com.vladsch.flexmark.util.ast.Node;
+
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,15 +44,25 @@ public class TopicService {
 
     // 마크다운 → HTML 변환
     private String convertMarkdownToHtml(String markdown) {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        MutableDataSet options = new MutableDataSet();
+        options.set(Parser.EXTENSIONS, Arrays.asList(
+                TablesExtension.create(),
+                StrikethroughExtension.create(),
+                TaskListExtension.create()
+        ));
+        Parser parser = Parser.builder(options).build();
+        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         Node document = parser.parse(markdown == null ? "" : markdown);
         return renderer.render(document);
     }
 
     // HTML 새니타이징
     private String sanitizeHtml(String html) {
-        return Jsoup.clean(html, Safelist.basicWithImages());
+        Safelist safelist = Safelist.basicWithImages()
+                .addTags("input", "table", "thead", "tbody", "tfoot", "tr", "th", "td", "h1", "h2", "h3", "h4", "h5", "h6")
+                .addAttributes("input", "type", "checked", "disabled")
+                .addAttributes("table", "border", "cellspacing", "cellpadding");
+        return Jsoup.clean(html, safelist);
     }
 
     /**
