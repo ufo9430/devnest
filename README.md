@@ -45,98 +45,98 @@
 - 중복 검사를 통과하면 인증 전송 버튼이 활성화된다.
 - 기입한 이메일로 인증 코드가 전송된다.
     
-    ![image.png](attachment:58bb3929-bbe5-4b90-88c3-7eec4f730fde:image.png)
+    <img width="465" height="175" alt="Image" src="https://github.com/user-attachments/assets/b9d7f7e7-6bc6-4cd9-b3d9-cac7d76a0621" />
     
 - 비밀번호는 8자 이상이어야 한다.
     
-    ![image.png](attachment:f95b9aa4-a162-4f51-86ca-637164ddecf6:image.png)
+    <img width="439" height="227" alt="Image" src="https://github.com/user-attachments/assets/7860c9b7-230f-4093-8f3b-2c1ec5ed3440" />
     
 - 닉네임도 중복 확인을 진행하고 중복되지 않는 닉네임일 경우 회원가입 버튼이 활성화된다.
     
-    ![image.png](attachment:362201ee-589c-427c-80d3-e72fcf6f877e:image.png)
+    <img width="1182" height="1125" alt="Image" src="https://github.com/user-attachments/assets/16a27bb6-a02c-4c28-b4dd-94301e1e36bd" />
     
 - 회원가입이 완료되면 로그인 화면으로 이동한다.
 
 ## 로그인
 
-![image.png](attachment:a220e030-ab8c-40ff-b278-2b7751151c0a:image.png)
+<img width="1902" height="906" alt="Image" src="https://github.com/user-attachments/assets/06253d1d-6879-4fef-9e0e-7af4ba0d9c6f" />
 
 - 이메일과 비밀번호를 입력하고 2차 인증하기를 누르면 이메일로 인증 코드가 전송된다.
 
-![image.png](attachment:ba014d3f-5ed4-40a3-81b9-3ec0eab354eb:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/ff969464-6d8d-4190-9055-60876f6f84c9" />
 
 - 전송된 인증 코드를 해당 입력창에 입력하고 인증 버튼을 누르면, 성공했을 경우 1.5초 뒤에 해당 창이 자동으로 닫히고 2차 인증 버튼은 로그인 버튼으로 바뀌게 된다.
 
-![image.png](attachment:3a749b6f-693a-4a0a-a54f-d417f951f2c9:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/0c7bf0a5-f9c2-4b56-a6d3-08e1e89647e6" />
 
 - 로그인 버튼을 누르면 홈 화면으로 이동하게 된다.
 
 ## 계정 찾기
 
-![image.png](attachment:cf5e4d55-c652-4c5c-a951-0b97c05ac866:image.png)
+<img width="1913" height="907" alt="Image" src="https://github.com/user-attachments/assets/676cecb8-a2b8-4e5a-baa2-5e37e9930068" />
 
 - 해당 이메일로 가입한 계정이 있는지를 확인하는 기능이다.
 - 입력한 이메일의 계정이 있을 경우, 가입한 닉네임과 가입일을 확인할 수 있다.
     
-    ![image.png](attachment:fb001084-1de3-4501-b600-7b03e4e0b108:4c96de03-638e-40e9-843f-13056f6ee859.png)
+    <img width="670" height="773" alt="Image" src="https://github.com/user-attachments/assets/cbf83bf5-1c0f-4de1-bf45-7b40b6ea250d" />
     
 - 이후, 비밀번호 찾기 페이지로 넘어가게 된다.
 
 ## 비밀번호 찾기
 
-![image.png](attachment:a67653e5-abe8-493b-bfa4-e6d1472f36dd:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/3ef107fe-2b5e-4579-a8e4-3b8e54623641" />
 
 - 가입한 이메일을 입력하면 해당 이메일로 인증 코드가 전송된다.
 
-![image.png](attachment:4d984b3d-fdf2-4d09-a60a-2be8cd78c21f:image.png)
+<img width="1918" height="1079" alt="Image" src="https://github.com/user-attachments/assets/ee1036ea-83a5-4d83-9a65-6662a1f07dd9" />
 
 - 인증코드를 알맞게 인증하면 임시 비밀번호가 발급된다.
 - 임시 비밀번호는 해당 페이지에서도 확인이 가능하고 이메일로도 확인이 가능하다.
     
-    ![image.png](attachment:7a0c6075-e841-4465-8b8e-f7b42f4f56cc:ce74c250-6af5-4b30-a506-a64a4d7306ee.png)
+    <img width="677" height="1079" alt="Image" src="https://github.com/user-attachments/assets/8ab9e896-9707-4fc3-82a3-a929d260d43c" />
     
-    ![image.png](attachment:87f0b97e-de46-4191-bfbd-64007bbffdcd:image.png)
+    <img width="481" height="240" alt="Image" src="https://github.com/user-attachments/assets/35ed5c9e-0ddb-41fd-aeea-ddb76c46e461" />
     
 
 ## 프로필 페이지
 
 ### 프로필 이미지 변경
 
-![image.png](attachment:828469da-ab23-4389-b996-10ff434e5737:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/a9b8620a-5569-4ece-8319-49da8934715b" />
 
 - 프로필 이미지 편집 버튼을 누르면 위와 같은 창이 뜬다.
 - 업로드 버튼을 누르고 이미지를 선택하면 미리보기를 통해 이미지를 확인할 수 있다.
 - 저장 버튼을 누르면 바뀐 이미지가 저장된다.
 
-![image.png](attachment:96d3ed23-8bbe-4662-8348-7115f6d2d8ab:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/2e7e69f5-be58-4ed9-b64e-d8e6b2f5bc82" />
 
 - 바로 바뀐 이미지를 확인할 수 있다.
 
 ### 닉네임 변경
 
-![image.png](attachment:6cc99146-dd6c-4afa-91ff-b9473ec9756a:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/d9b90a31-4e45-46a9-8c81-1b8e0cc81a42" />
 
 - 닉네임에서 중복확인 버튼을 누르면 알림창을 통해 사용 가능한 닉네임인지 중복된 닉네임인지 알려준다.
 - “사용 가능한 닉네임입니다.”라는 알림이 뜬 닉네임의 경우 이후 저장 버튼을 누르면 닉네임이 변경된다.
 
-![image.png](attachment:ee84a3b1-dc23-4370-9285-681f4e152022:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/9ecf019b-186b-4873-8ca0-9d506bf380c2" />
 
 - 변경된 닉네임으로 실시간으로 변경되어 적용된다.
 
 ### 비밀번호 변경
 
-![image.png](attachment:597040f1-1d1e-4abd-ba36-1b5768202171:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/5d38ff0f-afb2-4fcb-8533-3f5ac73d5373" />
 
 - 비밀번호 변경에 앞서 현재 비밀번호를 확인한다.
 - 비밀번호가 확인되면 다음 화면으로 넘어간다.
 
-![image.png](attachment:a6b3aa09-b1e9-447a-87b6-0e4192ef67c1:image.png)
+<img width="1919" height="1079" alt="Image" src="https://github.com/user-attachments/assets/1c66f513-c506-4202-9c46-7310749115d9" />
 
 - 새 비밀번호를 입력하고 해당 비밀번호를 재확인하는 과정을 거친 후 비밀번호를 변경할 수 있다.
 
 ### 알림 페이지
 
-![image.png](attachment:4001cfe8-79c0-46be-87da-6378c24e55c1:image.png)
+<img width="2048" height="1445" alt="Image" src="https://github.com/user-attachments/assets/9ad8956a-fe3a-44b9-b250-bd8cc3943acb" />
 
 - **실시간 알림**: 사용자에게 중요한 메시지 전달
 - **알림 타입**: 시스템 알림, 사용자 간 알림 등
@@ -147,9 +147,9 @@
 
 ### 회원관리
 
-![스크린샷 2025-07-07 112001.png](attachment:2fce1490-0103-4683-b082-22e3d233ea22:스크린샷_2025-07-07_112001.png)
+<img width="2048" height="1079" alt="Image" src="https://github.com/user-attachments/assets/b56399c6-da30-49bb-a441-7cbb376b034e" />
 
-![스크린샷 2025-07-07 112022.png](attachment:28f35960-68df-4f3b-b61a-09f6e0195c91:스크린샷_2025-07-07_112022.png)
+<img width="2048" height="675" alt="Image" src="https://github.com/user-attachments/assets/1fe5cda9-6106-4489-aee4-48b49ce29df8" />
 
 - **사용자 목록 조회**: 전체 회원 정보 표시
 - **사용자 통계**: 총 회원수, 활성/비활성 회원 수
@@ -158,16 +158,32 @@
 
 ### 신고관리
 
-![스크린샷 2025-07-07 105303.png](attachment:293615d0-8d24-420f-b1c8-34a20961718a:스크린샷_2025-07-07_105303.png)
+<img width="2048" height="634" alt="Image" src="https://github.com/user-attachments/assets/292fb967-ab75-43ac-b6ea-2efcafee399f" />
 
-![스크린샷 2025-07-07 105309.png](attachment:5e3292f3-f321-44ef-a7f2-24c4bf542010:스크린샷_2025-07-07_105309.png)
+<img width="2048" height="690" alt="Image" src="https://github.com/user-attachments/assets/13d6cf1a-a177-4b11-ab41-dd0c2bd5c355" />
 
-![스크린샷 2025-07-07 105351.png](attachment:59570583-236d-4227-8f8f-b8f78ff7609e:스크린샷_2025-07-07_105351.png)
+<img width="1008" height="660" alt="Image" src="https://github.com/user-attachments/assets/b0fa0783-ef6f-4b43-9338-bf1704952b89" />
 
 - **신고 목록 조회**: 사용자 신고 내역 관리
 - **신고 처리**: 신고 상태 변경 및 조치
 - **신고 통계**: 신고 유형별 통계 정보
 
-## 질문하기
+## 질문 작성
 
-![스크린샷 2025-07-07 오후 5.17.47.png](attachment:f457f0d6-a784-4d8f-9302-3292ab0b8ff7:스크린샷_2025-07-07_오후_5.17.47.png)
+<img width="2048" height="1115" alt="Image" src="https://github.com/user-attachments/assets/93c0bb85-ca93-47f1-8c7d-1fb9b6fb1509" />
+
+- 로그인 한 사용자는 자신의 게시글을 새로 작성하거나 수정, 삭제 가능
+- 게시글의 내용은 마크다운 문법으로 작성
+- 게시글 생성 시 하나 이상의 태그를 게시글에 표시
+
+## 답변 작성
+<img width="1119" height="853" alt="Image" src="https://github.com/user-attachments/assets/8a111e1d-41c7-4de6-8fa3-8692e4d3510b" />
+
+- 로그인 한 사용자는 게시글에 답변을 작성하거나 수정, 삭제 가능
+- 답변의 내용은 마크다운 문법으로 작성
+
+## 답변 채택
+<img width="715" height="554" alt="Image" src="https://github.com/user-attachments/assets/15ac03a9-a199-4630-be20-7879c106bd45" />
+
+- 글 작성자는 자신의 글에 달린 답변 중 마음에 드는 답변이 있을 경우 채택하기 버튼을 통해 채택 가능
+- 채택 받은 답변은 아래와 같이 채택됨 표시와 함께 초록 배경으로 표시
