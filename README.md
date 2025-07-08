@@ -8,6 +8,11 @@
 * 송치호 : 이메일 인증 코드 발송/검증, 회원가입, 유저 정보 변경, 배포 서버 운영
 * 박재엽 : 알림 및 관리자 페이지
 
+## 기술 목록
+![DevNest_](https://github.com/user-attachments/assets/e7ea5c92-fe01-4ab6-9a9c-64a548123eb5)
+
+
+
 # 상세 기능
 
 ## 메인 페이지
