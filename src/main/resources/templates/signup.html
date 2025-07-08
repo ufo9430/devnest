@@ -4,6 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSRF 토큰을 fetch에서 사용하기 위한 meta 태그 추가 -->
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
   <title>회원가입 - DevNest</title>
 
   <!-- Bootstrap CSS -->
@@ -334,6 +339,7 @@
 
               <div th:if="${profile != null}">
                 <form method="post" action="/member/logout">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                   <button type="submit" class="btn-primary-custom">로그아웃</button>
                 </form>
               </div>
@@ -393,6 +399,7 @@
 
       <!-- Form -->
       <form class="signup-form" th:action="@{/member/signup}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <!-- Email Field -->
         <div class="mb-4">
           <label for="email" class="form-label fw-medium">이메일</label>
@@ -471,6 +478,28 @@
   <script>
     // Initialize Lucide icons
     lucide.createIcons();
+
+    // CSRF 토큰을 meta 태그에서 읽어오는 함수
+    function getCsrfHeaders() {
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+      return { [csrfHeader]: csrfToken };
+    }
+
+    // fetch 래퍼 함수
+    function secureFetch(url, options = {}) {
+      const csrfHeaders = getCsrfHeaders();
+      const mergedHeaders = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+        ...csrfHeaders
+      };
+
+      return fetch(url, {
+        ...options,
+        headers: mergedHeaders
+      });
+    }
 
     // Validation states
     let validationState = {
@@ -568,9 +597,8 @@
       verificationSection.classList.add('show');
 
       // 이메일 인증 보내기
-      fetch('/email/send-verification', {
+      secureFetch('/email/send-verification', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       })
         .then(res => res.json())
@@ -598,9 +626,8 @@
         return;
       }
 
-      fetch('/email/verify-code', {
+      secureFetch('/email/verify-code', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code })
       })
         .then(res => res.json())

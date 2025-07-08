@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSRF 토큰을 fetch에서 사용하기 위한 meta 태그 추가 -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
     <title>검색 결과 - DevNest</title>
 
     <!-- Bootstrap CSS -->
@@ -443,6 +448,7 @@
 
               <div th:if="${profile != null}">
                 <form method="post" action="/member/logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                   <button type="submit" class="btn-primary-custom">로그아웃</button>
                 </form>
               </div>
