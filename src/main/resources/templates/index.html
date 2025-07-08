@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSRF 토큰을 fetch에서 사용하기 위한 meta 태그 추가 -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <title>DevNest - 개발자 커뮤니티</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+                :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E9ECEF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --card-background: #FFFFFF;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+        }
+        
+        a {
+            color: inherit;
+        }
+        
+        .navbar {
+            background-color: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+        
+        .search-box input {
+            padding-right: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+        }
+        
+        .notification-dropdown {
+            position: relative;
+        }
+        
+        .notification-icon-button {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            position: relative;
+        }
+        
+        .notification-icon-button:hover {
+            background-color: #F3F4F6;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-badge{
+            position: relative;
+            display: inline-block;
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .dropdown-menu {
+            min-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 0;
+        }
+        
+        .dropdown-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #F3F4F6;
+            white-space: normal;
+            cursor: pointer;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #F8F9FA;
+        }
+        
+        .notification-content {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .dropdown-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .dropdown-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .dropdown-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+        
+        .search-input {
+            border-color: #D1D5DB;
+            padding-left: 2.5rem;
+            height: 42px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #000;
+        }
+        
+        .main-container {
+            max-width: 1272px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+        
+        .card-custom {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .discussion-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .discussion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tag {
+            background-color: #F3F4F6;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .stats-item {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .stats-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .avatar {
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .avatar-lg {
+            width: 49px;
+            height: 49px;
+        }
+        
+        .notification-header {
+            border-bottom: 1px solid #F3F4F6;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            border-bottom: 1px solid #F3F4F6;
+            padding: 1rem;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background-color: #F9FAFB;
+        }
+        
+        .notification-item.unread {
+            background-color: #F8F9FA;
+        }
+        
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 0.25rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-dot.unread {
+            background-color: var(--unread-dot-color);
+        }
+        
+        .notification-dot.read {
+            background-color: var(--read-dot-color);
+        }
+        
+        .notification-footer {
+            border-top: 1px solid #F3F4F6;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .btn-link-custom {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .btn-link-custom:hover {
+            color: var(--primary-hover);
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .navbar-custom .container-fluid {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!--  Navbar  -->
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center gap-3">
+                <a class="navbar-brand" th:href="@{/}">DevNest</a>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="search-box">
+                    <input type="text" class="form-control" placeholder="질문 검색..." id="searchInput">
+                    <button type="button" id="searchBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;" class="lucide lucide-search"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+                    </button>
+                </div>
+                
+                <a href="/topics/post" class="btn-primary-custom">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                    질문하기
+                </a>
+
+              <div th:if="${profile != null}">
+                <form method="post" action="/member/logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <button type="submit" class="btn-primary-custom">로그아웃</button>
+                </form>
+              </div>
+                
+                <!-- Notification Dropdown -->
+                <!-- <div th:if="${profile != null}" class="notification-dropdown dropdown">
+                    <button class="notification-icon-button" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <li class="dropdown-header">알림</li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">새로운 답변이 등록되었습니다: "React Hooks 사용법"</div>
+                                <div class="notification-time">5분 전</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">회원님의 질문에 새로운 댓글이 달렸습니다: "Spring Security 설정"</div>
+                                <div class="notification-time">1시간 전</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">관리자 공지: 시스템 점검 안내</div>
+                                <div class="notification-time">어제</div>
+                            </a>
+                        </li>
+                        <li class="dropdown-footer">
+                            <a href="/all_notifications.html">모든 알림 보기</a>
+                        </li>
+                    </ul>
+                </div> -->
+                <a th:if="${profile != null}" href="/member/profile">
+                    <img class="profile-badge" th:src="${profile.profileImage}" alt="프로필 링크">
+                </a>
+
+                <a th:if="${profile == null}" href="/member/login" class="btn-primary-custom">로그인</a>
+                <a th:if="${profile == null}" href="/member/signup" class="btn-primary-custom">회원가입</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="row g-4">
+            <!-- Left Column - Latest Discussions -->
+            <div class="col-xl-4 col-lg-6">
+                <div class="card card-custom">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0 fw-semibold">최신 토론</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- Discussion Item 1 -->
+                        <div class="discussion-item" th:each="topic : ${recent}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <a th:href="|/topics/${topic.topicId}|" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
+                                <small class="text-muted" th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</small>
+                            </div>
+                            <p class="text-muted small mb-2" th:text="${topic.content.length() > 30} ? ${#strings.substring(topic.content, 0, 30)} + '...' : ${topic.content}" >글 내용</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-1" th:each="tag : ${topic.tags}">
+                                    <a th:href="@{/search(tag=${tag})}" th:text="${tag}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
+                                </div>
+                                <span> </span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted">답변</small>
+                                    <small class="text-muted" th:text="${topic.answerCount}">1</small>
+                                    <small class="text-muted">조회</small>
+                                    <small class="text-muted" th:text="${topic.viewCount}">100</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <a th:href="@{/topics}" class="d-block text-center text-decoration-none py-3 text-muted">더 많은 토론 보기</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Center Column - Popular Topics -->
+            <div class="col-xl-4 col-lg-6">
+                <div class="card card-custom">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0 fw-semibold">인기 주제</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- Topic Item -->
+                        <div class="discussion-item" th:each="topic : ${hot}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <a th:href="|/topics/${topic.topicId}|" class="link-offset-2 link-underline link-underline-opacity-0"><h6 class="mb-1 fw-semibold" th:text="${topic.title}">글 제목 </h6></a>
+                                <small class="text-muted" th:text="${@timeAgoUtil.format(topic.createdAt)}">2시간 전</small>
+                            </div>
+                            <p class="text-muted small mb-2" th:text="${topic.content.length() > 30} ? ${#strings.substring(topic.content, 0, 30)} + '...' : ${topic.content}" >글 내용</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-1" th:each="tag : ${topic.tags}">
+                                    <a th:href="@{/search(tag=${tag})}" th:text="${tag}" class="tag link-offset-2 link-underline link-underline-opacity-0">태그</a>
+                                </div>
+                                <span> </span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted">답변</small>
+                                    <small class="text-muted" th:text="${topic.answerCount}">1</small>
+                                    <small class="text-muted">조회</small>
+                                    <small class="text-muted" th:text="${topic.viewCount}">100</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Tags and Stats -->
+            <div class="col-xl-4 col-12">
+                <!-- Popular Tags -->
+                <div class="card card-custom mb-4">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0 fw-semibold">태그 목록</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="tag" th:each="tag : ${tags}">
+                                <a th:href="@{/search(tag=${tag.name})}" class="link-offset-2 link-underline link-underline-opacity-0" th:text="${tag.name}">JavaScript</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Community Stats -->
+                <div class="card card-custom">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="card-title mb-0 fw-semibold">커뮤니티 통계</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 col-md-3 col-lg-6 stats-item">
+                                <div class="stats-number" th:text="${statistics.allCount}">1,234</div>
+                                <p class="text-muted mb-0">총 질문</p>
+                            </div>
+                            <div class="col-6 col-md-3 col-lg-6 stats-item">
+                                <div class="stats-number" th:text="${statistics.waitingCount}">1,234</div>
+                                <p class="text-muted mb-0">대기 질문</p>
+                            </div>
+                            <div class="col-6 col-md-3 col-lg-6 stats-item">
+                                <div class="stats-number" th:text="${statistics.solvedCount}">1,234</div>
+                                <p class="text-muted mb-0">해결</p>
+                            </div>
+                            <div class="col-6 col-md-3 col-lg-6 stats-item">
+                                <div class="stats-number" th:text="${statistics.todayCount}">1,234</div>
+                                <p class="text-muted mb-0">오늘 답변</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Get search term from URL
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Search functionality
+        function performSearch(input, searchTerm) {
+            const term = input.value.trim();
+            if (term) {
+                window.location.href = `/search?keyword=${encodeURIComponent(term)}`;
+            }
+        }
+
+        document.getElementById('searchBtn').addEventListener('click', function () {
+            performSearch(document.getElementById('searchInput'));
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const searchTerm = document.getElementById('searchInput').value.trim();
+                performSearch(this, searchTerm);
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSRF 토큰을 fetch에서 사용하기 위한 meta 태그 추가 -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <title>나의 프로필 - DevNest</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --primary-hover: #5856EB;
+            --background-color: #F8F9FA;
+            --border-color: #E9ECEF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --card-background: #FFFFFF;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+
+        .navbar {
+            background-color: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+            text-decoration: none;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+        
+        .search-box input {
+            padding-right: 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+        }
+        
+        .notification-dropdown {
+            position: relative;
+        }
+        
+        .notification-icon-button {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            position: relative;
+        }
+        
+        .notification-icon-button:hover {
+            background-color: #F3F4F6;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-badge{
+            position: relative;
+            display: inline-block;
+            width: 37px;
+            height: 37px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        
+        .dropdown-menu {
+            min-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 0;
+        }
+        
+        .dropdown-header {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #F3F4F6;
+            white-space: normal;
+            cursor: pointer;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #F8F9FA;
+        }
+        
+        .notification-content {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .dropdown-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+        
+        .dropdown-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .dropdown-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+        
+        .search-input {
+            border-color: #D1D5DB;
+            padding-left: 2.5rem;
+            height: 42px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #000;
+        }
+
+        .main-content {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .profile-section {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-photo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-photo-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--border-color);
+        }
+
+        .edit-photo-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-photo-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .username {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .user-bio {
+            color: var(--primary-color);
+            font-size: 0.875rem;
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-outline-custom {
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            background-color: transparent;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+        .btn-outline-custom:hover {
+            background-color: var(--text-secondary);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-primary-form {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary-form:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .security-section {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .security-info {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+        }
+
+        .photo-upload-area {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .photo-upload-area img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--border-color);
+        }
+
+        .upload-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .upload-info li {
+            margin-bottom: 0.25rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .file-input-label:hover {
+            background-color: var(--primary-hover);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0 0.5rem;
+            }
+
+            .profile-section {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions .btn-outline-custom,
+            .form-actions .btn-primary-form {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--  Navbar  -->
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center gap-3">
+                <a class="navbar-brand" th:href="@{/}">DevNest</a>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="search-box">
+                    <input type="text" class="form-control" placeholder="질문 검색..." id="searchInput">
+                    <button type="button" id="searchBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="search" style="width: 16px; height: 16px;" class="lucide lucide-search"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+                    </button>
+                </div>
+                
+                <a href="/topics/post" class="btn-primary-custom">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" style="width: 16px; height: 16px;" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                    질문하기
+                </a>
+
+              <div th:if="${profile != null}">
+                <form method="post" action="/member/logout">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <button type="submit" class="btn-primary-custom">로그아웃</button>
+                </form>
+              </div>
+                
+                <!-- Notification Dropdown -->
+                <!-- <div th:if="${profile != null}" class="notification-dropdown dropdown">
+                    <button class="notification-icon-button" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="bell" style="width: 24px; height: 24px;" class="lucide lucide-bell"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <li class="dropdown-header">알림</li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">새로운 답변이 등록되었습니다: "React Hooks 사용법"</div>
+                                <div class="notification-time">5분 전</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">회원님의 질문에 새로운 댓글이 달렸습니다: "Spring Security 설정"</div>
+                                <div class="notification-time">1시간 전</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <div class="notification-content">관리자 공지: 시스템 점검 안내</div>
+                                <div class="notification-time">어제</div>
+                            </a>
+                        </li>
+                        <li class="dropdown-footer">
+                            <a href="/all_notifications.html">모든 알림 보기</a>
+                        </li>
+                    </ul>
+                </div> -->
+                <a th:if="${profile != null}" href="/member/profile">
+                    <img class="profile-badge" th:src="${profile.profileImage}" alt="프로필 링크">
+                </a>
+
+                <a th:if="${profile == null}" href="/member/login" class="btn-primary-custom">로그인</a>
+                <a th:if="${profile == null}" href="/member/signup" class="btn-primary-custom">회원가입</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>나의 프로필</h1>
+        </div>
+
+        <!-- Profile Information Section -->
+        <div class="profile-section">
+            <div class="section-title">기본 정보</div>
+
+            <!-- Profile Photo -->
+            <div class="profile-photo-section">
+                <div class="profile-photo-container">
+                    <img th:src="${profile.profileImage}" alt="프로필 사진" class="profile-photo" id="profilePhoto">
+                    <button class="edit-photo-btn" type="button" data-bs-toggle="modal" data-bs-target="#photoModal">
+                        <i data-lucide="edit-2" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+                <div class="username" id="usernameDisplay" th:text="${profile.nickname}">개발자123</div>
+                <div class="user-bio">프로필 사진은 언제든지 변경할 수 있습니다.</div>
+            </div>
+
+            <!-- Profile Form -->
+            <form>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <!-- 수정 불가. readonly로! -->
+                <div class="form-group">
+                    <label class="form-label">이메일</label>
+                    <input type="email" class="form-control" id="emailInput" th:value="${profile.email}" readonly style="background-color: #e9ecef;">
+                </div>
+
+                <!-- 수정 가능-->
+                <div class="form-group">
+                    <label class="form-label">닉네임</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="nicknameInput" th:value="${profile.nickname}">
+                        <button type="button" class="btn-primary-form" id="checkNicknameBtn" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">중복 확인</button>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-outline-custom">등록 취소</button>
+                    <button type="submit" class="btn-primary-form" id="saveButton" disabled>저장</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Security Section -->
+        <div class="security-section">
+            <div class="section-title">보안</div>
+            <div class="security-info">
+                비밀번호를 변경하여 계정을 안전하게 보호하세요.
+            </div>
+            <a href="/member/change_password" class="btn-primary-custom">비밀번호 변경</a>
+        </div>
+    </div>
+
+    <!-- Profile Photo Change Modal -->
+    <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="photoModalLabel">프로필 사진 변경</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="photo-upload-area">
+                        <img th:src="${profile.profileImage}" alt="현재 프로필 사진" id="modalProfilePhoto">
+
+                        <div class="upload-info">
+                            <div style="margin-bottom: 0.5rem; font-weight: 500;">이미지 업로드</div>
+                            <ul>
+                                <li>• JPG, PNG 형식만 지원됩니다</li>
+                                <li>• 최대 5MB까지 업로드 가능합니다</li>
+                                <li>• 정사각형 이미지를 권장합니다</li>
+                            </ul>
+                        </div>
+
+                        <div class="file-input-wrapper">
+                            <input type="file" class="file-input" id="photoUpload" accept="image/jpeg,image/png">
+                            <label for="photoUpload" class="file-input-label">업로드</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn-primary-form" id="savePhoto">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // CSRF 토큰을 meta 태그에서 읽어오는 함수
+        function getCsrfHeaders() {
+            const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+            return { [csrfHeader]: csrfToken };
+        }
+
+        // fetch 래퍼 함수
+        function secureFetch(url, options = {}) {
+            const csrfHeaders = getCsrfHeaders();
+            const mergedHeaders = {
+                'Content-Type': 'application/json',
+                ...(options.headers || {}),
+                ...csrfHeaders
+            };
+
+            return fetch(url, {
+                ...options,
+                headers: mergedHeaders
+            });
+        }
+
+        // 닉네임 중복 확인
+        document.getElementById("checkNicknameBtn").addEventListener("click", function () {
+            const nickname = document.getElementById("nicknameInput").value;
+
+            fetch(`/member/check-nickname?nickname=${encodeURIComponent(nickname)}`)
+            .then(response => response.json())
+            .then(result => {
+                if (!result.isDuplicate) {
+                    showCustomAlert("사용 가능한 닉네임입니다.", "success");
+                    document.getElementById("saveButton").disabled = false;
+                } else {
+                    showCustomAlert("이미 사용 중인 닉네임입니다.", "warning");
+                    document.getElementById("saveButton").disabled = true;
+                }
+            })
+            .catch(error => {
+                console.error("중복 확인 실패:", error);
+                showCustomAlert("닉네임 중복 확인 중 오류가 발생했습니다.", "danger");
+            });
+        });
+
+        // 닉네임 저장
+        document.getElementById("saveButton").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const nickname = document.getElementById("nicknameInput").value;
+
+            secureFetch("/member/update-nickname", {
+                method: "PATCH",
+                body: JSON.stringify({ nickname })
+            })
+            .then(message => {
+                showCustomAlert(message, "success"); // 닉네임이 성공적으로 변경되었습니다.
+
+                // 새로고침으로 변경된 정보 불러오기
+                setTimeout(() => location.reload(), 500);
+            })
+        });
+
+        // 등록 취소 시, 홈으로 이동
+        document.querySelector(".btn-outline-custom").addEventListener("click", function () {
+            window.location.href = "/";
+        });
+
+        // // Profile photo upload functionality
+        document.getElementById('photoUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('modalProfilePhoto').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Save photo functionality
+        document.getElementById('savePhoto').addEventListener('click', function () {
+            const fileInput = document.getElementById('photoUpload');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showCustomAlert("업로드할 파일을 선택해주세요.", "warning");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            // 1단계: 파일 업로드 (POST)
+            fetch("/member/upload-profile-image", {
+                method: "POST",
+                body: formData,
+                headers: getCsrfHeaders()
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("파일 업로드 실패");
+                }
+                return response.text(); // 이미지 경로 반환됨
+            })
+            .then(imagePath => {
+                // 2단계: 이미지 경로 업데이트 (PATCH)
+                return secureFetch("/member/update-profile-image", {
+                    method: "PATCH",
+                    body: JSON.stringify({ profileImage: imagePath })
+                });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("프로필 이미지 변경 실패");
+                }
+
+                // 변경된 정보 다시 불러와 UI 반영
+                showCustomAlert("프로필 이미지가 성공적으로 변경되었습니다.", "success");
+
+                const modal = bootstrap.Modal.getInstance(document.getElementById('photoModal'));
+                modal.hide();
+
+                // 자동 새로고침
+                setTimeout(() => location.reload(), 500);  // 0.5초 후 새로고침
+            })
+            .catch(error => {
+                console.error("프로필 이미지 변경 중 오류:", error);
+                showCustomAlert("프로필 이미지 변경 중 오류가 발생했습니다.", "danger");
+            });
+        });
+
+        function showCustomAlert(message, type = "warning") {
+            const alertBox = document.getElementById("custom-alert");
+            const alertMessage = document.getElementById("custom-alert-message");
+
+            alertBox.classList.remove("d-none", "alert-warning", "alert-success", "alert-danger");
+            alertBox.classList.add(`alert-${type}`);
+            alertMessage.textContent = message;
+
+            setTimeout(() => {
+                hideCustomAlert();
+            }, 3000);
+        }
+
+        function hideCustomAlert() {
+            const alertBox = document.getElementById("custom-alert");
+            alertBox.classList.add("d-none");
+        }
+    </script>
+</body>
+<!-- Global Toast 알림 -->
+<div id="custom-alert"
+     class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 z-3 d-none"
+     role="alert" style="min-width: 320px; z-index: 1055;">
+    <span id="custom-alert-message"></span>
+    <button type="button" class="btn-close" onclick="hideCustomAlert()"></button>
+</div>
+</html>
+
